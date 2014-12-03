@@ -1,4 +1,10 @@
+2014-12-03  Maximilian Fabricius  <mxhf@mpe.mpg.de>
 
+	* pyhetdex: Added. Moved all other subpackages here. 
+	* pyhetdex/astrometry/astrometry.py: Added tan_dir and tan_inv routines.
+	* pyhetdex/common: Added.
+	* pyhetdex/common/coords.py: Added. Contains h2m2decimal conversions and similar.
+	
 2014-11-28  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* *: created directory structure
