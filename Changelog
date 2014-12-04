@@ -1,5 +1,9 @@
 2014-12-04  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* tool/analysis: __init__.py added
+
+2014-12-04  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* pyhetdex/tools/analysis: added
 	* pyhetdex/tools/analysis/seeing.py: added
 	* pyhetdex/tools/analysis/reconstruct_ifu.py: added
