@@ -1,3 +1,9 @@
+2014-12-04  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/analysis: added
+	* pyhetdex/tools/analysis/seeing.py: added
+	* pyhetdex/tools/analysis/reconstruct_ifu.py: added
+
 2014-12-03  Maximilian Fabricius  <mxhf@mpe.mpg.de>
 
 	* pyhetdex: Added. Moved all other subpackages here. 
