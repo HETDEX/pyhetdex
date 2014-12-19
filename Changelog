@@ -1,3 +1,11 @@
+2014-12-19  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/common/fitstools.py: added
+	* pyhetdex/tools/analysis/sky.py: added. It does sky subtraction on fiber
+	  extracted frames
+	* pyhetdex/tools/analysis/reconstruct_ifu.py: _indx_w moved to fitstools.py
+	  and renamed. Calls correctly renamed
+
 2014-12-04  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* tool/analysis: __init__.py added

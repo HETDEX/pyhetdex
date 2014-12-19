@@ -10,6 +10,8 @@ import re
 from astropy.io import fits
 import numpy as np
 
+from pyhetdex.common.fitstools import wavelength_to_index
+
 
 class ReconstructedIFU(object):
     """
@@ -323,30 +325,8 @@ class ReconstructedIFU(object):
         """
         _flux = []
         for f, h in zip(self.flux, self.header):
-            _imin = self._indx_w(h, wmin)
-            _imax = self._indx_w(h, wmax)
+            _imin = wavelength_to_index(h, wmin)
+            _imax = wavelength_to_index(h, wmax)
             _flux.append(f[:, _imin:_imax].sum(axis=1))
 
         return self.x, self.y, np.concatenate(_flux)
-
-    def _indx_w(self, header, wavelength):
-        """
-        Using the "CRVAL1" and "CDELT1" keywords in *header* determine the
-        index of *wavelength*
-        Parameters
-        ----------
-        header: dictionary
-            dictionary containing the above keywords
-        wavelength: float
-            wavelength. If None, return None
-        output
-        ------
-        indx: int or None
-            index of *wavelength*
-        """
-        if wavelength is None:
-            return None
-        wmin = header["CRVAL1"]
-        deltaw = header["CDELT1"]
-        i = int(round((wavelength - wmin) / deltaw))
-        return i
