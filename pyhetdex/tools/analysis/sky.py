@@ -10,6 +10,7 @@ from astropy.stats import sigma_clip
 import numpy as np
 
 from pyhetdex.common.fitstools import wavelength_to_index
+from pyhetdex.common.file_tools import prefix_filename
 
 
 # Execute the sky subtraction on the fiber extracted files. The credit for the
@@ -92,8 +93,8 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
 
         # save the sky subtracted file
         hdulist[0].data = data - sky
-        hdulist.writeto(prefix + fname, clobber=True)
+        hdulist.writeto(prefix_filename(fname, prefix), clobber=True)
 
         if output_both:  # save the sky file
             hdulist[0].data = sky
-            hdulist.writeto(skyprefix + fname, clobber=True)
+            hdulist.writeto(prefix_filename(fname, skyprefix), clobber=True)
