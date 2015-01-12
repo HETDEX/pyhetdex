@@ -1,5 +1,9 @@
 2015-01-08  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* README.md: added list of dependences
+
+2015-01-08  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* __init__.py: removed as this is the top level directory, not the library.
 	* pyhetdex/common/file_tools.py: added. File manipulation should go here
 	* pyhetdex/tools/analysis/sky.py: prefix correctly prepended to file name
