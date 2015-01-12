@@ -1,18 +1,23 @@
 """
-Parse the ifu center file and the dither file
+Parse the ifu center file and reconstruct the IFU
 """
+
 from __future__ import print_function, absolute_import
 
 from collections import defaultdict
 import itertools as it
-import re
 
 from astropy.io import fits
 import numpy as np
 
 from pyhetdex.common.fitstools import wavelength_to_index
+import pyhetdex.common.file_tools as ft
+from pyhetdex.het import dither
 
 
+# TODO: Separate the following class into one to parse the IFU center file and
+# one to do the actual reconstruction give the dither and the IFu center
+# objects
 class ReconstructedIFU(object):
     """
     Reconstructed IFU head given the *ifu_center_file* and if any, the dither
@@ -47,7 +52,10 @@ class ReconstructedIFU(object):
         self._ifu_center_file = ifu_center_file
 
         self._read_ifu(ifu_center_file)
-        self._read_dither(dither_file)
+        if dither_file is None:
+            self.dither = dither.EmptyDither()
+        else:
+            self.dither = dither.ParseDither(dither_file)
         self._read_fextract(fextract)
 
     def _read_ifu(self, ifu_center_file):
@@ -60,11 +68,11 @@ class ReconstructedIFU(object):
         """
         with open(ifu_center_file, 'r') as f:
             # get the fiber diameter and fiber separation
-            f = self._skip_comments(f)
+            f = ft.skip_comments(f)
             line = f.readline()
             self.fiber_d, self.fiber_sep = [float(i) for i in line.split()]
             # get the number of fibers in the x and y direction
-            f = self._skip_comments(f)
+            f = ft.skip_comments(f)
             line = f.readline()
             self.nfibx, self.nfiby = [int(i) for i in line.split()]
             # get from the rest of the file:
@@ -72,29 +80,8 @@ class ReconstructedIFU(object):
             # target unit spectrograph (L or R) (fourth column)
             # target fiber within the spectrograph (fifth column)j
             # relative throughput (sixth column)
-            f = self._skip_comments(f)
+            f = ft.skip_comments(f)
             f = self._read_ifu_map(f)
-
-    def _skip_comments(self, f):
-        """
-        Skip commented lines and returns the file at the start of the first
-        line without any
-        Parameters
-        ----------
-        f: file object
-        output
-        ------
-        f: file object
-            moved to the next non comment line
-        """
-        pos = f.tell()
-        for l in f:
-            if l.startswith('#'):
-                pos += len(l)
-            else:
-                break
-        f.seek(pos)
-        return f
 
     def _read_ifu_map(self, f):
         """
@@ -150,66 +137,6 @@ class ReconstructedIFU(object):
                     self.fib_number[_channel].append(_fib_n - 1)
                     self.throughput[_channel].append(float(_t))
 
-    def _read_dither(self, dither_file):
-        """
-        Read the relative dither position
-        Parameters
-        ----------
-        dither_file: string
-            file containing the dither relative position. If None a single
-            dither added
-        """
-        # delta x and y of the dithers
-        self.basename = {}
-        self.dx, self.dy = {}, {}
-        self.seeing, self.norm, self.airmass = {}, {}, {}
-
-        if dither_file is None:
-            self._no_dither()
-        else:
-            self._has_dither(dither_file)
-
-    def _has_dither(self, dither_file):
-        """
-        Read the relative dither position
-        Parameters
-        ----------
-        dither_file: string
-            file containing the dither relative position. If None a single
-            dither added
-        """
-        with open(dither_file, 'r') as f:
-            f = self._skip_comments(f)
-            for l in f:
-                try:
-                    _bn, _d, _x, _y, _seeing, _norm, _airmass = l.split()
-                    _d = list(set(re.findall(r'D\d', _d)))
-                    if len(_d) != 1:
-                        msg = "While extracting the dither number from the"
-                        msg += " basename in the dither file, {} matches to"
-                        msg += " 'D\\d' expression where found. I expected"
-                        msg += " one. What should I do?"
-                        raise ValueError(msg.format(len(_d)))
-                    self.basename[_d] = _bn
-                    self.dx[_d] = float(_x)
-                    self.dy[_d] = float(_y)
-                    self.seeing[_d] = float(_seeing)
-                    self.norm[_d] = float(_norm)
-                    self.airmass[_d] = float(_airmass)
-                except ValueError:
-                    # skip empty lines
-                    pass
-
-    def _no_dither(self):
-        "Fake a single dither"
-        _d = "D1"
-        self.basename[_d] = ""
-        self.dx[_d] = float(0)
-        self.dy[_d] = float(0)
-        self.seeing[_d] = float(0)
-        self.norm[_d] = float(0)
-        self.airmass[_d] = float(0)
-
     def _read_fextract(self, fextract):
         n_channels = len(self.xifu.keys())
         n_dithers = len(self.dx.keys())
@@ -254,7 +181,7 @@ class ReconstructedIFU(object):
         self.flux, self.header = [], []
         key = "{ch}_{d}"  # template for key of dfextract
 
-        for ch, d in it.product(self.xifu.keys(), self.dx.keys()):
+        for ch, d in it.product(self.xifu.keys(), self.dither.dx.keys()):
             # get the correct values of x and y
             self.x = np.concatenate([self.x, self.xpos(ch, d)])
             self.y = np.concatenate([self.y, self.ypos(ch, d)])
@@ -291,7 +218,7 @@ class ReconstructedIFU(object):
         xpos: ndarray
             x position of the fibers for the given channel and dither
         """
-        return np.array(self.xifu[channel]) + self.dx[dither]
+        return np.array(self.xifu[channel]) + self.dither.dx[dither]
 
     def ypos(self, channel, dither):
         """
@@ -307,7 +234,7 @@ class ReconstructedIFU(object):
         ypos: ndarray
             y position of the fibers for the given channel and dither
         """
-        return np.array(self.yifu[channel]) + self.dy[dither]
+        return np.array(self.yifu[channel]) + self.dither.dy[dither]
 
     def reconstruct(self, wmin=None, wmax=None):
         """

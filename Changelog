@@ -1,4 +1,11 @@
-2015-01-08  Francesco Montesano  <montefra@mpe.mpg.de>
+2015-01-12  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/het/reconstruct_ifu.py: moved from pyhetdex/tools/analysis/reconstruct_ifu.py
+	* pyhetdex/common/file_tools.py: skip_comments moved here from the above
+	module
+	* pyhetdex/het/dither.py: parsing of the dither file isolated here.
+
+2015-01-12  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* README.md: added list of dependences
 
