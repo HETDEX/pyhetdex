@@ -41,8 +41,8 @@ class IFUASTROM:
         self.RA0      = RA0     
         self.DEC0     = DEC0   
         """ Rotation of the IFUASTROM, measured East of North such that a galaxy with
-        a +10 Deg position angle on sky would be alingend with the y-axis in and IFUASTROM
-        taht is rotated by +10 Deg.""" 
+        a +10 Deg position angle on sky would be aligned with the y-axis in and IFUASTROM
+        that is rotated by +10 Deg.""" 
         self.rot      = rot
         """ IFUASTROM plate scale. These parameters are -1 in x and 1 in y if the 
         IFUASTROM mapping file is perfect in arcseconds."""
@@ -51,12 +51,12 @@ class IFUASTROM:
 
 def tan_dir(IFUASTROM, RA_in, DEC_in):
     """
-    Calculates x and y coordinates for positions in the IFUASTROM coordiante frame.
+    Calculates x and y coordinates for positions in the IFUASTROM coordinate frame.
     Stolen boldly from J. Adams finder_chart code.
     see AIPS Memo 27, Greisen 1983 (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
     Input
    
-    IFUASTROM        = object that descibres IFUASTROM astrometry 
+    IFUASTROM        = object that describes IFUASTROM astrometry 
     RA_in, DEC_in = 1D arrays of RA/DEC coordinates (in ~ degree!)
     
     Returns:
@@ -84,7 +84,7 @@ def tan_dir(IFUASTROM, RA_in, DEC_in):
 
 def tan_inv(IFUASTROM,x_in,y_in):
     """
-    Calculates RA and DEC coordinates for positions in the IFUASTROM coordiante frame.
+    Calculates RA and DEC coordinates for positions in the IFUASTROM coordinate frame.
     Stolen boldly from J. Adams finder_chart code.
     see AIPS Memo 27, Greisen 1983 (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
 
