@@ -1,5 +1,10 @@
 2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* pyhetdex/tools/analysis/sky.py: added sky background estimate from fiber
+	extracted files
+
+2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* README.md: brief package description added
 
 2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>

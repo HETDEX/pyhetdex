@@ -1,6 +1,5 @@
 """
-Modules that provides utilities to estimate the sky background from fiber
-extracted frames
+Modules that provides utilities related with the sky background
 """
 
 from __future__ import absolute_import
@@ -98,3 +97,52 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
         if output_both:  # save the sky file
             hdulist[0].data = sky
             hdulist.writeto(prefix_filename(fname, skyprefix), clobber=True)
+
+
+# estimate the sky background from fiber extracted files
+def fe_sky_background(fname, sig=2.5, iters=None, wmin=None, wmax=None,
+                      fibmin=None, fibmax=None):
+    """
+    Estimate the sky background as the (sigma clipped) median of medians
+    within the required wavelengths and fiber number boundaries
+    Parameters
+    ----------
+    fname: string
+        file to average
+    sig: None or float
+        if not None, ignore fibers with signal outside *sig* standard deviation
+    iters : int or `None`
+        number of iterations to perform clipping for, or `None` to clip
+        until convergence is achieved (i.e. continue until the last
+        iteration clips nothing).
+    wmin, wmax: float
+        minimum and maximum wavelength to consider for the average
+    wmin, wmax: floats
+        maximum and minimum wavelength in Armstrong to use for the estimate.
+        Converted to indices using the 'CRVAL1' and 'CDELT1' keyword in the
+        header of the fits file. If None the minimum and/or maximum of the
+        range used
+    fibmin, fibmax: float
+        minimum and maximum fiber number to consider
+    output
+    ------
+    median: float
+        average
+    n_fibs: int
+        number of fibers used for the final median
+    """
+    with fits.open(fname) as hdu:
+        header = hdu[0].header
+        data = hdu[0].data
+        # get the index of the input wavelengths
+        imin = wavelength_to_index(header, wmin)
+        imax = wavelength_to_index(header, wmax)
+        data = data[fibmin:fibmax, imin:imax]
+
+        if sig is not None:
+            clip_mask = np.logical_not(sigma_clip(data, sig=sig,
+                                                  iters=iters).mask)
+            data = data[clip_mask, :]
+
+        median = np.median(np.median(data, axis=1))
+        return median, data.shape[0]
