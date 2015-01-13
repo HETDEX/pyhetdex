@@ -1,9 +1,11 @@
 #pyhetdex
 
-This is the readme file of `pyhetdex`. Please use
-[markdown](http://daringfireball.net/projects/markdown/syntax) syntax so it can
-be easily converted to html or wiki format if needed **and** remains very
-readable
+`pyhetdex` is a python library designed to collect code can could be used by
+different project like
+[`Quicklook`](https://luna.mpe.mpg.de/wikihetdex/index.php/Quicklook),
+[`simhetdex`](https://luna.mpe.mpg.de/wikihetdex/index.php/VIRUS_Data_Simulation_Framework)
+or
+[`Cure-WISE`](https://luna.mpe.mpg.de/wikihetdex/index.php/Overview_of_Cure-WISE).
 
 ## Installation
 
@@ -64,3 +66,10 @@ install first `numpy` then `pyhetdex`
 NOTE: as `pyfits` has been integrated into `astropy` and going out of support
 and since the latter provides much more functionalities that the former, we do
 not support pyfits.
+
+##Notes
+
+Please use [markdown](http://daringfireball.net/projects/markdown/syntax) syntax
+so it can be easily converted to html or wiki format if needed **and** remains
+very readable
+
