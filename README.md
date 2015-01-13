@@ -6,12 +6,14 @@ be easily converted to html or wiki format if needed **and** remains very
 readable
 
 ## Installation
-The repository can be obtained from the svn repository using the following
-command
+
+The code can be obtained from the svn repository using the following
+command (this step is not necessary if the option `4` below is used)
 
     svn checkout svn://luna.mpe.mpg.de/pyhetdex/trunk
 
-To use the `pyhetdex` library it's possible to use one of the following options
+To use the library there you can use one of the following options (options 2, 3
+and 4 install the library in locations already within the python path):
 
 1. add `pyhetdex` to the python path. E.g. in bash:
 
@@ -32,7 +34,8 @@ To use the `pyhetdex` library it's possible to use one of the following options
         pip install /path/to/pyhetdex
   Add the `--user` option to install in the user `site-packages` directory
 
-4. It is also possible to install `pyhetdex` directly from the svn repository:
+4. It is also possible to install `pyhetdex` directly from the svn repository,
+without the need to download it first:
 
         pip install [--user] svn+svn://luna.mpe.mpg.de/pyhetdex/trunk
 
@@ -52,7 +55,6 @@ install first `numpy` then `pyhetdex`
 
     pip install [--user] numpy
 
-
 ##Dependencies
 
     numpy
@@ -62,4 +64,3 @@ install first `numpy` then `pyhetdex`
 NOTE: as `pyfits` has been integrated into `astropy` and going out of support
 and since the latter provides much more functionalities that the former, we do
 not support pyfits.
-

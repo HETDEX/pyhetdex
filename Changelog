@@ -1,5 +1,9 @@
 2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* README.md: little update. Install from svn successfully tested
+
+2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* svn:ignore: added. build directory ignored
 	* pyhetdex/__init__.py: version added
 	* setup.py: added
