@@ -1,3 +1,11 @@
+2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* svn:ignore: added. build directory ignored
+	* pyhetdex/__init__.py: version added
+	* setup.py: added
+	* README.md: installation instructions added. After this commit I'll test
+	the installation from svn
+
 2015-01-12  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/het/reconstruct_ifu.py: moved from pyhetdex/tools/analysis/reconstruct_ifu.py
