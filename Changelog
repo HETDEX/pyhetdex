@@ -1,3 +1,11 @@
+2015-01-14  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* svn:ignore: pyhetdex.egg-info added (created when running python setup.py)
+	* README.md: updated with some developer information
+	* pyhetdex/tools/analysis/sky.py: implementation of the sky background
+	estimation moved to a function that takes data and header, instead of the
+	file name
+
 2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/analysis/sky.py: added sky background estimate from fiber

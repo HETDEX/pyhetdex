@@ -100,11 +100,12 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
 
 
 # estimate the sky background from fiber extracted files
-def fe_sky_background(fname, sig=2.5, iters=None, wmin=None, wmax=None,
-                      fibmin=None, fibmax=None):
+def fe_sky_background(fname, **kwargs):
     """
     Estimate the sky background as the (sigma clipped) median of medians
-    within the required wavelengths and fiber number boundaries
+    within the required wavelengths and fiber number boundaries. The input is
+    read from *fname*. The keyword arguments are passed to
+    *hdu_fe_sky_background*
     Parameters
     ----------
     fname: string
@@ -134,15 +135,51 @@ def fe_sky_background(fname, sig=2.5, iters=None, wmin=None, wmax=None,
     with fits.open(fname) as hdu:
         header = hdu[0].header
         data = hdu[0].data
-        # get the index of the input wavelengths
-        imin = wavelength_to_index(header, wmin)
-        imax = wavelength_to_index(header, wmax)
-        data = data[fibmin:fibmax, imin:imax]
+        return hdu_fe_sky_background(data, header, **kwargs)
 
-        if sig is not None:
-            clip_mask = np.logical_not(sigma_clip(data, sig=sig,
-                                                  iters=iters).mask)
-            data = data[clip_mask, :]
 
-        median = np.median(np.median(data, axis=1))
-        return median, data.shape[0]
+def hdu_fe_sky_background(data, header, sig=2.5, iters=None, wmin=None,
+                          wmax=None, fibmin=None, fibmax=None):
+    """
+    Estimate the sky background as the (sigma clipped) median of medians
+    within the required wavelengths and fiber number boundaries
+    Parameters
+    ----------
+    data: numpy ndarray
+        data of the fits image
+    header: astropy.io.fits.Header instance
+        header of the fits image
+    sig: None or float
+        if not None, ignore fibers with signal outside *sig* standard deviation
+    iters : int or `None`
+        number of iterations to perform clipping for, or `None` to clip
+        until convergence is achieved (i.e. continue until the last
+        iteration clips nothing).
+    wmin, wmax: float
+        minimum and maximum wavelength to consider for the average
+    wmin, wmax: floats
+        maximum and minimum wavelength in Armstrong to use for the estimate.
+        Converted to indices using the 'CRVAL1' and 'CDELT1' keyword in the
+        header of the fits file. If None the minimum and/or maximum of the
+        range used
+    fibmin, fibmax: float
+        minimum and maximum fiber number to consider
+    output
+    ------
+    median: float
+        average
+    n_fibs: int
+        number of fibers used for the final median
+    """
+    # get the index of the input wavelengths
+    imin = wavelength_to_index(header, wmin)
+    imax = wavelength_to_index(header, wmax)
+    data = data[fibmin:fibmax, imin:imax]
+
+    if sig is not None:
+        median_data = np.median(data, axis=1)
+        clip_mask = np.logical_not(sigma_clip(median_data, sig=sig, iters=iters).mask)
+        data = data[clip_mask, :]
+
+    median = np.median(np.median(data, axis=1))
+    return median, data.shape[0]

@@ -67,6 +67,21 @@ NOTE: as `pyfits` has been integrated into `astropy` and going out of support
 and since the latter provides much more functionalities that the former, we do
 not support pyfits.
 
+##Development
+If you are developing the library, consider it's possible to use the `develop`
+command
+
+    python setup.py develop
+
+Instead of copying `pyhetdex` to the `site-packages` directory (as `install`
+does) it will create a link pointing to the `pyhetdex` repository. This allow
+you to modify the code and to test the changes without any need to reinstall the
+library.
+The command comes also with a `--uninstall` option that removes the link.
+(sources:
+[stackoverflow](http://stackoverflow.com/questions/19048732/python-setup-py-develop-vs-install),
+[a blog](http://www.siafoo.net/article/77#id10)
+
 ##Notes
 
 Please use [markdown](http://daringfireball.net/projects/markdown/syntax) syntax
