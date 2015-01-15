@@ -1,114 +1,143 @@
+"""
+Examples:
+ra0 = 0.
+dec0 = 70.
+rot = 0.
+x_in, y_in = 10., 0.
+
+# multiply by -1 to make positive x point east for 0 Deg rotation
+ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
+
+
+ra, dec = tan_inv(ifu, x_in, y_in)
+x, y    = tan_dir(ifu, ra, dec)
+print("x_in, y_in = ", x_in, y_in)
+print("ra, dec = ", ra, dec)
+print("x, y = ", x, y)
+
+
+print("Naive calculation: ")
+print("ra - ra0   [\"] = ", -1. * (ra - ra0) * 3600. * cos(deg2rad(dec0)))
+print("dec - dec0 [\"] = ", (dec - dec0) * 3600.)
+"""
+
 from __future__ import absolute_import, print_function
 
-from numpy import rad2deg, deg2rad
-from numpy import sin,cos,arctan
-import numpy
+import numpy as np
 
-"""
-Examples    
-RA0=0.
-DEC0=70.
-rot = 0.
-x_in, y_in = 10.,0.
-
-# multiply by -1 to make positive x point east for 0 Deg rotation 
-ifu = IFUASTROM(RA0=RA0, DEC0=DEC0, rot=rot, x_scale= -1, y_scale=1)
-
-
-RA,DEC = tan_inv(ifu,x_in,y_in)
-x,y    = tan_dir(ifu, RA, DEC)
-print "x_in, y_in = ", x_in, y_in
-print "RA,DEC = ", RA,DEC
-print "x,y = ", x,y
-
-
-print "Naive calculation: "
-print "RA-RA0   [\"] = ", -1.*(RA-RA0)*3600. * cos(deg2rad(DEC0))
-print "DEC-DEC0 [\"] = ", (DEC-DEC0)*3600. 
-print ""
-"""
 
 DEGPERRAD = 57.295779513082323
 
-class IFUASTROM:
+
+class IFUAstrom(object):
     """
     Contains the necessary information to translate from
     on-sky RA and DEC coordinates to the IFUASTROM reference system.
     """
-    def __init__(self, RA0, DEC0, rot, x_scale = -1., y_scale = 1.):
-        """ Zero point. The RA and DEC coordinates that correspond to x=0,y=0
-        in the IFUASTROM mapping file. """
-        self.RA0      = RA0     
-        self.DEC0     = DEC0   
-        """ Rotation of the IFUASTROM, measured East of North such that a galaxy with
-        a +10 Deg position angle on sky would be aligned with the y-axis in and IFUASTROM
-        that is rotated by +10 Deg.""" 
-        self.rot      = rot
-        """ IFUASTROM plate scale. These parameters are -1 in x and 1 in y if the 
-        IFUASTROM mapping file is perfect in arcseconds."""
-        self.x_scale  = x_scale 
-        self.y_scale  = y_scale 
+    def __init__(self, ra0, dec0, rot, x_scale=-1., y_scale=1.):
+        """
+        Zero point.
+        Parameters
+        ----------
+        ra0, dec0: floats
+            ra and dec coordinated that correspond to x=0,y=0 in the IFUASTROM
+            mapping file.
+        rot: float
+            Rotation of the IFUASTROM, measured East of North such that a
+            galaxy with a +10 Deg position angle on sky would be aligned with
+            the y-axis in and IFUASTROM that is rotated by +10 Deg.
+        x_scale, y_scale: floats
+            IFUASTROM plate scale. These parameters are -1 in x and 1 in y if
+            the IFUASTROM mapping file is perfect in arcseconds.
+        """
+        self.ra0 = ra0
+        self.dec0 = dec0
+        self.rot = rot
+        self.x_scale = x_scale
+        self.y_scale = y_scale
 
-def tan_dir(IFUASTROM, RA_in, DEC_in):
-    """
-    Calculates x and y coordinates for positions in the IFUASTROM coordinate frame.
-    Stolen boldly from J. Adams finder_chart code.
-    see AIPS Memo 27, Greisen 1983 (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
-    Input
-   
-    IFUASTROM        = object that describes IFUASTROM astrometry 
-    RA_in, DEC_in = 1D arrays of RA/DEC coordinates (in ~ degree!)
-    
-    Returns:
-    x_out,y_out = two 1D arrays containing x and y coordinates (in IFUASTROM coordinates, i.e. ~ arcsec).
-    """
-    RA0, DEC0, rot, x_scale, y_scale = IFUASTROM.RA0, IFUASTROM.DEC0, IFUASTROM.rot, IFUASTROM.x_scale * DEGPERRAD, IFUASTROM.y_scale * DEGPERRAD
-    rRA0   = deg2rad(RA0)
-    rDEC0  = deg2rad(DEC0)
-    rrot   = deg2rad(rot)
 
-    rRA_in  = deg2rad(RA_in)
-    rDEC_in = deg2rad(DEC_in)
+def tan_dir(ifuastrom, ra_in, dec_in):
+    """
+    Calculate x and y coordinates for positions in the IFUASTROM coordinate
+    frame. Stolen boldly from J. Adams finder_chart code.
+    see AIPS Memo 27, Greisen 1983
+    (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
+    Parameters
+    ----------
+    ifuastrom: IFUAstrom instance
+        describes IFUASTROM astrometry
+    ra_in, dec_in: 1D arrays
+        RA/DEC coordinates (in degree!)
+    output
+    ------
+    x_out, y_out: 1D arrays
+        x and y coordinates (in IFUASTROM coordinates, i.e. arcsec).
+    """
+    ra0, dec0 = ifuastrom.ra0, ifuastrom.dec0
+    rot = ifuastrom.rot
+    x_scale = ifuastrom.x_scale * DEGPERRAD
+    y_scale = ifuastrom.y_scale * DEGPERRAD
+
+    rra0 = np.deg2rad(ra0)
+    rdec0 = np.deg2rad(dec0)
+    rrot = np.deg2rad(rot)
+
+    rra_in = np.deg2rad(ra_in)
+    rdec_in = np.deg2rad(dec_in)
 
     # AIPS Memo 27, 3.1.1
-    xhat = ( cos(rDEC_in)*sin(rRA_in - rRA0) ) /\
-             (sin(rDEC_in)*sin(rDEC0) + cos(rDEC_in)*cos(rDEC0)*cos(rRA_in - rRA0) )
-    yhat = (sin(rDEC_in)*cos(rDEC0) - cos(rDEC_in)*sin(rDEC0)*cos(rRA_in - rRA0) )/\
-            (sin(rDEC_in)*sin(rDEC0) + cos(rDEC_in) * cos(rDEC0) * cos(rRA_in - rRA0))
+    xhat = np.cos(rdec_in) * np.sin(rra_in - rra0)
+    xhat /= (np.sin(rdec_in) * np.sin(rdec0) +
+             np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
+    yhat = np.sin(rdec_in) * np.cos(rdec0)
+    yhat -= np.cos(rdec_in) * np.sin(rdec0) * np.cos(rra_in - rra0)
+    yhat /= (np.sin(rdec_in) * np.sin(rdec0) +
+             np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
 
     # rotation and scaling
-    x =   (xhat) * cos(rrot)*x_scale + (yhat) * sin(rrot)*y_scale
-    y = - (xhat) * sin(rrot)*x_scale + (yhat) * cos(rrot)*y_scale
-    
-    return x*3600.,y*3600. 
+    x = xhat * np.cos(rrot) * x_scale + yhat * np.sin(rrot) * y_scale
+    y = -xhat * np.sin(rrot) * x_scale + yhat * np.cos(rrot) * y_scale
 
-def tan_inv(IFUASTROM,x_in,y_in):
-    """
-    Calculates RA and DEC coordinates for positions in the IFUASTROM coordinate frame.
-    Stolen boldly from J. Adams finder_chart code.
-    see AIPS Memo 27, Greisen 1983 (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
+    return x * 3600., y * 3600.
 
-    Input
-   
-    IFUASTROM        = object that descibres IFUASTROM astrometry 
-    x_in, y_in = 1D arrays of x/y coordinates (in ~ arcsec!)
-    
-    Returns:
-    RA_out,dec_out = two 1D arrays containing RA and DEC coordinates (in degree).
+
+def tan_inv(ifuastrom, x_in, y_in):
     """
-    RA0, DEC0, rot, x_scale, y_scale = IFUASTROM.RA0, IFUASTROM.DEC0, IFUASTROM.rot, IFUASTROM.x_scale * DEGPERRAD, IFUASTROM.y_scale * DEGPERRAD
-    rRA0   = deg2rad(RA0)
-    rDEC0  = deg2rad(DEC0)
-    rrot   = deg2rad(rot)
+    Calculates RA and DEC coordinates for positions in the IFUASTROM coordinate
+    frame.  Stolen boldly from J. Adams finder_chart code.  see AIPS Memo 27,
+    Greisen 1983
+    (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
+    Parameters
+    ----------
+    ifuastrom: IFUAstrom instance
+        describes IFUASTROM astrometry
+    x_in, y_in: 1D arrays
+        x and y coordinates (in IFUASTROM coordinates, i.e. arcsec).
+    output
+    ------
+    ra_out, dec_out: 1D arrays
+        RA/DEC coordinates (in degree!)
+    """
+    ra0, dec0 = ifuastrom.ra0, ifuastrom.dec0
+    rot = ifuastrom.rot
+    x_scale = ifuastrom.x_scale * DEGPERRAD
+    y_scale = ifuastrom.y_scale * DEGPERRAD
+
+    rra0 = np.deg2rad(ra0)
+    rdec0 = np.deg2rad(dec0)
+    rrot = np.deg2rad(rot)
 
     # rotation and scaling
-    xhat = (x_in/3600.) * cos(rrot)/x_scale - (y_in/3600.) * sin(rrot)/y_scale
-    yhat = (x_in/3600.) * sin(rrot)/x_scale + (y_in/3600.) * cos(rrot)/y_scale
+    xhat = (x_in/3600.) * np.cos(rrot)/x_scale
+    xhat -= (y_in/3600.) * np.sin(rrot)/y_scale
+    yhat = (x_in/3600.) * np.sin(rrot)/x_scale
+    yhat += (y_in/3600.) * np.cos(rrot)/y_scale
 
     # AIPS Memo 27, 3.1.2
-    rRA_out = rRA0 + arctan(xhat/(cos(rDEC0) - yhat * sin(rDEC0)))
-    rDEC_out = arctan(cos(rRA_out - rRA0) * (yhat * cos(rDEC0) + sin(rDEC0))\
-                /(cos(rDEC0) - yhat * sin(rDEC0)))
+    rra_out = rra0 + np.arctan(xhat/(np.cos(rdec0) - yhat * np.sin(rdec0)))
+    rdec_out = np.arctan(np.cos(rra_out - rra0) * (yhat * np.cos(rdec0) +
+                                                   np.sin(rdec0)) /
+                         (np.cos(rdec0) - yhat * np.sin(rdec0)))
 
-    return rad2deg(rRA_out), rad2deg(rDEC_out)
-
+    return np.rad2deg(rra_out), np.rad2deg(rdec_out)

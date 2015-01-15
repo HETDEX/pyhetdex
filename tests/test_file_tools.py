@@ -1,6 +1,7 @@
 """
-tests for pyhetdex.common.file_tools
+tests for pyhetdex/common/file_tools.py
 """
+from __future__ import print_function, absolute_import
 
 import nose.tools as nt
 

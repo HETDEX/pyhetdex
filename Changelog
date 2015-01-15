@@ -1,5 +1,13 @@
 2015-01-15  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* pyhetdex/astrometry/astrometry.py: pep8 compliant, lower case variables
+	(upper case variable should be used only for global constants)
+	* tests/test_astrometry.py: added some tests for the astrometry module.
+	Someone more expert than me should check whether the input and output
+	values are reasonable 
+
+2015-01-15  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* tests: test directory created
 	* tests/data: will store data related with testing
 	* tests/test_file_tools.py: test file_tools.py
