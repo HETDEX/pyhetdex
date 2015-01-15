@@ -82,6 +82,16 @@ The command comes also with a `--uninstall` option that removes the link.
 [stackoverflow](http://stackoverflow.com/questions/19048732/python-setup-py-develop-vs-install),
 [a blog](http://www.siafoo.net/article/77#id10)
 
+As of revision 20, we have begun building up a test suite that make use of
+[nose](https://nose.readthedocs.org/en/latest/). For now to run the test make
+sure to have `pyhetdex` in the python path and run from the top directory
+
+    nosetests
+add `-v` for more information. The suite will be expanded to cover all the
+existing functions already available. We ask that every piece of code, at least
+the _public_ parts, are provided together with some testing associated.
+
+
 ##Notes
 
 Please use [markdown](http://daringfireball.net/projects/markdown/syntax) syntax

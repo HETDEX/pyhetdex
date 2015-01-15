@@ -1,3 +1,10 @@
+2015-01-15  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* tests: test directory created
+	* tests/data: will store data related with testing
+	* tests/test_file_tools.py: test file_tools.py
+	* README.md: added testing info
+
 2015-01-14  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* svn:ignore: pyhetdex.egg-info added (created when running python setup.py)
