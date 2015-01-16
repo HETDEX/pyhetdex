@@ -302,10 +302,10 @@ def main():
     ifuhead = rci.ReconstructedIFU("IFU_cent_file", dither_file="dither_file",
                                    fextract=["Fejpes1.fits", "Fejpes2.fits",
                                              "Fejpes3.fits", "Fejpes4.fits",
-                                             "Fejpes5.fits", "Fejpes1.fits"]
+                                             "Fejpes5.fits", "Fejpes1.fits"])
 
-    fit = seeing_minimizer(residuals, montecarlo_2d, [2, 2, 10, detection.icx,
-                                                      detection.icy], ifuhead,
-                           detection, sampler, ifuhead_kwargs={'wmin': 4000, 
-                                                               "wmax": 5000}, 
+    fit = seeing_minimizer(residuals, montecarlo_2d,
+                           [2, 2, 10, detection.icx, detection.icy], ifuhead,
+                           detection, sampler,
+                           ifuhead_kwargs={'wmin': 4000, "wmax": 5000},
                            sq_kwargs={'full_output': True, 'epsfcn': 1e-3})

@@ -57,11 +57,24 @@ install first `numpy` then `pyhetdex`
 
     pip install [--user] numpy
 
+###Setuptools Configuration
+Each of the subcommands in `python setup.py` can be configured either through a
+`setup.cfg` file or through command line arguments. The latter overrides the
+settings in the `setup.cfg` file. For more information check to [official
+documentation](https://docs.python.org/2/distutils/configfile.html)
+
 ##Dependencies
+
+Mandatory
 
     numpy
     scipy
     astropy
+
+Optional, used for testing
+
+    nose
+    coverage
 
 NOTE: as `pyfits` has been integrated into `astropy` and going out of support
 and since the latter provides much more functionalities that the former, we do
@@ -80,17 +93,27 @@ library.
 The command comes also with a `--uninstall` option that removes the link.
 (sources:
 [stackoverflow](http://stackoverflow.com/questions/19048732/python-setup-py-develop-vs-install),
-[a blog](http://www.siafoo.net/article/77#id10)
+[a blog](http://www.siafoo.net/article/77#id10))
 
-As of revision 20, we have begun building up a test suite that make use of
-[nose](https://nose.readthedocs.org/en/latest/). For now to run the test make
-sure to have `pyhetdex` in the python path and run from the top directory
+###Testing
 
-    nosetests
-add `-v` for more information. The suite will be expanded to cover all the
-existing functions already available. We ask that every piece of code, at least
-the _public_ parts, are provided together with some testing associated.
+The tests are run using the [`nose`](https://nose.readthedocs.org/en/latest/)
+framework. To run the tests execute
 
+    python setup.py nosetests
+
+If you also have installed the
+[`coverage`](http://nedbatchelder.com/code/coverage/) package, a coverage test
+will be run and a html report will be created. The report can be accessed
+opening the file `cover/index.html` in any browser.
+
+To any new functionality added to the library the appropriate number of tests
+should be added. 
+
+Good practice: any time the code is changed the tests should be run to check
+that nothing has been broken and that we can recover the same results as before
+(unless there was a bug, of course). The developer should commit after all the
+tests succeed.
 
 ##Notes
 

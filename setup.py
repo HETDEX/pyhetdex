@@ -5,10 +5,7 @@ except ImportError:
 import os
 
 
-# retrieve version number from `Version` file
-versionf = os.path.join(os.path.split(__file__)[0], 'VERSION')
-
-def extract_versions():
+def extract_version():
     """
     Extracts version values from the main pyhetdex __init__.py and
     returns them as a dictionary.
@@ -24,11 +21,11 @@ def extract_versions():
 setup(
     # package description and version
     name="pyhetdex",
-    version=extract_versions(),
+    version=extract_version(),
     author="Francesco Montesano",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",
-    # long_description="",
+    long_description=open("README.md").read(),
 
     # list of packages and data
     packages=[ 'pyhetdex'
@@ -46,9 +43,13 @@ setup(
     # dependences
     install_requires=['numpy'
                      , 'scipy'
-                     , 'astropy'
+                     , 'astropy>=0.3'
                      ],
 
+    extras_require = {
+            'test': ['nose>=1', 'coverage'],
+        },
+
     # tests
-    # test_suite=?,
+    test_suite = 'nose.collector',
 )

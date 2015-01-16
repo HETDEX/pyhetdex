@@ -1,3 +1,11 @@
+2015-01-16  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* svn:ignore: .coverage and cover/ ignored
+	* setup.py: added nosetests
+	* setup.cfg: configure nosetests (mostly coverage)
+	* README.md: test information updated
+	* pyhetdex/tools/analysis/seeing.py: missing parenthesis fixed
+
 2015-01-15  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/astrometry/astrometry.py: pep8 compliant, lower case variables
