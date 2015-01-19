@@ -1,3 +1,13 @@
+2015-01-19  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/__init__.py: import submodules
+	* pyhetdex/astrometry/__init__.py: same
+	* pyhetdex/common/__init__.py: same
+	* pyhetdex/het/__init__.py: same
+	* pyhetdex/tools/__init__.py: same
+	* pyhetdex/tools/analysis/__init__.py: same
+	* setup.py: find packages automatically. But only setuptools
+
 2015-01-16  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* svn:ignore: .coverage and cover/ ignored

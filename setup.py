@@ -1,7 +1,4 @@
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup, find_packages
 import os
 
 
@@ -28,28 +25,15 @@ setup(
     long_description=open("README.md").read(),
 
     # list of packages and data
-    packages=[ 'pyhetdex'
-             , 'pyhetdex.astrometry'
-             , 'pyhetdex.common'
-             , 'pyhetdex.cure'
-             , 'pyhetdex.het'
-             , 'pyhetdex.ltl'
-             , 'pyhetdex.tools'
-             , 'pyhetdex.tools.analysis'
-             ],
+    packages=find_packages(),
     # don't zip when installing
     zip_safe=False,
 
     # dependences
-    install_requires=['numpy'
-                     , 'scipy'
-                     , 'astropy>=0.3'
-                     ],
+    install_requires=['numpy', 'scipy', 'astropy>=0.3'],
 
-    extras_require = {
-            'test': ['nose>=1', 'coverage'],
-        },
+    extras_require={'nosetests': ['nose>=1', 'coverage']},
 
     # tests
-    test_suite = 'nose.collector',
+    test_suite='nose.collector',
 )
