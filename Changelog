@@ -1,5 +1,15 @@
 2015-01-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* pyhetdex/__init__.py: remove absolute_import name
+	* pyhetdex/astrometry/__init__.py: same
+	* pyhetdex/common/__init__.py: same
+	* pyhetdex/het/__init__.py: same
+	* pyhetdex/tools/__init__.py: same
+	* pyhetdex/tools/analysis/__init__.py: same
+	* setup.cfg: added branch coverage
+
+2015-01-19  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* pyhetdex/__init__.py: import submodules
 	* pyhetdex/astrometry/__init__.py: same
 	* pyhetdex/common/__init__.py: same

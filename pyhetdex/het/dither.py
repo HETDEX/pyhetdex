@@ -4,6 +4,7 @@ Anything related with the HETDEX dither files should go here
 
 from __future__ import print_function, absolute_import
 
+import os
 import re
 
 import pyhetdex.common.file_tools as ft
@@ -22,6 +23,29 @@ class _BaseDither(object):
         self.dx, self.dy = {}, {}
         # image quality, illumination and airmass
         self.seeing, self.norm, self.airmass = {}, {}, {}
+        # remember the dither file name
+        self.absfname = ''
+
+    @property
+    def dithers(self):
+        """
+        List of dithers
+        """
+        return list(self.basename.keys())
+
+    @property
+    def abspath(self):
+        """
+        Absolute file path
+        """
+        return os.path.split(self.absfname)[0]
+
+    @property
+    def filename(self):
+        """
+        Absolute file path
+        """
+        return os.path.split(self.absfname)[1]
 
 
 class EmptyDither(_BaseDither):
@@ -60,10 +84,10 @@ class ParseDither(_BaseDither):
         Parameters
         ----------
         dither_file: string
-            file containing the dither relative position. If None a single
-            dither added
+            file containing the dither relative position.
         """
         super(ParseDither, self).__init__()
+        self.absfname = os.path.abspath(dither_file)
         self._read_dither(dither_file)
 
     def _read_dither(self, dither_file):
@@ -80,8 +104,9 @@ class ParseDither(_BaseDither):
             for l in f:
                 try:
                     _bn, _d, _x, _y, _seeing, _norm, _airmass = l.split()
-                    _d = list(set(re.findall(r'D\d', _d)))
-                    if len(_d) != 1:
+                    try:
+                        _d = list(set(re.findall(r'D\d', _d)))[0]
+                    except ValueError:
                         msg = "While extracting the dither number from the"
                         msg += " basename in the dither file, {} matches to"
                         msg += " 'D\\d' expression where found. I expected"
