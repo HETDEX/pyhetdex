@@ -13,15 +13,19 @@ import numpy as np
 from pyhetdex.common.fitstools import wavelength_to_index
 
 
-class ReconstructIOError(IOError):
-    pass
-
-
 class RecontructIndexError(IndexError):
     pass
 
 
-# TODO: account for illumination weights
+class ReconstructIOError(IOError):
+    pass
+
+
+class ReconstructValueError(ValueError):
+    pass
+
+
+# TODO: account for illumination weights and fiber throughput
 class ReconstructedIFU(object):
     """
     Reconstructed IFU head image from the fiber extracted frames given the
@@ -52,10 +56,11 @@ class ReconstructedIFU(object):
         files equal to the number of channels (2)
         NOTE: should this distinction be moved to factory functions?
         """
+        from pyhetdex import het
         if isinstance(dither, het.dither.EmptyDither) and fextract is None:
             msg = "With an empty dither file a fiber extract file name must be"
             msg += " provided"
-            raise ReconstructIOError(msg)
+            raise ReconstructValueError(msg)
 
         self.ifu_center = ifu_center
         self.dither = dither
@@ -99,7 +104,7 @@ class ReconstructedIFU(object):
         """
         if dither_file is None and fextract is None:
             msg = "dither_file and/or fextract must be provided"
-            raise ValueError(msg)
+            raise ReconstructValueError(msg)
 
         from pyhetdex import het
         _ifu_center = het.ifu_centers.IFUCenter(ifu_center_file)
@@ -108,8 +113,8 @@ class ReconstructedIFU(object):
         else:
             _dither = het.dither.ParseDither(dither_file)
 
-        return cls.__init__(_ifu_center, _dither, fextract=fextract,
-                            fe_prefix=fe_prefix)
+        return cls(_ifu_center, _dither, fextract=fextract,
+                   fe_prefix=fe_prefix)
 
     def _fedict(self, fextract):
         """
@@ -154,14 +159,16 @@ class ReconstructedIFU(object):
                 d = "D{0:d}".format(header['DITHER'])
                 k = self._key.format(ch=ch, d=d)
                 # check that the files are correct
+                try:
+                    all_keys.remove(k)
+                except ValueError:
+                    msg = "The file '{}' is for an unknown combination of"
+                    msg += " dither ({}) and channel ({})"
+                    raise ReconstructIOError(msg.format(fe, d, ch))
                 if k in dfextract:
                     msg = "The file '{}' is for the same dither".format(fe)
                     msg += " and channel as file '{}'".format(dfextract[k])
                     raise ReconstructIOError(msg)
-                if k in all_keys:
-                    msg = "The file '{}' is for an unknown combination of"
-                    msg += "dither ({}) and channel ({})"
-                    raise ReconstructIOError(msg.format(fe, d, ch))
 
                 dfextract[k] = fe
 
@@ -183,7 +190,8 @@ class ReconstructedIFU(object):
 
             # read the fiber extracted file, order the fibers and save the
             # necessary keys into self.h
-            fib_numbs = self.ifu_center.fib_number[ch]
+            # python starts from 0
+            fib_numbs = [fn - 1 for fn in self.ifu_center.fib_number[ch]]
 
             k = self._key.format(ch=ch, d=d)
             with fits.open(dfextract[k]) as hdu:
@@ -195,8 +203,8 @@ class ReconstructedIFU(object):
                     msg = "The number of rows in file '{0}' ({1:d}) does not"
                     msg += " agree with the number of active fibers from file"
                     msg += " '{2}' ({3:d})"
-                    msg = msg.format(hdu.filename(), len(fib_numbs),
-                                     self.ifu_center.filename, data.shape[0])
+                    msg = msg.format(hdu.filename(), data.shape[0], 
+                                     self.ifu_center.filename, len(fib_numbs))
                     raise RecontructIndexError(msg)
                 self.flux.append(data[fib_numbs, :])  # order the fibers
                 # get the header keywords needed to get the index at a given

@@ -1,3 +1,20 @@
+2015-01-20  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* svn:ignore: dist/ added (committed in r24)
+	* pyhetdex/het/dither.py: added dither (absolute) file name and path
+	(committed in r24)
+	* pyhetdex/het/ifu_centers.py: implementation isolated from the ifu
+	reconstruction part (committed in r24)
+	* pyhetdex/het/reconstruct_ifu.py: ifu center part removed. __init__ accept
+	a dither and a ifu center instance. classmethod *from_files* added to use
+	the file names instead of the instances. (partially committed in r24)
+	* tests/settings.py: testing wide variables (not guaranteed to stay as it
+	is)
+	* tests/test_reconstructions.py: test dither and ifu_centers parsing. Test
+	ifu reconstruction
+	* test/data/*: added some data for testing (will likely change as more tests
+	are added)
+
 2015-01-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/__init__.py: remove absolute_import name
