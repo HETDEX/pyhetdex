@@ -82,7 +82,8 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
         median_data = np.median(data[:, imin:imax], axis=1)
         # and get the inverse of the mask from the sigma clipping
         clip_mask = np.logical_not(sigma_clip(median_data, sig=sig,
-                                              iters=iters).mask)
+                                              iters=iters,
+                                              cenfunc=np.ma.median).mask)
 
         # construct the sky frame
         sky = np.empty_like(data)
@@ -178,7 +179,9 @@ def hdu_fe_sky_background(data, header, sig=2.5, iters=None, wmin=None,
 
     if sig is not None:
         median_data = np.median(data, axis=1)
-        clip_mask = np.logical_not(sigma_clip(median_data, sig=sig, iters=iters).mask)
+        clip_mask = np.logical_not(sigma_clip(median_data, sig=sig,
+                                              iters=iters,
+                                              cenfunc=np.ma.median).mask)
         data = data[clip_mask, :]
 
     median = np.median(np.median(data, axis=1))

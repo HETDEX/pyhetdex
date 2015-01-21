@@ -1,3 +1,8 @@
+2015-01-21  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/analysis/sky.py: cenfunc=np.ma.median added to sigma_clip
+	call to avoid the error reported in issue #773 when using astropy v0.3x
+
 2015-01-20  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* svn:ignore: dist/ added (committed in r24)
