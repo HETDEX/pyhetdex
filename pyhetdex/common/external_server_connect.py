@@ -10,8 +10,8 @@ Largely copied from hetdexshuffle/visualize.py with some minor modifications
 import urllib 
 from StringIO import StringIO
 
-import Image
-from ImageFilter import SMOOTH
+from PIL import Image
+from PIL import ImageFilter
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
@@ -70,7 +70,7 @@ def plotFocalPlaneQuicklook(dra, ddec, pa, scale, ifu_centers, ra, dec, CD, im_s
     return PatchCollection(patches, edgecolor=color, facecolor='none')
 
 
-def get_image(ra, dec, pa, size, ifu_centers, yflip):
+def get_image(ra, dec, pa, size, ifu_centers, yflip, dirOut):
     #Size in degrees
     filename="quicklook_sky_%f_%f_%f.jpeg"%(ra, dec, pa)
     imarray, CD, url, img_src = retrieve_image(ra,dec,size,yflip)
@@ -84,10 +84,10 @@ def get_image(ra, dec, pa, size, ifu_centers, yflip):
     ax.add_collection(plotFocalPlaneQuicklook(0, 0, pa, scale, ifu_centers, ra, dec, CD, size_pix, color='green'))
     ax.imshow(imarray, origin='lower', cmap='gray', interpolation="nearest")
     plt.axis('off')
-    plt.savefig( "html/temp_" + filename, bbox_inches='tight')
+    plt.savefig( dirOut + "temp_" + filename, bbox_inches='tight')
 
     #Convert array to Image object
-    img = Image.open( "html/temp_" + filename )
+    img = Image.open( dirOut + "temp_" + filename )
     
     #Cut out the 600x600 image part of the plot
     box = (42, 8, 642, 608)
@@ -108,10 +108,10 @@ def get_image(ra, dec, pa, size, ifu_centers, yflip):
     top = (ysize - 586)/2
     bottom  = ysize - (ysize - 586)/2
     
-    finalImg = rotImg.crop((left, top, right, bottom)).filter(SMOOTH)
-    finalImg.save("html/" + filename, "JPEG")
+    finalImg = rotImg.crop((left, top, right, bottom)).filter(ImageFilter.SMOOTH)
+    finalImg.save(dirOut + filename, "JPEG")
 
-    return filename 
+    return dirOut + filename 
 
 
 def retrieve_image(ra,dec,size,yflip):
