@@ -115,6 +115,10 @@ that nothing has been broken and that we can recover the same results as before
 (unless there was a bug, of course). The developer should commit after all the
 tests succeed.
 
+##Documentation
+
+To build the documentation just go into the doc directory and run make html or make latex there.
+
 ##Notes
 
 Please use [markdown](http://daringfireball.net/projects/markdown/syntax) syntax

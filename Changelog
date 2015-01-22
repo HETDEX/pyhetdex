@@ -1,5 +1,9 @@
 2015-01-21  Jan Snigula  <snigula@mpe.mpg.de>
 
+	* README.md: Added instructions for documentation
+
+2015-01-21  Jan Snigula  <snigula@mpe.mpg.de>
+
 	* doc: Added sphinx documentation
 
 2015-01-20  Francesco Montesano  <montefra@mpe.mpg.de>
