@@ -1,3 +1,15 @@
+2015-01-22  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* svn:ignore: .eggs added
+	* pyhetdex/het/dither.py: fixed bug in error handling when parsing the
+	dither
+	* pyhetdex/het/ifu_centers.py: added custom error for easier catch
+	* pyhetdex/het/reconstruct_ifu.py: changed order of error handling
+	* tests/data: old data removed, new data added. They should be enough to
+	test ifu reconstruction, the sky module and image quality fit
+	* tests/test_reconstructions.py: file names adapted. Test failures more
+	rigorously. All reconstruct_ifu.py covered. Still miss check of the output.
+
 2015-01-21  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* README.md: Added instructions for documentation

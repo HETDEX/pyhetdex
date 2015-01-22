@@ -159,16 +159,19 @@ class ReconstructedIFU(object):
                 d = "D{0:d}".format(header['DITHER'])
                 k = self._key.format(ch=ch, d=d)
                 # check that the files are correct
-                try:
-                    all_keys.remove(k)
-                except ValueError:
-                    msg = "The file '{}' is for an unknown combination of"
-                    msg += " dither ({}) and channel ({})"
-                    raise ReconstructIOError(msg.format(fe, d, ch))
                 if k in dfextract:
                     msg = "The file '{}' is for the same dither".format(fe)
                     msg += " and channel as file '{}'".format(dfextract[k])
                     raise ReconstructIOError(msg)
+                else:
+                    try:
+                        all_keys.remove(k)
+                    except ValueError:
+                        msg = "The file '{}' is for an unknown combination of"
+                        msg += " dither ({}) and channel ({}). One of {}"
+                        msg += " expected"
+                        raise ReconstructIOError(msg.format(fe, d, ch,
+                                                        ", ".join(all_keys)))
 
                 dfextract[k] = fe
 
@@ -203,7 +206,7 @@ class ReconstructedIFU(object):
                     msg = "The number of rows in file '{0}' ({1:d}) does not"
                     msg += " agree with the number of active fibers from file"
                     msg += " '{2}' ({3:d})"
-                    msg = msg.format(hdu.filename(), data.shape[0], 
+                    msg = msg.format(hdu.filename(), data.shape[0],
                                      self.ifu_center.filename, len(fib_numbs))
                     raise RecontructIndexError(msg)
                 self.flux.append(data[fib_numbs, :])  # order the fibers

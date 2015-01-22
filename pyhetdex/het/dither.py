@@ -10,6 +10,10 @@ import re
 import pyhetdex.common.file_tools as ft
 
 
+class DitherParseError(ValueError):
+    pass
+
+
 # read and parse the dither file
 class _BaseDither(object):
     """
@@ -104,20 +108,19 @@ class ParseDither(_BaseDither):
             for l in f:
                 try:
                     _bn, _d, _x, _y, _seeing, _norm, _airmass = l.split()
-                    try:
-                        _d = list(set(re.findall(r'D\d', _d)))[0]
-                    except ValueError:
-                        msg = "While extracting the dither number from the"
-                        msg += " basename in the dither file, {} matches to"
-                        msg += " 'D\\d' expression where found. I expected"
-                        msg += " one. What should I do?"
-                        raise ValueError(msg.format(len(_d)))
-                    self.basename[_d] = _bn
-                    self.dx[_d] = float(_x)
-                    self.dy[_d] = float(_y)
-                    self.seeing[_d] = float(_seeing)
-                    self.norm[_d] = float(_norm)
-                    self.airmass[_d] = float(_airmass)
-                except ValueError:
-                    # skip empty lines
+                except ValueError:  # skip empty or incomplete lines
                     pass
+                try:
+                    _d = list(set(re.findall(r'D\d', _d)))[0]
+                except IndexError:
+                    msg = "While extracting the dither number from the"
+                    msg += " basename in the dither file, {} matches to"
+                    msg += " 'D\\d' expression where found. I expected"
+                    msg += " one. What should I do?"
+                    raise DitherParseError(msg.format(len(_d)))
+                self.basename[_d] = _bn
+                self.dx[_d] = float(_x)
+                self.dy[_d] = float(_y)
+                self.seeing[_d] = float(_seeing)
+                self.norm[_d] = float(_norm)
+                self.airmass[_d] = float(_airmass)

@@ -8,6 +8,10 @@ from collections import defaultdict
 import pyhetdex.common.file_tools as ft
 
 
+class IFUCenterError(ValueError):
+    pass
+
+
 class IFUCenter(object):
     """
     Parse the IFU center file
@@ -57,6 +61,8 @@ class IFUCenter(object):
             f = ft.skip_comments(f)
             f = self._read_ifu_map(f)
 
+    # TODO: check carefully definition of failed fibers to adjust the
+    # acceptance or failure
     def _read_ifu_map(self, f):
         """
         Reads and store the remaining part of the file. Each row is expected to
@@ -95,7 +101,7 @@ class IFUCenter(object):
                     msg = 'In the fiber mapping file there is at least one'
                     msg += ' fiber with positive fiber number and 0 throughput'
                     msg += '. What should I do?'
-                    raise ValueError(msg)
+                    raise IFUCenterError(msg)
                 else:
                     self.n_fibers[_channel] += 1
                     self.xifu[_channel].append(float(_x))

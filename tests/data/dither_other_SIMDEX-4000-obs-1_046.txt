@@ -1,0 +1,5 @@
+# basename modelbase   ditherx dithery seeing   norm   airmass
+obs-1_D1_046 obs-1_D1_046   0.00   0.00  1.60  1.00  1.22
+obs-1_D2_046 obs-1_D2_046   0.61   1.07  1.60  1.00  1.22
+obs-1_D3_046 obs-1_D3_046   1.23   0.00  1.60  1.00  1.22
+
