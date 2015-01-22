@@ -7,7 +7,7 @@ Largely copied from hetdexshuffle/visualize.py with some minor modifications
 
 """
 
-import urllib 
+import urllib, os 
 from StringIO import StringIO
 
 from PIL import Image
@@ -84,10 +84,11 @@ def get_image(ra, dec, pa, size, ifu_centers, yflip, dirOut):
     ax.add_collection(plotFocalPlaneQuicklook(0, 0, pa, scale, ifu_centers, ra, dec, CD, size_pix, color='green'))
     ax.imshow(imarray, origin='lower', cmap='gray', interpolation="nearest")
     plt.axis('off')
-    plt.savefig( dirOut + "temp_" + filename, bbox_inches='tight')
+    tempfile = dirOut + "temp_" + filename
+    plt.savefig( tempfile, bbox_inches='tight')
 
     #Convert array to Image object
-    img = Image.open( dirOut + "temp_" + filename )
+    img = Image.open( tempfile )
     
     #Cut out the 600x600 image part of the plot
     box = (42, 8, 642, 608)
@@ -110,6 +111,7 @@ def get_image(ra, dec, pa, size, ifu_centers, yflip, dirOut):
     
     finalImg = rotImg.crop((left, top, right, bottom)).filter(ImageFilter.SMOOTH)
     finalImg.save(dirOut + filename, "JPEG")
+    os.remove(tempfile)
 
     return dirOut + filename 
 
