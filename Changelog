@@ -1,3 +1,12 @@
+2015-01-23  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* tests/test_sky.py: first, non complete, tests for the sky background
+	subtraction added
+	* tests/data/detect046_cont.dat: list of star detected. Used to find
+	coordinates for the image quality fit
+	* setup.cfg: fixed options name (this way it is possible to run nosetests as
+	standalone)
+
 2015-01-22  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* svn:ignore: .eggs added
