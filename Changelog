@@ -1,3 +1,8 @@
+2015-01-26  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* tests/test_sky.py: first, non complete, tests for the sky background
+	estimation added. Still need to check the correctness of the output.
+
 2015-01-23  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* tests/test_sky.py: first, non complete, tests for the sky background

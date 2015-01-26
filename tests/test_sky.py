@@ -6,9 +6,9 @@ from __future__ import print_function
 
 import itertools as it
 import os
-import warnings
 
 from astropy.io import fits
+import nose.tools as nt
 import numpy as np
 
 from pyhetdex.tools.analysis import sky
@@ -24,15 +24,23 @@ skysub_ref = prefix_filename(fname_template, 'FeS')
 sky_ref = prefix_filename(fname_template, 'FeSky')
 
 
+# fixtures
+def remove_outfiles():
+    "Remove the file after the test"
+    os.remove(skysub_fname)
+    os.remove(sky_fname)
+
+
+# tests
 def test_sky_substraction():
     "Test the sky subtraction"
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        for ws, wl, w in it.product([3800, 4500], [4500, 5200], [10, 20, 30]):
-            if ws < wl:
-                yield sky_sub, fname, ws, wl, w
+    wls = [3800, 4500, 5200]
+    for wmin, wmax, w in it.product(wls[:-1], wls[1:], [10, 20, 30]):
+        if wmin < wmax:
+            yield sky_sub, fname, wmin, wmax, w
 
 
+@nt.with_setup(teardown=remove_outfiles)
 def sky_sub(fname, wmin, wmax, width):
     "do the actual sky subtraction and test"
     sky.fe_sky_subtraction(fname, wmin=wmin, wmax=wmax, width=width)
@@ -57,3 +65,19 @@ def fits_difference(fname1, fname2):
     # print(data1, data2, data1/data2)
     return data1/data2 - 1.
     # return np.nanmedian(data1/data2 - 1.)
+
+
+@nt.with_setup(teardown=remove_outfiles)
+def test_sky_bkg():
+    "Test the sky background estimation"
+    # do the sky subtraction
+    sky.fe_sky_subtraction(fname, wmin=3800, wmax=5200)
+    # estimate the sky
+    wls = [3600, 4000, 4500, 5000, 5400]
+    for wmin, wmax in it.product(wls[:-1], wls[1:]):
+        if wmin < wmax:
+            yield sky_est, sky_fname, wmin, wmax
+
+
+def sky_est(fname, wmin, wmax):
+    sky.fe_sky_background(fname, wmin=wmin, wmax=wmax)
