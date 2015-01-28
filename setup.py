@@ -32,7 +32,8 @@ setup(
     # dependences
     install_requires=['numpy', 'scipy', 'astropy>=0.3', 'Pillow', 'matplotlib'],
 
-    extras_require={'nosetests': ['nose>=1', 'coverage']},
+    extras_require={'nosetests': ['nose>=1', 'coverage'],
+                    'doc': ['sphinx', 'numpydoc']},
 
     # tests
     test_suite='nose.collector',

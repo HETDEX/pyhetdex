@@ -1,3 +1,16 @@
+2015-01-28  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* doc/source/conf.py: numpydoc plugin added
+	* doc/source/common.rst: section title added
+	* doc/source/tools.rst: same
+	* doc/source/het.rst: same, plus typo
+	* pyhetdex/astrometry/astrometry.py: documentation now comply with the
+	requirements
+	* pyhetdex/het/ifu_centers.py: same, plus small refactoring
+	* pyhetdex/het/throughput.py
+	* setup.py: sphinx and numpydoc optional dependances added
+	* README.md: documentation section expanded
+
 2015-01-26  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* tests/test_sky.py: first, non complete, tests for the sky background

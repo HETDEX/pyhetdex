@@ -1,24 +1,41 @@
-"""
-Examples:
-ra0 = 0.
-dec0 = 70.
-rot = 0.
-x_in, y_in = 10., 0.
+"""This module provides classes and functions to deal with coordinate
+transformations.
 
-# multiply by -1 to make positive x point east for 0 Deg rotation
-ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
+Example
+-------
+Example of use of this module::
+
+    ra0 = 0.
+    dec0 = 70.
+    rot = 0.
+    x_in, y_in = 10., 0.
+
+    # multiply by -1 to make positive x point east for 0 Deg rotation
+    ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
+
+    ra, dec = tan_inv(ifu, x_in, y_in)
+    x, y    = tan_dir(ifu, ra, dec)
+    print("x_in, y_in = ", x_in, y_in)
+    print("ra, dec = ", ra, dec)
+    print("x, y = ", x, y)
+
+    print("Naive calculation: ")
+    print("ra - ra0   [\"] = ", -1. * (ra - ra0) * 3600. * cos(deg2rad(dec0)))
+    print("dec - dec0 [\"] = ", (dec - dec0) * 3600.)
+
+.. todo::
+    check the module
 
 
-ra, dec = tan_inv(ifu, x_in, y_in)
-x, y    = tan_dir(ifu, ra, dec)
-print("x_in, y_in = ", x_in, y_in)
-print("ra, dec = ", ra, dec)
-print("x, y = ", x, y)
+References
+----------
+.. [1] AIPS Memo 27, Greisen 1983
+    (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
 
-
-print("Naive calculation: ")
-print("ra - ra0   [\"] = ", -1. * (ra - ra0) * 3600. * cos(deg2rad(dec0)))
-print("dec - dec0 [\"] = ", (dec - dec0) * 3600.)
+Attributes
+----------
+DEGPERRAD: float
+    Degrees per radians
 """
 
 from __future__ import absolute_import, print_function
@@ -30,26 +47,30 @@ DEGPERRAD = 57.295779513082323
 
 
 class IFUAstrom(object):
+    """Contains the necessary information to translate from on-sky RA and DEC
+    coordinates to the IFUASTROM reference system.
+
+    Parameters
+    ----------
+    ra0, dec0: float
+        ra and dec coordinate that correspond to ``x=0`` and ``y=0`` in the IFUASTROM mapping
+        file
+    rot: float
+        Rotation of the IFUASTROM, measured East of North such that a
+        galaxy with a +10 Deg position angle on sky would be aligned with
+        the y-axis in and IFUASTROM that is rotated by +10 Deg.
+    x_scale, y_scale : float, optional
+        IFUASTROM plate scale. 
+        
+    Notes
+    -----
+    All the above parameters are saved into the corresponding attributes
+
+    When `x_scale=-1` and `y_scale=1` the IFUASTROM mapping file is
+    perfect in arcseconds.
     """
-    Contains the necessary information to translate from
-    on-sky RA and DEC coordinates to the IFUASTROM reference system.
-    """
+
     def __init__(self, ra0, dec0, rot, x_scale=-1., y_scale=1.):
-        """
-        Zero point.
-        Parameters
-        ----------
-        ra0, dec0: floats
-            ra and dec coordinated that correspond to x=0,y=0 in the IFUASTROM
-            mapping file.
-        rot: float
-            Rotation of the IFUASTROM, measured East of North such that a
-            galaxy with a +10 Deg position angle on sky would be aligned with
-            the y-axis in and IFUASTROM that is rotated by +10 Deg.
-        x_scale, y_scale: floats
-            IFUASTROM plate scale. These parameters are -1 in x and 1 in y if
-            the IFUASTROM mapping file is perfect in arcseconds.
-        """
         self.ra0 = ra0
         self.dec0 = dec0
         self.rot = rot
@@ -58,20 +79,21 @@ class IFUAstrom(object):
 
 
 def tan_dir(ifuastrom, ra_in, dec_in):
-    """
+    """Direct tangent transform
+
     Calculate x and y coordinates for positions in the IFUASTROM coordinate
-    frame. Stolen boldly from J. Adams finder_chart code.
-    see AIPS Memo 27, Greisen 1983
-    (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
+    frame. Stolen boldly from J. Adams ``finder_chart`` code [1]_
+
     Parameters
     ----------
-    ifuastrom: IFUAstrom instance
+    ifuastrom: :class:`~IFUAstrom` instance
         describes IFUASTROM astrometry
-    ra_in, dec_in: 1D arrays
-        RA/DEC coordinates (in degree!)
-    output
-    ------
-    x_out, y_out: 1D arrays
+    ra_in, dec_in: nd-array
+        ra and dec coordinate in degrees
+
+    Returns
+    -------
+    x_out, y_out: nd-arrays
         x and y coordinates (in IFUASTROM coordinates, i.e. arcsec).
     """
     ra0, dec0 = ifuastrom.ra0, ifuastrom.dec0
@@ -103,21 +125,22 @@ def tan_dir(ifuastrom, ra_in, dec_in):
 
 
 def tan_inv(ifuastrom, x_in, y_in):
-    """
+    """inverse tangent transform
+
     Calculates RA and DEC coordinates for positions in the IFUASTROM coordinate
-    frame.  Stolen boldly from J. Adams finder_chart code.  see AIPS Memo 27,
-    Greisen 1983
-    (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
+    frame.  Stolen boldly from J. Adams ``finder_chart`` code [1]_
+
     Parameters
     ----------
     ifuastrom: IFUAstrom instance
         describes IFUASTROM astrometry
-    x_in, y_in: 1D arrays
-        x and y coordinates (in IFUASTROM coordinates, i.e. arcsec).
-    output
-    ------
-    ra_out, dec_out: 1D arrays
-        RA/DEC coordinates (in degree!)
+    x_in, y_in: nd-array
+        x and y coordinate in arcseconds
+
+    Returns
+    -------
+    ra_out, dec_out: nd-arrays
+        RA/DEC coordinates in degree
     """
     ra0, dec0 = ifuastrom.ra0, ifuastrom.dec0
     rot = ifuastrom.rot

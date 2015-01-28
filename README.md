@@ -71,10 +71,12 @@ Mandatory
     scipy
     astropy
 
-Optional, used for testing
+Optional:
 
-    nose
-    coverage
+    test: nose
+          coverage
+    documentation: sphinx
+                   numpydoc
 
 NOTE: as `pyfits` has been integrated into `astropy` and going out of support
 and since the latter provides much more functionalities that the former, we do
@@ -117,7 +119,19 @@ tests succeed.
 
 ##Documentation
 
-To build the documentation just go into the doc directory and run make html or make latex there.
+To build the documentation just go into the doc directory and run make html or
+make latex there.
+
+Every public function, method and class should be documented. Keeping also
+private functions documented helps future documentation. The documentation must
+be written following the [numpy
+guidelines](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt#id12).
+The online documentation is then extracted using `sphinx` and the `numpydoc`
+plugin.
+
+When writing (28.01.2015) the modules `pyhetdex.astrometry.astrometry` and
+`pyhetdex.het.ifu_centers` are appropriately documented to comply to the
+standard. Other modules with follow.
 
 ##Notes
 
