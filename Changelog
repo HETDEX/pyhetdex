@@ -1,5 +1,9 @@
 2015-01-30  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* pyhetdex/astrometry/astrometry.py: Todo about tests reliability added
+
+2015-01-30  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* pyhetdex/astrometry/astrometry.py: author added
 	* pyhetdex/common/coords.py: PEP8 compliant, documentation modified to
 	comply with the standard. Added list of todo about implementation and tests

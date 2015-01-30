@@ -28,6 +28,8 @@ Example of use of this module::
 .. todo::
     check the module
 
+    Tests for :func:`~tan_dir` and :func:`~tan_inv` need values obtain from
+    external codes as reference
 
 References
 ----------
