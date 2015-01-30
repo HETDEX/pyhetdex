@@ -1,6 +1,8 @@
 """This module provides classes and functions to deal with coordinate
 transformations.
 
+.. moduleauthor:: Maximilian Fabricius <>
+
 Example
 -------
 Example of use of this module::

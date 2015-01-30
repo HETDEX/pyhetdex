@@ -1,3 +1,13 @@
+2015-01-30  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/astrometry/astrometry.py: author added
+	* pyhetdex/common/coords.py: PEP8 compliant, documentation modified to
+	comply with the standard. Added list of todo about implementation and tests
+	* tests/test_coords.py: tests for the coords module. Almost complete, but
+	some tests fail
+	* doc/source/common.rst: section underlines adjusted to avoid complains from
+	sphinx
+
 2015-01-28  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* doc/source/conf.py: numpydoc plugin added
