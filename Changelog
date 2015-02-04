@@ -1,3 +1,14 @@
+2015-02-04  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/common/coords.py: added link to astlib
+	* pyhetdex/common/external_server_connect.py: documentation added. PEP8
+	compliant. Todos added
+	* pyhetdex/common/file_tools.py: docstring in numpy style
+	* pyhetdex/common/fitstools.py: same
+	* tests/test_coords.py: hms2decimal transform test precision set to 1e-5
+	* tests/test_extserconn.py: added stub test that fails. Write tests after
+	fixing the todos in external_server_connect.py
+
 2015-01-30  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/astrometry/astrometry.py: Todo about tests reliability added

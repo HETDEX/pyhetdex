@@ -70,13 +70,14 @@ class TestCoordTransform(object):
     # hms to decimal
     def test_hms2decimal(self):
         "hms to decimal transform"
-        nt.assert_almost_equal(coo.hms2decimal(self.hms), self.decimal)
+        nt.assert_almost_equal(coo.hms2decimal(self.hms), self.decimal,
+                               delta=1e-5)
 
     def test_hms2decimal_del(self):
         "hms to decimal transform (space delimiter)"
         hms = self.hms.replace(":", " ")
         nt.assert_almost_equal(coo.hms2decimal(hms, delimiter=""),
-                               self.decimal)
+                               self.decimal, delta=1e-5)
 
     def test_hms2decimal_trunc(self):
         "hms to decimal transform (truncate to degrees)"

@@ -1,5 +1,6 @@
-"""
-Functions related with fits files
+"""Functions related with fits files
+
+.. moduleauthor:: Francesco Montesano <montefra@mpe.mpg.de>
 """
 
 from __future__ import absolute_import
@@ -7,18 +8,20 @@ from __future__ import absolute_import
 
 def wavelength_to_index(header, wavelength):
     """
-    Using the "CRVAL1" and "CDELT1" keywords in *header* determine the
-    index of *wavelength*
+    Using the ``CRVAL1`` and ``CDELT1`` keywords in ``header`` determine the
+    index of ``wavelength``
+
     Parameters
     ----------
     header: dictionary like
         dictionary containing the above keywords
     wavelength: float
         wavelength. If None, return None
-    output
-    ------
-    indx: int or None
-        index of *wavelength*
+
+    Returns
+    -------
+    int or None
+        index of ``wavelength``
     """
     if wavelength is None:
         return None

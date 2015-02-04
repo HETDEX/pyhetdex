@@ -6,7 +6,7 @@ Created on Oct 4, 2011
 
 Note
 ----
-    These routines are stolen from astLib
+    These routines are taken from http://astlib.sourceforge.net/
 
 .. todo::
     :func:`~decimal2dms`: the two external if branches are almost exact
