@@ -1,3 +1,12 @@
+2015-02-05  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/het/image_quality.py: documentation, PEP8. API change: first
+	letter of class name as capitalized, no config object passed, but necessary
+	settings
+	* pyhetdex/het/throughput.py: same
+	* pyhetdex/het/reconstruct_ifu.py: documentation fixed. API change:
+	fe_prefix defaults to "", not "Fe"
+
 2015-02-04  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/common/coords.py: added link to astlib

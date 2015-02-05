@@ -33,24 +33,26 @@ class ReconstructedIFU(object):
     """
 
     def __init__(self, ifu_center, dither, fextract=None,
-                 fe_prefix="Fe"):
+                 fe_prefix=""):
         """
         Read and parse the file
+
         Parameters
         ----------
         ifu_center: instance of ifu_centers.IFUCenter
             fiber number to fiber position mapping
         dither: instance of dither._BaseDither
             dither relative position, illumination, image quality
-        fextract: None or list of fits files
+        fextract: None or list of fits files, optional
             if None the list of files is inferred from first or second column
             of the *dither_file*;
             if not None must have *ndither* x *nchannels* elements. The channel
             name and dither number are extracted from the *CCDPOS* and the
             *DITHER* header keywords
-        fe_prefix: string
+        fe_prefix: string, optional
             when getting the names from the dither file, prepend *fe_prefix* to
             the *basename*
+
         WARNING: *dither_file* and *fextract* cannot be *None* at the same time
         WARNING: if *dither_file* is None, *fextract* must contain a number of
         files equal to the number of channels (2)
@@ -78,29 +80,39 @@ class ReconstructedIFU(object):
 
     @classmethod
     def from_files(cls, ifu_center_file, dither_file=None, fextract=None,
-                   fe_prefix="Fe"):
+                   fe_prefix=""):
         """
         Read and parse the file
+
         Parameters
         ----------
         ifu_center_file: string
             file containing the fiber number to fiber position mapping
-        dither_file: string
+        dither_file: string, optional
             file containing the dither relative position. If not given, a singe
             dither is assumed
-        fextract: None or list of fits files
+        fextract: None or list of fits files, optional
             if None the list of files is inferred from first or second column
             of the *dither_file*;
             if not None must have *ndither* x *nchannels* elements. The channel
             name and dither number are extracted from the *CCDPOS* and the
             *DITHER* header keywords
-        fe_prefix: string
+        fe_prefix: string, optional
             when getting the names from the dither file, prepend *fe_prefix* to
             the *basename*
-        WARNING: *dither_file* and *fextract* cannot be *None* at the same time
-        WARNING: if *dither_file* is None, *fextract* must contain a number of
-        files equal to the number of channels (2)
-        NOTE: should this distinction be moved to factory functions?
+
+        Raises
+        ------
+        ReconstructValueError
+            if both ``dither_file`` and ``fextract`` are ``None``
+
+        Note
+        ----
+            if *dither_file* is None, *fextract* must contain a number of
+            files equal to the number of channels (2)
+
+        .. todo::
+            should this distinction be moved to factory functions?
         """
         if dither_file is None and fextract is None:
             msg = "dither_file and/or fextract must be provided"
@@ -250,6 +262,8 @@ class ReconstructedIFU(object):
         """
         Returns the reconstructed IFU with the flux computed between
         [wmin, wmax]
+        Parameters
+        ----------
         wmin, wmax: float
             min and max wavelength to use. If *None*: use the min and/or max
             from the file
