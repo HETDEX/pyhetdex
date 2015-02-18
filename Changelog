@@ -1,5 +1,10 @@
 2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* pyhetdex/tools/analysis/sky.py: documentation compliant with standard
+	* doc/source/tools.rst: order documentation as in source
+
+2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* README.md: added some info about documentation
 	* pyhetdex/tools/analysis/iq_fit.py: renamed from
 	`pyhetdex/tools/analysis/seeing.py`. Moffat fit reimplemented using astropy.

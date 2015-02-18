@@ -16,7 +16,7 @@
 ===============================================
 
 .. automodule:: pyhetdex.tools.analysis.sky
-   :member-order: groupwise
+   :member-order: bysource
    :members:
    :undoc-members:
    :private-members:
