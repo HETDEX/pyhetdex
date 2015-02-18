@@ -93,6 +93,7 @@ class TestReconstruction(object):
         "Reconstruction from ifu center and dither files (full basename)"
         recifu = rifu.ReconstructedIFU.from_files(ifucenter_file, dither_fast,
                                                   fe_prefix='')
+        # return recifu
         pass
 
     def test_from_file_fe(self):
@@ -156,5 +157,8 @@ class TestReconstruction(object):
 
 
 if __name__ == "__main__":
-    td = TestDither()
-    td.test_wrong_dither()
+    tr = TestReconstruction()
+    rifu = tr.test_from_file()
+    x, y, f = rifu.reconstruct(4000, 5000)
+    #import IPython
+    #IPython.embed()

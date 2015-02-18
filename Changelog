@@ -1,3 +1,9 @@
+2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* doc/source/het.rst: order het.dither documentation as in the source file
+	* pyhetdex/het/dither.py: documentation comply to numpydoc style
+	* tests/test_reconstructions.py: manual test of the reconstruction added.
+
 2015-02-05  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/het/image_quality.py: documentation, PEP8. API change: first

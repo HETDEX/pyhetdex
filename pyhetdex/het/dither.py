@@ -1,5 +1,4 @@
-"""
-Anything related with the HETDEX dither files should go here
+"""HETDEX dither files parsing
 """
 
 from __future__ import print_function, absolute_import
@@ -11,13 +10,14 @@ import pyhetdex.common.file_tools as ft
 
 
 class DitherParseError(ValueError):
+    "Custom error"
     pass
 
 
 # read and parse the dither file
 class _BaseDither(object):
-    """
-    Base class for the dither object. Just defines the common public variables
+    """Base class for the dither object. Just defines the common public
+    variables
     """
 
     def __init__(self):
@@ -53,12 +53,11 @@ class _BaseDither(object):
 
 
 class EmptyDither(_BaseDither):
-    """
-    Creates a dither object with only one entry. The dither key is "D1",
-    basename is left emtpy, dx and dy are set to 0 and image quality,
-    illumination and airmass are set to one.
-    It is provided as a stub dither object in case the real one does not
-    exists.
+    """Creates a dither object with only one entry.
+    
+    The dither key is **D1**, ``basename`` is left emtpy, ``dx`` and ``dy`` are
+    set to 0 and image quality, illumination and airmass are set to one. It is
+    provided as a stub dither object in case the real one does not exists.
     """
 
     def __init__(self):
@@ -79,17 +78,20 @@ class EmptyDither(_BaseDither):
 class ParseDither(_BaseDither):
     """
     Parse the dither file and store the informations in dictionaries with the
-    string 'Di', with i=1,2,3, as key
+    string ``Di``, with i=1,2,3, as key
+
+    Parameters
+    ----------
+    dither_file: string
+        file containing the dither relative position.
+
+    Raises
+    ------
+    DitherParseError
+        if the key ``Di`` is not found in the base name 
     """
 
     def __init__(self, dither_file):
-        """
-        Parse the dither file and store the relevant information
-        Parameters
-        ----------
-        dither_file: string
-            file containing the dither relative position.
-        """
         super(ParseDither, self).__init__()
         self.absfname = os.path.abspath(dither_file)
         self._read_dither(dither_file)
@@ -97,6 +99,7 @@ class ParseDither(_BaseDither):
     def _read_dither(self, dither_file):
         """
         Read the relative dither position
+
         Parameters
         ----------
         dither_file: string

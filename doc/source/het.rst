@@ -7,7 +7,7 @@
 ========================================
 
 .. automodule:: pyhetdex.het.dither
-   :member-order: groupwise
+   :member-order: bysource
    :members:
    :undoc-members:
    :private-members:
