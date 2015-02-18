@@ -8,18 +8,15 @@ returns alpha, beta and FWHM for the required detections.
 .. warning:: 
     The module does run, but it isn't tested. Should not be used before proper
     tests are implemented
+
+References 
+----------
+Astropy fitting: http://astropy.readthedocs.org/en/v1.0rc2/modeling/index.html astropy.modeling
 """
 
 from __future__ import print_function, absolute_import
 
-# WARNING: as written in
-# http://astropy.readthedocs.org/en/v0.4.3/modeling/index.html astropy.modeling
-# can be changed. Keep an eye on it. In the worst case lock setup.py to version
-# 0.4 (but I would rather not)
-try:  # as of v0.4x
-    from astropy.modeling.models import Beta2D as Moffat2D
-except ImportError:  # in development version Beta[12]D -> Moffat[12]D
-    from astropy.modeling.models import Moffat2D
+from astropy.modeling.models import Moffat2D
 import astropy.modeling.fitting as apf
 
 import numpy as np
@@ -199,7 +196,7 @@ class MonteCarlo_Moffat2D(Moffat2D):
         self.area = np.pi * radius**2
         self.fit_deriv = None
 
-    def eval(self, x, y, amplitude, x_0, y_0, gamma, alpha):
+    def evaluate(self, x, y, amplitude, x_0, y_0, gamma, alpha):
         """
         Evaluate the model in *x* and *y* given the parameters.
         Integrates the Moffat with a Montecarlo like approach using the points
@@ -226,7 +223,7 @@ class MonteCarlo_Moffat2D(Moffat2D):
             same type of the input *x* and *y* containing the integral of the
             Moffat distribution
         """
-        moffat = super(MonteCarlo_Moffat2D, self).eval
+        moffat = super(MonteCarlo_Moffat2D, self).evaluate
         params = (amplitude, x_0, y_0, gamma, alpha)
         try:
             z = []

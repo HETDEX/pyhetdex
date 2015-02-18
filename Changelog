@@ -1,5 +1,21 @@
 2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* version: 0.2.0 non backward compatible changes
+	* setup.py: use astropy version>= 1 (it's about to come out and will be a
+	LTS)
+	* pyhetdex/tools/analysis/iq_fit.py: adapted to astropy>=1
+	* pyhetdex/astrometry: renamed pyhetdex/coordinates
+	* pyhetdex/astrometry/astrometry.py: renamed
+	pyhetdex/coordinates/tangent_projection.py
+	* pyhetdex/common/coord.py: renamed
+	pyhetdex/coordinates/transformations.py
+	* pyhetdex: imports in __init__ adapted to new names
+	* tests/: tests adapted to new names
+	* doc/source/*rst: documentation adapted to new names
+	* doc/source/conf.py: version extracted from pyhetdex (not hardcoded)
+
+2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* pyhetdex/tools/analysis/sky.py: documentation compliant with standard
 	* doc/source/tools.rst: order documentation as in source
 

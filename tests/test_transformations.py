@@ -2,7 +2,7 @@
 
 import nose.tools as nt
 
-import pyhetdex.common.coords as coo
+import pyhetdex.coordinates.transformations as coo
 
 
 class TestCoordTransform(object):

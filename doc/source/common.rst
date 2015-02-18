@@ -3,15 +3,6 @@
 :py:mod:`common` -- Common functionality
 ****************************************
 
-:py:mod:`coords` -- Coordinate transformations
-==============================================
-
-.. automodule:: pyhetdex.common.coords
-   :member-order: groupwise
-   :members:
-   :undoc-members:
-   :private-members:
-
 :py:mod:`external_server_connect` -- Fetch and plot sdss images
 ===============================================================
 

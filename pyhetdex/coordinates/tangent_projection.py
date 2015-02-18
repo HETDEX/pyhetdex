@@ -68,10 +68,10 @@ class IFUAstrom(object):
         
     Notes
     -----
-    All the above parameters are saved into the corresponding attributes
+        All the above parameters are saved into the corresponding attributes
 
-    When `x_scale=-1` and `y_scale=1` the IFUASTROM mapping file is
-    perfect in arcseconds.
+        When `x_scale=-1` and `y_scale=1` the IFUASTROM mapping file is perfect
+        in arcseconds.
     """
 
     def __init__(self, ra0, dec0, rot, x_scale=-1., y_scale=1.):

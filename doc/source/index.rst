@@ -11,8 +11,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   astrometry
    common
+   coordinates
    cure
    het
    ltl
