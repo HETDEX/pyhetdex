@@ -1,5 +1,17 @@
 2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* README.md: added some info about documentation
+	* pyhetdex/tools/analysis/iq_fit.py: renamed from
+	`pyhetdex/tools/analysis/seeing.py`. Moffat fit reimplemented using astropy.
+	WARNING: The module is not tested
+	* pyhetdex/tools/analysis/__init__.py: import adjusted
+	* tests/test_iq_fit.py: partial test created. The modules works, but more
+	tests are needed before being able to use it
+	* doc/source/conf.py: added autosummary, fixes some warnings
+	* doc/source/tools.rst: adjust iq_fit documentation parameters
+
+2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* doc/source/het.rst: order het.dither documentation as in the source file
 	* pyhetdex/het/dither.py: documentation comply to numpydoc style
 	* tests/test_reconstructions.py: manual test of the reconstruction added.

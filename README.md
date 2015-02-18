@@ -119,11 +119,11 @@ tests succeed.
 
 ##Documentation
 
-To build the documentation just go into the doc directory and run make html or
-make latex there.
+To build the documentation just go into the `doc` directory and run `make html`
+or `make latex` there.
 
 Every public function, method and class should be documented. Keeping also
-private functions documented helps future documentation. The documentation must
+private functions documented helps future development. The documentation must
 be written following the [numpy
 guidelines](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt#id12).
 The online documentation is then extracted using `sphinx` and the `numpydoc`

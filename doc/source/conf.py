@@ -33,6 +33,7 @@ sys.path.append(os.path.abspath('../..'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     #'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
@@ -44,6 +45,9 @@ extensions = [
 
 # todo settings
 todo_include_todos = True
+
+# numpydoc setting
+numpydoc_show_class_members = False
 
 autoclass_content = 'both'
 
