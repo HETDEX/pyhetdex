@@ -1,7 +1,9 @@
-"""This module provides classes and functions to deal with coordinate
-transformations.
+"""Tangent projection transformation
 
 .. moduleauthor:: Maximilian Fabricius <>
+
+:meth:`~IFUAstrom.tan_dir` and :meth:`~IFUAstrom.tan_inv` implementations are
+taken from sections 3.1.1 and 3.1.2 of [1]_
 
 Example
 -------
@@ -15,8 +17,8 @@ Example of use of this module::
     # multiply by -1 to make positive x point east for 0 Deg rotation
     ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
 
-    ra, dec = tan_inv(ifu, x_in, y_in)
-    x, y    = tan_dir(ifu, ra, dec)
+    ra, dec = ifu.tan_inv(x_in, y_in)
+    x, y    = ifu.tan_dir(ra, dec)
     print("x_in, y_in = ", x_in, y_in)
     print("ra, dec = ", ra, dec)
     print("x, y = ", x, y)
@@ -26,15 +28,16 @@ Example of use of this module::
     print("dec - dec0 [\"] = ", (dec - dec0) * 3600.)
 
 .. todo::
-    check the module
+    check the module and its the documentation
 
-    Tests for :func:`~tan_dir` and :func:`~tan_inv` need values obtain from
+    Tests for :meth:`~IFUAstrom.tan_dir` and :meth:`~IFUAstrom.tan_inv` need values obtain from
     external codes as reference
 
 References
 ----------
-.. [1] AIPS Memo 27, Greisen 1983
-    (ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS)
+.. [1] Eric W. Greisen, AIPS Memo 27, Non-linear Coordinate Systems in *AIPS*,
+  Reissue of November 1983 version, 1993,
+  ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS
 
 Attributes
 ----------
@@ -52,7 +55,7 @@ DEGPERRAD = 57.295779513082323
 
 class IFUAstrom(object):
     """Contains the necessary information to translate from on-sky RA and DEC
-    coordinates to the IFUASTROM reference system.
+    coordinates to the IFUAstrom reference system.
 
     Parameters
     ----------
@@ -81,90 +84,84 @@ class IFUAstrom(object):
         self.x_scale = x_scale
         self.y_scale = y_scale
 
+    def tan_dir(self, ra_in, dec_in):
+        """Direct tangent transform
 
-def tan_dir(ifuastrom, ra_in, dec_in):
-    """Direct tangent transform
+        Calculate x and y coordinates for positions in the IFUAstrom coordinate
+        frame.
 
-    Calculate x and y coordinates for positions in the IFUASTROM coordinate
-    frame. Stolen boldly from J. Adams ``finder_chart`` code [1]_
+        Parameters
+        ----------
+        ra_in, dec_in: nd-array
+            ra and dec coordinate in degrees
 
-    Parameters
-    ----------
-    ifuastrom: :class:`~IFUAstrom` instance
-        describes IFUASTROM astrometry
-    ra_in, dec_in: nd-array
-        ra and dec coordinate in degrees
+        Returns
+        -------
+        x_out, y_out: nd-arrays
+            x and y coordinates (in IFUAstrom coordinates, i.e. arcsec).
+        """
+        ra0, dec0 = self.ra0, self.dec0
+        rot = self.rot
+        x_scale = self.x_scale * DEGPERRAD
+        y_scale = self.y_scale * DEGPERRAD
 
-    Returns
-    -------
-    x_out, y_out: nd-arrays
-        x and y coordinates (in IFUASTROM coordinates, i.e. arcsec).
-    """
-    ra0, dec0 = ifuastrom.ra0, ifuastrom.dec0
-    rot = ifuastrom.rot
-    x_scale = ifuastrom.x_scale * DEGPERRAD
-    y_scale = ifuastrom.y_scale * DEGPERRAD
+        rra0 = np.deg2rad(ra0)
+        rdec0 = np.deg2rad(dec0)
+        rrot = np.deg2rad(rot)
 
-    rra0 = np.deg2rad(ra0)
-    rdec0 = np.deg2rad(dec0)
-    rrot = np.deg2rad(rot)
+        rra_in = np.deg2rad(ra_in)
+        rdec_in = np.deg2rad(dec_in)
 
-    rra_in = np.deg2rad(ra_in)
-    rdec_in = np.deg2rad(dec_in)
+        # AIPS Memo 27, 3.1.1
+        xhat = np.cos(rdec_in) * np.sin(rra_in - rra0)
+        xhat /= (np.sin(rdec_in) * np.sin(rdec0) +
+                np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
+        yhat = np.sin(rdec_in) * np.cos(rdec0)
+        yhat -= np.cos(rdec_in) * np.sin(rdec0) * np.cos(rra_in - rra0)
+        yhat /= (np.sin(rdec_in) * np.sin(rdec0) +
+                np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
 
-    # AIPS Memo 27, 3.1.1
-    xhat = np.cos(rdec_in) * np.sin(rra_in - rra0)
-    xhat /= (np.sin(rdec_in) * np.sin(rdec0) +
-             np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
-    yhat = np.sin(rdec_in) * np.cos(rdec0)
-    yhat -= np.cos(rdec_in) * np.sin(rdec0) * np.cos(rra_in - rra0)
-    yhat /= (np.sin(rdec_in) * np.sin(rdec0) +
-             np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
+        # rotation and scaling
+        x = xhat * np.cos(rrot) * x_scale + yhat * np.sin(rrot) * y_scale
+        y = -xhat * np.sin(rrot) * x_scale + yhat * np.cos(rrot) * y_scale
 
-    # rotation and scaling
-    x = xhat * np.cos(rrot) * x_scale + yhat * np.sin(rrot) * y_scale
-    y = -xhat * np.sin(rrot) * x_scale + yhat * np.cos(rrot) * y_scale
+        return x * 3600., y * 3600.
 
-    return x * 3600., y * 3600.
+    def tan_inv(self, x_in, y_in):
+        """inverse tangent transform
 
+        Calculates RA and DEC coordinates for positions in the IFUAstrom coordinate
+        frame.
 
-def tan_inv(ifuastrom, x_in, y_in):
-    """inverse tangent transform
+        Parameters
+        ----------
+        x_in, y_in: nd-array
+            x and y coordinate in arcseconds
 
-    Calculates RA and DEC coordinates for positions in the IFUASTROM coordinate
-    frame.  Stolen boldly from J. Adams ``finder_chart`` code [1]_
+        Returns
+        -------
+        ra_out, dec_out: nd-arrays
+            RA/DEC coordinates in degree
+        """
+        ra0, dec0 = self.ra0, self.dec0
+        rot = self.rot
+        x_scale = self.x_scale * DEGPERRAD
+        y_scale = self.y_scale * DEGPERRAD
 
-    Parameters
-    ----------
-    ifuastrom: IFUAstrom instance
-        describes IFUASTROM astrometry
-    x_in, y_in: nd-array
-        x and y coordinate in arcseconds
+        rra0 = np.deg2rad(ra0)
+        rdec0 = np.deg2rad(dec0)
+        rrot = np.deg2rad(rot)
 
-    Returns
-    -------
-    ra_out, dec_out: nd-arrays
-        RA/DEC coordinates in degree
-    """
-    ra0, dec0 = ifuastrom.ra0, ifuastrom.dec0
-    rot = ifuastrom.rot
-    x_scale = ifuastrom.x_scale * DEGPERRAD
-    y_scale = ifuastrom.y_scale * DEGPERRAD
+        # rotation and scaling
+        xhat = (x_in/3600.) * np.cos(rrot)/x_scale
+        xhat -= (y_in/3600.) * np.sin(rrot)/y_scale
+        yhat = (x_in/3600.) * np.sin(rrot)/x_scale
+        yhat += (y_in/3600.) * np.cos(rrot)/y_scale
 
-    rra0 = np.deg2rad(ra0)
-    rdec0 = np.deg2rad(dec0)
-    rrot = np.deg2rad(rot)
+        # AIPS Memo 27, 3.1.2
+        rra_out = rra0 + np.arctan(xhat/(np.cos(rdec0) - yhat * np.sin(rdec0)))
+        rdec_out = np.arctan(np.cos(rra_out - rra0) * (yhat * np.cos(rdec0) +
+                                                    np.sin(rdec0)) /
+                            (np.cos(rdec0) - yhat * np.sin(rdec0)))
 
-    # rotation and scaling
-    xhat = (x_in/3600.) * np.cos(rrot)/x_scale
-    xhat -= (y_in/3600.) * np.sin(rrot)/y_scale
-    yhat = (x_in/3600.) * np.sin(rrot)/x_scale
-    yhat += (y_in/3600.) * np.cos(rrot)/y_scale
-
-    # AIPS Memo 27, 3.1.2
-    rra_out = rra0 + np.arctan(xhat/(np.cos(rdec0) - yhat * np.sin(rdec0)))
-    rdec_out = np.arctan(np.cos(rra_out - rra0) * (yhat * np.cos(rdec0) +
-                                                   np.sin(rdec0)) /
-                         (np.cos(rdec0) - yhat * np.sin(rdec0)))
-
-    return np.rad2deg(rra_out), np.rad2deg(rdec_out)
+        return np.rad2deg(rra_out), np.rad2deg(rdec_out)

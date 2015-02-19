@@ -24,28 +24,28 @@ class TestAstrometry(object):
 
     def test_tan_dir(self):
         "Test the direct transform"
-        x, y = tp.tan_dir(self.ifuastrom, self.ra_in, self.dec_in)
+        x, y = self.ifuastrom.tan_dir(self.ra_in, self.dec_in)
         exp_x, exp_y = -1044561.64704, -566707.897592
         nt.assert_almost_equal(exp_x, x, delta=1e-5)
         nt.assert_almost_equal(exp_y, y, delta=1e-5)
 
     def test_tan_inv(self):
         "Test the inverse transform"
-        ra, dec = tp.tan_inv(self.ifuastrom, self.x_in, self.y_in)
+        ra, dec = self.ifuastrom.tan_inv(self.x_in, self.y_in)
         exp_ra, exp_dec = -0.00812167883495, 69.999999815
         nt.assert_almost_equal(exp_ra, ra)
         nt.assert_almost_equal(exp_dec, dec)
 
     def test_tan_dirinv(self):
         """Test chaining the direct and inverse transform"""
-        x, y = tp.tan_dir(self.ifuastrom, self.ra_in, self.dec_in)
-        ra, dec = tp.tan_inv(self.ifuastrom, x, y)
+        x, y = self.ifuastrom.tan_dir(self.ra_in, self.dec_in)
+        ra, dec = self.ifuastrom.tan_inv(x, y)
         nt.assert_almost_equal(self.ra_in, ra)
         nt.assert_almost_equal(self.dec_in, dec)
 
     def test_tan_invdir(self):
         """Test chaining the inverse and direct transform"""
-        ra, dec = tp.tan_inv(self.ifuastrom, self.x_in, self.y_in)
-        x, y = tp.tan_dir(self.ifuastrom, ra, dec)
+        ra, dec = self.ifuastrom.tan_inv(self.x_in, self.y_in)
+        x, y = self.ifuastrom.tan_dir(ra, dec)
         nt.assert_almost_equal(self.x_in, x)
         nt.assert_almost_equal(self.y_in, y)
