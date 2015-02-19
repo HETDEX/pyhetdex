@@ -1,4 +1,5 @@
-"""Test the coordinate transformations in pyhetdex.common.coords"""
+"""Test the coordinate transformations in
+pyhetdex.coordinates.transformations"""
 
 import nose.tools as nt
 
@@ -89,16 +90,3 @@ class TestCoordTransform(object):
     def test_decimal2hms(self):
         "decimal to hms transform"
         nt.assert_almost_equal(coo.decimal2hms(self.decimal), self.hms)
-
-
-def test_calcAngSepDeg():
-    """Angular separation
-    Reference separation from
-    """
-    ra1, dec1 = 31.4324, 68.5432
-    ra2, dec2 = 45.65, 23.452
-    ref_sep = 0.
-
-    sep = coo.calcAngSepDeg(ra1, dec1, ra2, dec2)
-
-    nt.assert_almost_equal(sep, ref_sep)

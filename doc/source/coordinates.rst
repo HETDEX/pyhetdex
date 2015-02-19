@@ -21,3 +21,12 @@
    :undoc-members:
    :private-members:
 
+:py:mod:`distances` -- Angular coordinate distances
+===================================================
+
+.. automodule:: pyhetdex.coordinates.distances
+   :member-order: groupwise
+   :members:
+   :undoc-members:
+   :private-members:
+

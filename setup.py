@@ -30,7 +30,7 @@ setup(
     zip_safe=False,
 
     # dependences
-    install_requires=['numpy', 'scipy', 'astropy>=0.9', 'Pillow', 'matplotlib'],
+    install_requires=['numpy', 'scipy', 'astropy==1', 'Pillow', 'matplotlib'],
 
     extras_require={'nosetests': ['nose>=1', 'coverage'],
                     'doc': ['sphinx', 'numpydoc']},

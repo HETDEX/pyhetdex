@@ -1,11 +1,11 @@
-"""Coordinate transformation
+"""Coordinate transformations
 
 Created on Oct 4, 2011
 
 .. moduleauthor: Maximilian Fabricius <>
 
-Note
-----
+Notes
+-----
     These routines are taken from http://astlib.sourceforge.net/
 
 .. todo::
@@ -28,14 +28,13 @@ Note
     the value from ``ned`` (should we consider it a failure?). Using only the
     hour, the values is wrong, according to ``ned``
 
-    :func:`~calcAngSepDeg`: the test fails. Where it is possible to get a
-    reference value?
-    http://cads.iiap.res.in/tools/angularSeparation and 
-    http://www.asdc.asi.it/dist.html gives very different answers, and none of
-    them agrees with the output of the function
-"""
+    should we use [astropy.coordinates]_ instead of this implementation?
 
-import numpy
+References
+----------
+.. [astropy.coordinates]
+  http://astropy.readthedocs.org/en/v1.0/coordinates/index.html
+"""
 
 
 # -----------------------------------------------------------------------------
@@ -263,44 +262,3 @@ def decimal2dms(decDeg, delimiter=":"):
             sDeg = str(int(sDeg)-1)
 
         return sDeg + delimiter + sMins + delimiter + sSecs
-
-
-# -----------------------------------------------------------------------------
-def calcAngSepDeg(RADeg1, decDeg1, RADeg2, decDeg2):
-    """Calculates the angular separation of two positions on the sky in decimal
-    degrees, assuming a tangent plane projection.
-
-    Parameters
-    ----------
-    RADeg1: float
-        R.A. in decimal degrees for position 1
-    decDeg1: float
-        dec. in decimal degrees for position 1
-    RADeg2: float or numpy array
-        R.A. in decimal degrees for position 2
-    decDeg2: float or numpy array
-        dec. in decimal degrees for position 2
-
-    Returns
-    -------
-    r: float or numpy array
-        angular separation in decimal degrees
-
-    Note
-    ----
-    so separation has to be less than 90 deg
-    """
-    cRA = numpy.radians(RADeg1)
-    cDec = numpy.radians(decDeg1)
-
-    gRA = numpy.radians(RADeg2)
-    gDec = numpy.radians(decDeg2)
-
-    cosC = (numpy.sin(gDec) * numpy.sin(cDec))
-    cosC += (numpy.cos(gDec) * numpy.cos(cDec) * numpy.cos(gRA - cRA))
-    x = (numpy.cos(cDec) * numpy.sin(gRA - cRA)) / cosC
-    y = ((numpy.cos(gDec) * numpy.sin(cDec)) - (numpy.sin(gDec) *
-         numpy.cos(cDec) * numpy.cos(gRA - cRA))) / cosC
-    r = numpy.degrees(numpy.sqrt(x * x + y * y))
-
-    return r
