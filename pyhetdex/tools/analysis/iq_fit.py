@@ -16,7 +16,7 @@ Astropy fitting: http://astropy.readthedocs.org/en/v1.0rc2/modeling/index.html a
 
 from __future__ import print_function, absolute_import
 
-from astropy.modeling.models import Moffat2D
+from astropy.modeling.functional_models import Moffat2D
 import astropy.modeling.fitting as apf
 
 import numpy as np

@@ -1,3 +1,7 @@
+2015-02-19  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/analysis/iq_fit.py: bugfix with astropy moffat import
+
 2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* version: 0.2.0 non backward compatible changes
