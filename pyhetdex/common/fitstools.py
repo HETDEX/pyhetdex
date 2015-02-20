@@ -13,15 +13,21 @@ def wavelength_to_index(header, wavelength):
 
     Parameters
     ----------
-    header: dictionary like
+    header : dictionary like
         dictionary containing the above keywords
-    wavelength: float
+    wavelength : float
         wavelength. If None, return None
 
     Returns
     -------
     int or None
         index of ``wavelength``
+    
+    Examples
+    --------
+
+    >>> wavelength_to_index({'CRVAL1': 3500, 'CDELT1': 2}, 4000)
+    250
     """
     if wavelength is None:
         return None

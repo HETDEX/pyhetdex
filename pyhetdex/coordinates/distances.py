@@ -4,8 +4,8 @@ This module contain functionalities to measure angular distances between
 objects
 
 .. todo::
-    :func:`~angular_separation_deg`: the test fails. Where it is possible to get a
-    reference value?
+    :func:`~angular_separation_deg`: the test fails. Where it is possible to
+    get a reference value?
     http://cads.iiap.res.in/tools/angularSeparation and
     http://www.asdc.asi.it/dist.html gives very different answers, and none of
     them agrees with the output of the function
@@ -21,23 +21,30 @@ def angular_separation_deg(ra1, dec1, ra2, dec2):
 
     Parameters
     ----------
-    ra1: float
+    ra1 : float
         R.A. in decimal degrees for position 1
-    dec1: float
+    dec1 : float
         dec. in decimal degrees for position 1
-    ra2: float or numpy array
+    ra2 : float or numpy array
         R.A. in decimal degrees for position 2
-    dec1: float or numpy array
+    dec1 : float or numpy array
         dec. in decimal degrees for position 2
 
     Returns
     -------
-    r: float or numpy array
+    r : float or numpy array
         angular separation in decimal degrees
 
     Notes
     -----
         separation has to be less than 90 deg
+
+    Examples
+    --------
+    >>> ra1, dec1 = 31.4324, 68.5432
+    >>> ra2, dec2 = 45.65, 23.452
+    >>> angular_separation_deg(ra1, dec1, ra2, dec2)
+    59.159481204617087
     """
     rad_ra1 = np.radians(ra1)
     rad_dec1 = np.radians(dec1)

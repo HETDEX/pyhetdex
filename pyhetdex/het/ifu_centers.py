@@ -59,33 +59,38 @@ class IFUCenter(object):
     * a row is ignored if:
         1. it starts with ``#``;
         2. the target fiber number is negative or cannot be converted to an
-        integer (e.g. ``nan``, ``--``);
+           integer (e.g. ``nan``, ``--``);
     * if the throughput if a valid fiber is less than ``0.01`` a
       ``IFUCenterError`` is raised as such a fiber should be ignored.
 
     Parameters
     ----------
-    ifu_center_file: string
+    ifu_center_file : string
         file containing the fiber positions in the IFU.
 
     Attributes
     ----------
-    filename: string
+    filename : string
         name of the IFU center file
-    fiber_d: float
+    fiber_d : float
         fiber diameter
-    fiber_sep: float
+    fiber_sep : float
         fiber separation
-    nfibx, nfiby: int
+    nfibx, nfiby : int
         number of fibers in the x and y directions
-    xifu, yifu: dictionary of lists
+    xifu, yifu : dictionary of lists
         fibers x and y positions per channel
-    n_fibers: dictionary of int
+    n_fibers : dictionary of int
         number of fibers per channel
-    fib_number: dictionary of lists
+    fib_number : dictionary of lists
         fiber number corresponding to positions ``xifu``, ``yifu`` per channel
-    throughput: dictionary of lists
+    throughput : dictionary of lists
         throughput corresponding to positions ``xifu``, ``yifu`` per channel
+
+    Raises
+    ------
+    IFUCenterError
+        if it cannot decide whether a fibers must be used or not
     """
     def __init__(self, ifu_center_file):
         # these constitute the public interface
@@ -105,7 +110,7 @@ class IFUCenter(object):
 
         Parameters
         ----------
-        ifu_center_file: string
+        ifu_center_file : string
             file containing the fiber number to fiber position mapping
         """
         with open(ifu_center_file, 'r') as f:
@@ -116,12 +121,12 @@ class IFUCenter(object):
         """
         Parameters
         ----------
-        f: file object
+        f : file object
             file object to parse
 
         Returns
         -------
-        f: file object
+        f : file object
             file object after consuming the header
         """
         # get the fiber diameter and fiber separation
@@ -141,18 +146,13 @@ class IFUCenter(object):
         """
         Parameters
         ----------
-        f: file object
+        f : file object
             file to parse
 
         Returns
         -------
-        f: file object
+        f : file object
             moved to the next non comment line
-
-        Raises
-        ------
-        IFUCenterError:
-            if it cannot decide whether a fibers must be used or not
         """
         for line in f:
             if line.startswith('#'):
@@ -183,8 +183,5 @@ class IFUCenter(object):
     def channels(self):
         """
         list of channels
-        output
-        ------
-        channels: list of strings
         """
         return list(self.n_fibers.keys())

@@ -1,3 +1,8 @@
+2015-02-20  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* documentation: all the documentation has been re-checked and made
+	compliant to numpy style.
+
 2015-02-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* setup.py: astropy v1.0 is out

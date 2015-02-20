@@ -6,7 +6,7 @@ Created on Oct 4, 2011
 
 Notes
 -----
-    These routines are taken from http://astlib.sourceforge.net/
+    These routines are taken from `astlib <http://astlib.sourceforge.net/>`_
 
 .. todo::
     :func:`~decimal2dms`: the two external if branches are almost exact
@@ -23,94 +23,101 @@ Notes
 
     :func:`~hms2decimal` tests fail: all the input values in the
     ``setup_class`` method are obtained with
-    https://ned.ipac.caltech.edu/forms/calculator.html.
+    `ned calculator <https://ned.ipac.caltech.edu/forms/calculator.html>`_.
     The values obtained with the function disagrees at the 7th digit level with
     the value from ``ned`` (should we consider it a failure?). Using only the
-    hour, the values is wrong, according to ``ned``
+    hour, the values is wrong.
 
-    should we use [astropy.coordinates]_ instead of this implementation?
-
-References
-----------
-.. [astropy.coordinates]
-  http://astropy.readthedocs.org/en/v1.0/coordinates/index.html
+    Should we use `astropy.coordinates
+    <http://astropy.readthedocs.org/en/v1.0/coordinates/index.html>`_ instead
+    of this implementation?
 """
 
 
 # -----------------------------------------------------------------------------
-def hms2decimal(RAString, delimiter=":"):
+def hms2decimal(ra_string, delimiter=":"):
     """Converts a delimited string of ``Hours:Minutes:Seconds`` format into
     decimal degrees.
 
     Parameters
     ----------
-    RAString: string
-        coordinate string in ``H:M:S`` format
-    delimiter: string
+    ra_string : string
+        coordinate string in ``H :M:S`` format
+    delimiter : string
         delimiter character in ``RAString``
 
     Returns
     -------
-    RADeg: float
+    ra_deg : float
         coordinate in decimal degrees
+
+    Examples
+    --------
+    >>> hms2decimal("02:41:43.033")
+    40.42930416666667
     """
     # is it in HH:MM:SS format?
     if delimiter == "":
-        RABits = str(RAString).split()
+        ra_split = str(ra_string).split()
     else:
-        RABits = str(RAString).split(delimiter)
+        ra_split = str(ra_string).split(delimiter)
 
-    if len(RABits) > 1:
-        RAHDecimal = float(RABits[0])
-        if len(RABits) > 1:
-            RAHDecimal = RAHDecimal + (float(RABits[1]) / 60.0)
-        if len(RABits) > 2:
-            RAHDecimal = RAHDecimal + (float(RABits[2]) / 3600.0)
-        RADeg = (RAHDecimal / 24.0) * 360.0
+    if len(ra_split) > 1:
+        ra_decimal = float(ra_split[0])
+        if len(ra_split) > 1:
+            ra_decimal = ra_decimal + (float(ra_split[1]) / 60.0)
+        if len(ra_split) > 2:
+            ra_decimal = ra_decimal + (float(ra_split[2]) / 3600.0)
+        ra_deg = (ra_decimal / 24.0) * 360.0
     else:
-        RADeg = float(RAString)
+        ra_deg = float(ra_string)
 
-    return RADeg
+    return ra_deg
 
 
 # -----------------------------------------------------------------------------
-def dms2decimal(decString, delimiter=":"):
+def dms2decimal(dec_string, delimiter=":"):
     """Converts a delimited string of ``Degrees:Minutes:Seconds`` format into
     decimal degrees.
 
     Parameters
     ----------
-    decString: string
-        coordinate string in ``D:M:S`` format
-    delimiter: string
-        delimiter character in decString
+    dec_string : string
+        coordinate string in ``D :M:S`` format
+    delimiter : string
+        delimiter character in ``dec_string``
 
     Returns
     -------
-    decDeg: float
+    dec_deg : float
         coordinate in decimal degrees
+
+    Examples
+    --------
+    >>> dms2decimal("+40:25:45.50")
+    40.42930555555555
     """
     # is it in DD:MM:SS format?
     if delimiter == "":
-        decBits = str(decString).split()
+        dec_split = str(dec_string).split()
     else:
-        decBits = str(decString).split(delimiter)
-    if len(decBits) > 1:
-        decDeg = float(decBits[0])
-        if decBits[0].find("-") != -1:
-            if len(decBits) > 1:
-                decDeg = decDeg-(float(decBits[1]) / 60.0)
-            if len(decBits) > 2:
-                decDeg = decDeg-(float(decBits[2]) / 3600.0)
+        dec_split = str(dec_string).split(delimiter)
+    if len(dec_split) > 1:
+        dec_deg = float(dec_split[0])
+        if dec_split[0].find("-") != -1:
+            if len(dec_split) > 1:
+                dec_deg = dec_deg-(float(dec_split[1]) / 60.0)
+            if len(dec_split) > 2:
+                dec_deg = dec_deg-(float(dec_split[2]) / 3600.0)
         else:
-            if len(decBits) > 1:
-                decDeg = decDeg+(float(decBits[1]) / 60.0)
-            if len(decBits) > 2:
-                decDeg = decDeg+(float(decBits[2]) / 3600.0)
+            if len(dec_split) > 1:
+                dec_deg = dec_deg+(float(dec_split[1]) / 60.0)
+            if len(dec_split) > 2:
+                dec_deg = dec_deg+(float(dec_split[2]) / 3600.0)
     else:
-        decDeg = float(decString)
+        dec_deg = float(dec_string)
 
-    return decDeg
+    return dec_deg
 
 
 # -----------------------------------------------------------------------------
@@ -120,15 +127,20 @@ def decimal2hms(RADeg, delimiter=":"):
 
     Parameters
     ----------
-    RADeg: float
+    RADeg : float
         coordinate in decimal degrees
-    delimiter: string
+    delimiter : string
         delimiter character in returned string
 
     Returns
     -------
     string
-        coordinate string in ``H:M:S`` format
+        coordinate string in ``Hour:Minutes:Seconds`` format
+
+    Examples
+    --------
+    >>> decimal2hms(40.42930556)
+    02:41:43.033
     """
     hours = (RADeg / 360.0) * 24
     if hours < 10 and hours >= 1:
@@ -175,15 +187,20 @@ def decimal2dms(decDeg, delimiter=":"):
 
     Parameters
     ----------
-    decDeg: float
+    decDeg : float
         coordinate in decimal degrees
-    delimiter: string
+    delimiter : string
         delimiter character in returned string
 
     Returns
     -------
     string
         coordinate string in ``D:M:S`` format
+
+    Examples
+    --------
+    >>> decimal2dms(40.42930556)
+    +40:25:45.50
     """
     # Positive
     if decDeg > 0:

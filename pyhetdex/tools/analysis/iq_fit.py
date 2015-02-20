@@ -2,16 +2,13 @@
 
 .. moduleauthor:: Francesco Montesano <montefra@mpe.mpg.de>
 
-Fits the point-like continuum detections with the Moffat distribution and
-returns alpha, beta and FWHM for the required detections.
+Fits the point-like continuum detections with the `2D Moffat
+<http://astropy.readthedocs.org/en/v1.0/api/astropy.modeling.functional_models.Moffat2D.html>`_
+distribution integrated over the fibers of the reconstructed IFU image.
 
 .. warning:: 
-    The module does run, but it isn't tested. Should not be used before proper
+    The module does run, but it is not tested. Should not be used before proper
     tests are implemented
-
-References 
-----------
-Astropy fitting: http://astropy.readthedocs.org/en/v1.0rc2/modeling/index.html astropy.modeling
 """
 
 from __future__ import print_function, absolute_import
@@ -30,7 +27,7 @@ def get_fwhm(gamma, alpha):
 
     Parameters
     ----------
-    gamma, alpha: floats or nd arrays
+    gamma, alpha : floats or nd arrays
         parameters
 
     Returns
@@ -47,14 +44,12 @@ class _BaseSampler(object):
     `y`) and with radius `r`.
 
     This is the base class and doesn't do the sampling. It provides a
-    :meth:`~get_samples`
-    that returns the list of points for a given circle center and
-    radius. Anyway remember to call the init in any of the subclasses, as it
-    initialise the cache
+    :meth:`~get_samples` that returns the list of points for a given circle
+    center and radius.
 
     Parameters
     ----------
-    n_points: int
+    n_points : int
         number of points to sample
 
     Notes
@@ -73,14 +68,14 @@ class _BaseSampler(object):
 
         Parameters
         ----------
-        x, y: floats
+        x, y : floats
             center of the circle
-        r: float
+        r : float
             radius of the circle
 
         Returns
         -------
-        xs, ys: ndarray
+        xs, ys : ndarray
             points sampling the circle
         """
         # create an string id for the given circle. Discard any difference
@@ -106,7 +101,7 @@ class RandomSampler(_BaseSampler):
 
     Parameters
     ----------
-    n_points: int
+    n_points : int
         approximate number of points
     """
 
@@ -132,7 +127,7 @@ class GridSampler(_BaseSampler):
 
     Parameters
     ----------
-    n_points: int
+    n_points : int
         approximate number of points
     """
 
@@ -162,28 +157,26 @@ class MonteCarlo_Moffat2D(Moffat2D):
 
     Parameters
     ----------
-    sampler: instance child of _BaseSampler
+    sampler : instance child of :class:`~_BaseSampler`
         sampling of a unit circle centered in (0, 0)
-    radius: float
+    radius : float
         fiber radius
-    amplitude : float
+    amplitude  : float
         Amplitude of the model
-    x_0 : float
+    x_0  : float
         x position of the maximum of the Beta model
-    y_0 : float
+    y_0  : float
         y position of the maximum of the Beta model
-    gamma : float
+    gamma  : float
         Core width of the Beta model
-    alpha : float
+    alpha  : float
         Power index of the beta model
 
     Attributes
     ----------
-    sampler: instance child of _BaseSampler
-        sampling of a unit circle centered in (0, 0)
-    radius: float
-        fiber radius
-    area: float
+    sampler
+    radius
+    area : float
         area of the fiber
     """
 
@@ -204,7 +197,7 @@ class MonteCarlo_Moffat2D(Moffat2D):
 
         Parameters
         ----------
-        x, y: array-like or numeric value
+        x, y : array-like or numeric value
             input coordinate values
         amplitude : float
             Amplitude of the model
@@ -219,7 +212,7 @@ class MonteCarlo_Moffat2D(Moffat2D):
 
         Returns
         -------
-        z: array-like or numeric value
+        z : array-like or numeric value
             same type of the input *x* and *y* containing the integral of the
             Moffat distribution
         """
@@ -239,27 +232,27 @@ class MonteCarlo_Moffat2D(Moffat2D):
 
 
 def montecarlo_2d(func, x, y, area, *args, **kwargs):
-    """Compute the 2 dimensional integral of function *func* using a simple
+    """Compute the 2 dimensional integral of function ``func`` using a simple
     montecarlo-like integration.
 
     Parameters
     ----------
-    func: callable
-        2-dimensional function to evaluate: `f(x, y, *params)`
-    x, y: of two arrays of size N or (2, N) array
+    func : callable
+        2-dimensional function to evaluate : `f(x, y, *params)`
+    x, y : nd-arrays
         x and y coordinates of the points to use to compute the integral
-    area: float
+    area : float
         area sampled by (`x`, `y`)
-    args: list
+    args : list
         parameters to pass to the function
-    kwargs: dictionary
+    kwargs : dictionary
         keyword parameter to pass to the function
 
     Returns
     -------
-    I: float
+    I : float
         integral
-    sI: float
+    sI : float
         error on the integral
     """
     f_xy = func(x, y, *args, **kwargs)
@@ -279,33 +272,33 @@ def fit_image_quality(dither_file, ifucen_file, stars=None, fe_prefix='',
 
     Parameters
     ----------
-    dither_file: string
+    dither_file : string
         name of the file defining the relative dither position, illumination
         and image quality
-    ifucen_file: string
+    ifucen_file : string
         name of the file with the position and throughput of the fibers on the
         IFU head
-    stars: none or list of 2-tuples, optional
+    stars : None or list of 2-tuples, optional
         If none, auto-detect stars on the reconstructed IFU (not implemented).
         Otherwise must be a list of (x, y) positions of stars on the IFU head
         to use for the fit
-    fextract: None or list of fits files, optional
+    fextract : None or list of fits files, optional
         if the name of the files to use for the reconstruction is not the same
         as the basenames in the dither file
-    fe_prefix: string, optional
+    fe_prefix : string, optional
         when getting the names from the dither file, prepend *fe_prefix* to
         the *basename*
-    wmin, wmax: float, optional
-        min and max wavelength to use when doing the reconstruction. If *None*:
+    wmin, wmax : float, optional
+        min and max wavelength to use when doing the reconstruction. If *None* :
         use the min and/or max from the file
-    Sampler: :class:`~_BaseSampler` child instance, optional
+    Sampler : :class:`~_BaseSampler` child instance, optional
         type of sampler to use
-    n_points: int, optional
+    n_points : int, optional
         number of points to created in the sampler
 
     Returns
     -------
-    best_fits: list of numpy arrays
+    best_fits : list of numpy arrays
         best fit parameters from the moffat, plus FWHM. One list entry of each
         of the fitted stars in the IFU head
         ``[np.array(amplitude, x_0, y_0, gamma, alpha, FWHM),]``
@@ -314,13 +307,6 @@ def fit_image_quality(dither_file, ifucen_file, stars=None, fe_prefix='',
     ------
     NotImplementedError
         if ``stars`` is ``None``
-
-
-    ..todo:: 
-        do we need to autodetect stars?
-
-        this implementation is temporary or a very high level function. Need to
-        atomise more to give more flexibility
     """
     # reconstruct the IFU head
     ifu = precon.ReconstructedIFU.from_files(ifucen_file, dither_file,

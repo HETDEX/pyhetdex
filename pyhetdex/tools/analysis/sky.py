@@ -1,12 +1,11 @@
 """Modules that provides utilities related with the sky background
 
 .. moduleauthor:: Francesco Montesano <montefra@mpe.mpg.de>
+
 The main products are:
 
 * :func:`~fe_sky_subtraction`: sky subtraction from fiber extracted frames
-
 * :func:`~fe_sky_background`: estimate the sky background from a file
-
 * :func:`~hdu_fe_sky_background`: estimate the sky background (the content of
   the file is passed)
 
@@ -31,26 +30,26 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
 
     Parameters
     ----------
-    fname: string
+    fname : string
         name of the fits file to process
-    sig: float, optional
+    sig : float, optional
         number of standard deviations to use for the clipping limit
-    iters : int or `None`, optional
+    iters  : int or `None`, optional
         number of iterations to perform clipping for, or `None` to clip
         until convergence is achieved (i.e. continue until the last
         iteration clips nothing).
-    wmin, wmax: floats, optional
+    wmin, wmax : floats, optional
         maximum and minimum wavelength in Armstrong to use for the sigma
         clipping. Converted to indices using the 'CRVAL1' and 'CDELT1' keyword
         in the header of the fits file. If None the minimum and/or maximum of
         the range used
-    width: int, optional
+    width : int, optional
         width of the moving window used to estimate the sky background
-    prefix: string, optional
+    prefix : string, optional
         prefix of the sky subtracted file
-    skyprefix: string, optional
+    skyprefix : string, optional
         prefix of the sky file
-    output_both: bool, optional
+    output_both : bool, optional
         save both sky and sky subtracted frames, instead of the latter alone
     """
 
@@ -94,29 +93,29 @@ def fe_sky_background(fname, **kwargs):
 
     Parameters
     ----------
-    fname: string
+    fname : string
         file to average
-    sig: None or float, optional
+    sig : None or float, optional
         if not None, ignore fibers with signal outside *sig* standard deviation
-    iters : int or `None`, optional
+    iters  : int or `None`, optional
         number of iterations to perform clipping for, or `None` to clip
         until convergence is achieved (i.e. continue until the last
         iteration clips nothing).
-    wmin, wmax: float, optional
+    wmin, wmax : float, optional
         minimum and maximum wavelength to consider for the average
-    wmin, wmax: floats, optional
+    wmin, wmax : floats, optional
         maximum and minimum wavelength in Armstrong to use for the estimate.
         Converted to indices using the 'CRVAL1' and 'CDELT1' keyword in the
         header of the fits file. If None the minimum and/or maximum of the
         range used
-    fibmin, fibmax: float, optional
+    fibmin, fibmax : float, optional
         minimum and maximum fiber number to consider
 
     Returns
     -------
-    median: float
+    median : float
         average
-    n_fibs: int
+    n_fibs : int
         number of fibers used for the final median
     """
     with fits.open(fname) as hdu:
@@ -133,31 +132,31 @@ def hdu_fe_sky_background(data, header, sig=2.5, iters=None, wmin=None,
 
     Parameters
     ----------
-    data: numpy ndarray
+    data : numpy ndarray
         data of the fits image
-    header: astropy.io.fits.Header instance
+    header : astropy.io.fits.Header instance
         header of the fits image
-    sig: None or float, optional
+    sig : None or float, optional
         if not None, ignore fibers with signal outside *sig* standard deviation
-    iters : int or `None`, optional
+    iters  : int or `None`, optional
         number of iterations to perform clipping for, or `None` to clip
         until convergence is achieved (i.e. continue until the last
         iteration clips nothing).
-    wmin, wmax: float, optional
+    wmin, wmax : float, optional
         minimum and maximum wavelength to consider for the average
-    wmin, wmax: floats, optional
+    wmin, wmax : floats, optional
         maximum and minimum wavelength in Armstrong to use for the estimate.
         Converted to indices using the 'CRVAL1' and 'CDELT1' keyword in the
         header of the fits file. If None the minimum and/or maximum of the
         range used
-    fibmin, fibmax: float, optional
+    fibmin, fibmax : float, optional
         minimum and maximum fiber number to consider
 
     Returns
     -------
-    median: float
+    median : float
         average
-    n_fibs: int
+    n_fibs : int
         number of fibers used for the final median
     """
     # get the index of the input wavelengths
@@ -182,16 +181,16 @@ def moving_window(mask, cindex, width=20):
 
     Parameters
     ----------
-    mask: 1d array of bool
+    mask : 1d array of bool
         mask across with the window moves
-    cindex: int
+    cindex : int
         central index of the window
-    width: int, optional
+    width : int, optional
         maximum width of the window. Edges are not wrapped around
 
     Returns
     -------
-    window_mask: 1d array of bool
+    window_mask : 1d array of bool
         *mask* with all the elements outside the window set to False
     """
     imin = max(0, cindex - width/2)  # lower bound

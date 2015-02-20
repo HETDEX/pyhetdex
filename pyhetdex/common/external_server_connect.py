@@ -42,14 +42,14 @@ def deg2pix(degree, scale=1.698):
 
     Parameters
     ----------
-    degree: float
+    degree : float
         angle to convert
-    scale: float, optional
+    scale : float, optional
         pixel scale
 
     Returns
     -------
-    float:
+    float
         number of pixels
     """
     return degree * 3600. / scale
@@ -60,20 +60,20 @@ def wcs2pix(ra, dec, ra0, dec0, scale=1.698, im_size=848, CD=None):
 
     Parameters
     ----------
-    ra, dec: float
+    ra, dec : float
         ? coordinates
-    ra0, dec0: float
+    ra0, dec0 : float
         reference coordinates
-    scale: float, optional
+    scale : float, optional
         pixel scale
-    im_size: float, optional
+    im_size : float, optional
         size of the image
-    CD: ?, optional
+    CD : ?, optional
         ??
 
     Returns
     -------
-    x, y: float
+    x, y : float
         pixel corresponding to input coordinates
     """
     if CD is not None:
@@ -94,12 +94,12 @@ def SDSS_coverage(ra, dec):
 
     Parameters
     ----------
-    ra, dec: float
+    ra, dec : float
         coordinates to query in degrees
 
     Returns
     -------
-    bool:
+    bool
         whether the input coordinates are within the SDSS footprint
     """
     url_sdssCoverage = 'http://www.sdss3.org/dr9/index.php'
@@ -121,23 +121,23 @@ def plotFocalPlaneQuicklook(dra, ddec, pa, scale, ifu_centers, ra, dec, CD,
 
     Parameters
     ----------
-    dra, ddec: float
+    dra, ddec : float
         ? coordinates
-    pa: float
+    pa : float
         ?
-    scale: float
+    scale : float
         pixel scale
-    ifu_centers: list
+    ifu_centers : list
         list of ifu coordinates?
-    ra, dec: flat
+    ra, dec : flat
         reference coordinates
-    CD: ?
+    CD : ?
         ??
-    im_size: float
+    im_size : float
         size of the image
-    color: matplotlib color, optional
+    color : matplotlib color, optional
         color of the circles
-    linewidth: float, optional
+    linewidth : float, optional
         width of the line of the circles
 
     Returns
@@ -175,22 +175,22 @@ def get_image(ra, dec, pa, size, ifu_centers, yflip, outdir):
 
     Parameters
     ----------
-    ra, dec: float
+    ra, dec : float
         coordinates of the plot
-    pa: ?
+    pa : ?
         ??
-    size: float
+    size : float
         ??
-    ifu_centers: list
+    ifu_centers : list
         list of ifu coordinates?
-    yflip: bool
+    yflip : bool
         flip the image around the y axis
-    outdir: string
+    outdir : string
         output directory
 
     Returns
     -------
-    outfile: string
+    outfile : string
         full name of the saved plot
 
 
@@ -263,20 +263,20 @@ def retrieve_image(ra, dec, size, yflip):
 
     Parameters
     ----------
-    ra, dec: float
+    ra, dec : float
         center (?) coordinates in degrees
-    size: float
+    size : float
         size in degrees of the patch to retrieve
-    yflip: bool
+    yflip : bool
         flip the image around the y axis
 
     Returns
     -------
-    imarray: nd array
+    imarray : nd array
         retrieved image
-    CD: numpy matrix
+    CD : numpy matrix
         ??
-    url: string
+    url : string
         url of the request
     string
         source of the image
@@ -298,8 +298,7 @@ def retrieve_image_SDSS(ra, dec, size, yflip):
 
     Parameters
     ----------
-    ra, dec, size, yflip:
-        same as :func:`~retrieve_image`
+    ra, dec, size, yflip : same as :func:`~retrieve_image`
 
     Returns
     -------
@@ -345,8 +344,7 @@ def retrieve_image_DSS(ra, dec, size, yflip):
 
     Parameters
     ----------
-    ra, dec, size, yflip:
-        same as :func:`~retrieve_image`
+    ra, dec, size, yflip : same as :func:`~retrieve_image`
 
     Returns
     -------

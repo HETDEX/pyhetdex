@@ -18,8 +18,21 @@ class DitherParseError(ValueError):
 class _BaseDither(object):
     """Base class for the dither object. Just defines the common public
     variables
-    """
 
+    Attributes
+    ----------
+    basename : dictionary
+        basenames of the dither files; key : dither; value: basename
+    dx, dy : dictionaries
+        dither relative x and y position; key : dither; value: dx, dy
+    seeing : dictionary
+        dither image quality; key dither; value : image quality
+    norm : dictionary
+        relative flux normalisation among dithers; key dither; value :
+        normalisation
+    airmass : dictionary
+        dither airmass; key dither; value : airmass
+    """
     def __init__(self):
         # common prefix of the L and R file names of the dither
         self.basename = {}
@@ -28,38 +41,35 @@ class _BaseDither(object):
         # image quality, illumination and airmass
         self.seeing, self.norm, self.airmass = {}, {}, {}
         # remember the dither file name
-        self.absfname = ''
+        self._absfname = ''
 
     @property
     def dithers(self):
-        """
-        List of dithers
-        """
+        """ List of dithers """
         return list(self.basename.keys())
 
     @property
+    def absfname(self):
+        """Absolute file name"""
+        return self._absfname
+    @property
     def abspath(self):
-        """
-        Absolute file path
-        """
+        """ Absolute file path """
         return os.path.split(self.absfname)[0]
-
     @property
     def filename(self):
-        """
-        Absolute file path
-        """
+        """ Absolute file path """
         return os.path.split(self.absfname)[1]
 
 
 class EmptyDither(_BaseDither):
     """Creates a dither object with only one entry.
     
-    The dither key is **D1**, ``basename`` is left emtpy, ``dx`` and ``dy`` are
-    set to 0 and image quality, illumination and airmass are set to one. It is
-    provided as a stub dither object in case the real one does not exists.
+    The dither key is **D1**, ``basename`` and ``absfname` are left emtpy,
+    ``dx`` and ``dy`` are set to 0 and image quality, illumination and airmass
+    are set to 1. It is provided as a stub dither object in case the real one
+    does not exists.
     """
-
     def __init__(self):
         super(EmptyDither, self).__init__()
         self._no_dither()
@@ -82,7 +92,7 @@ class ParseDither(_BaseDither):
 
     Parameters
     ----------
-    dither_file: string
+    dither_file : string
         file containing the dither relative position.
 
     Raises
@@ -93,7 +103,7 @@ class ParseDither(_BaseDither):
 
     def __init__(self, dither_file):
         super(ParseDither, self).__init__()
-        self.absfname = os.path.abspath(dither_file)
+        self._absfname = os.path.abspath(dither_file)
         self._read_dither(dither_file)
 
     def _read_dither(self, dither_file):
@@ -102,7 +112,7 @@ class ParseDither(_BaseDither):
 
         Parameters
         ----------
-        dither_file: string
+        dither_file : string
             file containing the dither relative position. If None a single
             dither added
         """

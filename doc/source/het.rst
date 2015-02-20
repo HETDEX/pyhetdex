@@ -11,6 +11,7 @@
    :members:
    :undoc-members:
    :private-members:
+   :show-inheritance:
 
 :py:mod:`ifu_centers` -- IFU center file parser
 ===============================================

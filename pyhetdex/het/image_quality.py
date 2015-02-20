@@ -7,13 +7,13 @@ Created on Aug 1, 2012
 .. moduleauthor:: Daniel Farrow <dfarrow@mpe.mpg.de>
 
 .. todo::
-    a module in :mod:`~pyhetdex` should not depend on the structure of a class
-    defined in code that uses :mod:`~pyhetdex`. Here referring to ``shot``
+    a module in :mod:`pyhetdex` should not depend on the structure of a class
+    defined in code that uses :mod:`pyhetdex`. Here referring to ``shot``
 '''
 
 from __future__ import absolute_import, print_function
 
-import numpy
+import numpy as np
 
 
 class ImageQualityServer(object):
@@ -21,21 +21,21 @@ class ImageQualityServer(object):
 
     Attributes
     ----------
-    R2: float
+    R2 : float
         radius of focal plane in arcsec^2
-    shot: ??
+    shot : ??
         ??
-    cenFWHM: float
+    cenFWHM : float
         FWHM at the center of the focal plane
-    alpha: float
+    alpha : float
         Power law slope of change of FWHM with fplane position
-    rs: float
+    rs : float
         Scale length of powerlaw increase of FWHM
 
     Parameters
     ----------
-    cenFWHM: float
-    shot: ??
+    cenFWHM : float
+    shot : ??
     """
 
     def __init__(self, cenFWHM, shot):
@@ -50,22 +50,21 @@ class ImageQualityServer(object):
 
         Parameters
         ----------
-        x, y: float
+        x, y : float
             position in the focal plane
 
         Returns
         -------
-        fwhm: float
+        fwhm : float
             fwhm at the position ``(x, y)``
 
-        Note
-        ----
+        Notes
+        -----
             Should contain some clever model to give FWHM based on focal plane
             position
         """
 
         s_sq = (x*x + y*y)/(self.R2)
-        fwhm = (self.cenFWHM + numpy.power((s_sq/self.rs), self.alpha))
-        print("[imagequalityserver] Calculated FWHM to be %3.2f" % fwhm)
+        fwhm = (self.cenFWHM + np.power((s_sq/self.rs), self.alpha))
 
         return fwhm

@@ -9,6 +9,10 @@ telescope configuration
 .. todo::
     a module in :mod:`~pyhetdex` should not depend on the structure of a class
     defined in code that uses :mod:`~pyhetdex`. Here referring to ``shot``
+
+    either pass the ``illumination_model`` option as parameters to
+    :meth:`~ThroughputServer.fplaneToThroughput` or check that it is implemented when
+    initialising :class:`~ThroughputServer`.
 """
 from __future__ import absolute_import, print_function
 
@@ -21,27 +25,25 @@ class ThroughputServer(object):
     At the moment returns a dummy model for the throughput across the focal
     plane
 
-    Attributes
-    ----------
-    name: string
-        name of the server
-    shot: ??
-        ??
-    throughput_file: string
-        name of the throughput file
-    lambdas, throughputs: nd-arrays
-        throughput as function of wavelength
-    illumination_model: string
-        name of the illumination model to use
-
     Parameters
     ----------
-    throughput_file: string
-    illumination_model: string
-    shot: ??
-    """
+    throughput_file : string
+    illumination_model : string
+    shot : ??
 
-    name = "Dummy throughput server"
+    Attributes
+    ----------
+    name : string
+        name of the server
+    shot : ??
+        ??
+    throughput_file : string
+        name of the throughput file
+    lambdas, throughputs : nd-arrays
+        throughput as function of wavelength
+    illumination_model : string
+        name of the illumination model to use
+    """
 
     def __init__(self, throughput_file, illumination_model, shot):
         self.shot = shot
@@ -52,17 +54,19 @@ class ThroughputServer(object):
         # Specify throughput model
         self.illumination_model = illumination_model
 
+        self.name = "Dummy throughput server"
+
     def loadThroughputTemplate(self, throughput_file):
         """Load the throughput template
 
         Parameters
         ----------
-        throughput_file: string
+        throughput_file : string
             name of the throughput file
 
         Returns
         -------
-        lambdas, throughputs: nd arrays
+        lambdas, throughputs : nd arrays
             throughput as function of wavelength
 
         Raises
@@ -86,7 +90,7 @@ class ThroughputServer(object):
             norm = max(throughputs)
             throughputs = np.array(throughputs) / norm
         except IOError:
-            print("[throughputServer] ERROR: Could not open ", throughput_file)
+            print("ERROR: Could not open ", throughput_file)
             raise
 
         return np.array(lambdas), throughputs
@@ -101,14 +105,14 @@ class ThroughputServer(object):
 
         Parameters
         ----------
-        ID: int
+        ID : int
             ID to replace into the output file name template
-        x, y: float
+        x, y : float
             focal plane position of the IFU in arcseconds
 
         Returns
         -------
-        f_illum: float
+        f_illum : float
             focal plane position dependent illumination
         """
 
@@ -129,12 +133,12 @@ class ThroughputServer(object):
 
         Parameters
         ----------
-        x, y: float
+        x, y : float
             focal plane position of the IFU in arcseconds
 
         Returns
         -------
-        r: float
+        r : float
             illumination at the input position
 
         Raises
@@ -142,14 +146,10 @@ class ThroughputServer(object):
         NotImplementedError
             if the required illumination model is not implemented
 
-        Note
-        ----
+        Notes
+        -----
             This is also a dummy, should contain some clever model to give at
             the moment just falls off like a power law
-
-        .. todo::
-            either pass the model string as parameters or check that the
-            desired model is implemented in the :meth:`~__init__`
         """
 
         if "SimplePowerLaw" in self.illumination_model:

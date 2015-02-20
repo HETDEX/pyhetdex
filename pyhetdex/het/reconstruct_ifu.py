@@ -1,5 +1,5 @@
-"""
-Reconstruct the IFU
+"""Reconstruct the IFU
+
 """
 
 from __future__ import print_function, absolute_import
@@ -14,50 +14,70 @@ from pyhetdex.common.fitstools import wavelength_to_index
 
 
 class RecontructIndexError(IndexError):
-    pass
+    """Error for miss-matching the number of fibers in the ifu center files and
+    the fiber extracted ones"""
 
 
 class ReconstructIOError(IOError):
+    """Error when the name and/or number fiber extracted file names is not
+    correct"""
     pass
 
 
 class ReconstructValueError(ValueError):
+    """Errors for wrong combinations of input parameters in
+    :class:`~ReconstructedIFU` or :meth:`~ReconstructedIFU.from_files`"""
     pass
 
 
 # TODO: account for illumination weights and fiber throughput
 class ReconstructedIFU(object):
-    """
-    Reconstructed IFU head image from the fiber extracted frames given the
-    *ifu_center_file* and if any, the *dither_file*.
+    r"""Reconstructed IFU head image from the fiber extracted frames given the
+    ``ifu_center`` and the ``dither``.
+
+    Parameters
+    ----------
+    ifu_center : instance of :class:`~pyhetdex.het.ifu_centers.IFUCenter`
+        fiber number to fiber position mapping
+    dither : instance child of :class:`~pyhetdex.het.dither._BaseDither`
+        dither relative position, illumination, image quality
+    fextract : None or list of fits files, optional
+        * if None the list of files is inferred from
+          :attr:`dither.basename`;
+        * if not None must have ``ndither`` x ``nchannels`` elements. The
+          channel name and dither number are extracted from the ``CCDPOS`` and
+          the ``DITHER`` header keywords
+    fe_prefix : string, optional
+        when getting the names from the dither file, prepend ``fe_prefix`` to
+        the ``basename``
+
+    Attributes
+    ----------
+    ifu_center
+    dither
+    x, y : 1-dimensional arrays
+        x and y position of the fibers
+    flux : list of 2-dimensional arrays
+        each element is the content of one fiber extracted file
+    header : list of dictionaries
+        each element contains the ``CRVAL1`` and ``CDELT1`` keywords :value
+        pairs from the headers of the fiber extracted files; used to determine
+        the wavelength range in  :meth:`~reconstruct`
+
+    Raises
+    ------
+    ReconstructValueError
+        if an empty dither is passed and ``fextract`` is ``None``
+    ReconstructIOError
+        if the number and/or number of fiber extracted frames is not correct;
+        raised by :meth:`~_fedict`
+    RecontructIndexError
+        if the number of fibers from the fiber extracted files and from the ifu
+        center files do not match; raised by :meth:`~_reconstruct`
     """
 
     def __init__(self, ifu_center, dither, fextract=None,
                  fe_prefix=""):
-        """
-        Read and parse the file
-
-        Parameters
-        ----------
-        ifu_center: instance of ifu_centers.IFUCenter
-            fiber number to fiber position mapping
-        dither: instance of dither._BaseDither
-            dither relative position, illumination, image quality
-        fextract: None or list of fits files, optional
-            if None the list of files is inferred from first or second column
-            of the *dither_file*;
-            if not None must have *ndither* x *nchannels* elements. The channel
-            name and dither number are extracted from the *CCDPOS* and the
-            *DITHER* header keywords
-        fe_prefix: string, optional
-            when getting the names from the dither file, prepend *fe_prefix* to
-            the *basename*
-
-        WARNING: *dither_file* and *fextract* cannot be *None* at the same time
-        WARNING: if *dither_file* is None, *fextract* must contain a number of
-        files equal to the number of channels (2)
-        NOTE: should this distinction be moved to factory functions?
-        """
         from pyhetdex import het
         if isinstance(dither, het.dither.EmptyDither) and fextract is None:
             msg = "With an empty dither file a fiber extract file name must be"
@@ -86,33 +106,32 @@ class ReconstructedIFU(object):
 
         Parameters
         ----------
-        ifu_center_file: string
+        ifu_center_file : string
             file containing the fiber number to fiber position mapping
-        dither_file: string, optional
+        dither_file : string, optional
             file containing the dither relative position. If not given, a singe
             dither is assumed
-        fextract: None or list of fits files, optional
-            if None the list of files is inferred from first or second column
-            of the *dither_file*;
-            if not None must have *ndither* x *nchannels* elements. The channel
-            name and dither number are extracted from the *CCDPOS* and the
-            *DITHER* header keywords
-        fe_prefix: string, optional
-            when getting the names from the dither file, prepend *fe_prefix* to
-            the *basename*
+        fextract : None or list of fits files, optional
+            if None the list of files is inferred from the second column
+            of the ``dither_file``;
+            if not None must have ``ndither`` x ``nchannels`` elements. The channel
+            name and dither number are extracted from the ``CCDPOS`` and the
+            ``DITHER`` header keywords
+        fe_prefix : string, optional
+            when getting the names from the dither file, prepend ``fe_prefix`` to
+            the ``basename``
 
         Raises
         ------
         ReconstructValueError
             if both ``dither_file`` and ``fextract`` are ``None``
+        ReconstructValueError, ReconstructIOError
+            as in :class:`~ReconstructedIFU`
 
-        Note
-        ----
-            if *dither_file* is None, *fextract* must contain a number of
+        Notes
+        -----
+            if ``dither_file`` is None, ``fextract`` must contain a number of
             files equal to the number of channels (2)
-
-        .. todo::
-            should this distinction be moved to factory functions?
         """
         if dither_file is None and fextract is None:
             msg = "dither_file and/or fextract must be provided"
@@ -131,14 +150,16 @@ class ReconstructedIFU(object):
     def _fedict(self, fextract):
         """
         Organize the fiber extracted file names into a dictionary
+
         Parameters
         ----------
-        fextract: None or list of string
+        fextract : None or list of string
             If None get the file names from the dither, otherwise from the
             *fextract* list
-        output
-        ------
-        dfextract: dict
+
+        Returns
+        -------
+        dfextract : dict
             dictionary of fiber extracted frames
         """
         channels = self.ifu_center.channels
@@ -193,9 +214,10 @@ class ReconstructedIFU(object):
         """
         Read the fiber extracted files and creates a set of three lists for x,
         y and flux.
+
         Parameters
         ----------
-        dfextract: dictionary
+        dfextract : dictionary
             name of the fiber extracted file
         """
         for ch, d in it.product(self.ifu_center.channels, self.dither.dithers):
@@ -227,33 +249,35 @@ class ReconstructedIFU(object):
                 self.header.append({k: h.get(k) for k in ["CRVAL1", "CDELT1"]})
 
     def xpos(self, channel, dither):
-        """
-        get the position for the x *dither* in *channel*
+        """get the position for the x *dither* in *channel*
+
         Parameters
         ----------
-        channel: string
+        channel : string
             name of the channel [L, R]
-        dither: string
+        dither : string
             name of the dither [D1, D2, ..]
-        output
-        ------
-        xpos: ndarray
+
+        Returns
+        -------
+        ndarray
             x position of the fibers for the given channel and dither
         """
         return np.array(self.ifu_center.xifu[channel]) + self.dither.dx[dither]
 
     def ypos(self, channel, dither):
-        """
-        get the position for the y *dither* in *channel*
+        """get the position for the y *dither* in *channel*
+
         Parameters
         ----------
-        channel: string
+        channel : string
             name of the channel [L, R]
-        dither: string
+        dither : string
             name of the dither [D1, D2, ..]
-        output
-        ------
-        ypos: ndarray
+
+        Returns
+        -------
+        ndarray
             y position of the fibers for the given channel and dither
         """
         return np.array(self.ifu_center.yifu[channel]) + self.dither.dy[dither]
@@ -261,18 +285,20 @@ class ReconstructedIFU(object):
     def reconstruct(self, wmin=None, wmax=None):
         """
         Returns the reconstructed IFU with the flux computed between
-        [wmin, wmax]
+        [``wmin``, ``wmax``]
+
         Parameters
         ----------
-        wmin, wmax: float
-            min and max wavelength to use. If *None*: use the min and/or max
+        wmin, wmax : float, optional
+            min and max wavelength to use. If ``None``: use the min and/or max
             from the file
-        output
-        ------
-        x, y: 1d arrays
+
+        Returns
+        -------
+        x, y : 1d arrays
             x and y position of the fibers
-        flux: 1d array
-            flux of the fibers within *wmin* and *wmax*
+        flux : 1d array
+            flux of the fibers within ``wmin`` and ``wmax``
         """
         _flux = []
         for f, h in zip(self.flux, self.header):

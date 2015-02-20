@@ -5,27 +5,30 @@
 :meth:`~IFUAstrom.tan_dir` and :meth:`~IFUAstrom.tan_inv` implementations are
 taken from sections 3.1.1 and 3.1.2 of [1]_
 
-Example
--------
+Examples
+--------
 Example of use of this module::
 
-    ra0 = 0.
-    dec0 = 70.
-    rot = 0.
-    x_in, y_in = 10., 0.
+>>> ra0 = 0.
+>>> dec0 = 70.
+>>> rot = 0.
+>>> x_in, y_in = 10., 0.
 
-    # multiply by -1 to make positive x point east for 0 Deg rotation
-    ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
+>>> # multiply by -1 to make positive x point east for 0 Deg rotation
+>>> ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
+>>> ra, dec = ifu.tan_inv(x_in, y_in)
+>>> x_out, y_out = ifu.tan_dir(ra, dec)
+>>> ra, dec
+(-0.0081216788349454117, 69.999999814997963)
+>>> x_out, y_out
+(9.9999999999999964, 2.2899993733449891e-11)
 
-    ra, dec = ifu.tan_inv(x_in, y_in)
-    x, y    = ifu.tan_dir(ra, dec)
-    print("x_in, y_in = ", x_in, y_in)
-    print("ra, dec = ", ra, dec)
-    print("x, y = ", x, y)
-
-    print("Naive calculation: ")
-    print("ra - ra0   [\"] = ", -1. * (ra - ra0) * 3600. * cos(deg2rad(dec0)))
-    print("dec - dec0 [\"] = ", (dec - dec0) * 3600.)
+>>> # Naive calculation
+>>> import numpy as np
+>>> -1. * (ra - ra0) * 3600. * np.cos(np.deg2rad(dec0))
+9.9999999330230906
+>>> (dec - dec0) * 3600.
+-0.00066600733248378674
 
 .. todo::
     check the module and its the documentation
@@ -41,7 +44,7 @@ References
 
 Attributes
 ----------
-DEGPERRAD: float
+DEGPERRAD : float
     Degrees per radians
 """
 
@@ -59,21 +62,21 @@ class IFUAstrom(object):
 
     Parameters
     ----------
-    ra0, dec0: float
+    ra0, dec0 : float
         ra and dec coordinate that correspond to ``x=0`` and ``y=0`` in the IFUASTROM mapping
         file
-    rot: float
+    rot : float
         Rotation of the IFUASTROM, measured East of North such that a
         galaxy with a +10 Deg position angle on sky would be aligned with
         the y-axis in and IFUASTROM that is rotated by +10 Deg.
-    x_scale, y_scale : float, optional
+    x_scale, y_scale  : float, optional
         IFUASTROM plate scale. 
         
     Notes
     -----
         All the above parameters are saved into the corresponding attributes
 
-        When `x_scale=-1` and `y_scale=1` the IFUASTROM mapping file is perfect
+        When ``x_scale=-1`` and ``y_scale=1`` the IFUASTROM mapping file is perfect
         in arcseconds.
     """
 
@@ -92,12 +95,12 @@ class IFUAstrom(object):
 
         Parameters
         ----------
-        ra_in, dec_in: nd-array
+        ra_in, dec_in : nd-array
             ra and dec coordinate in degrees
 
         Returns
         -------
-        x_out, y_out: nd-arrays
+        x_out, y_out : nd-arrays
             x and y coordinates (in IFUAstrom coordinates, i.e. arcsec).
         """
         ra0, dec0 = self.ra0, self.dec0
@@ -135,12 +138,12 @@ class IFUAstrom(object):
 
         Parameters
         ----------
-        x_in, y_in: nd-array
+        x_in, y_in : nd-array
             x and y coordinate in arcseconds
 
         Returns
         -------
-        ra_out, dec_out: nd-arrays
+        ra_out, dec_out : nd-arrays
             RA/DEC coordinates in degree
         """
         ra0, dec0 = self.ra0, self.dec0

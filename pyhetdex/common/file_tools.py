@@ -14,11 +14,11 @@ def skip_comments(f):
 
     Parameters
     ----------
-    f: file object
+    f : file object
 
     Returns
-    ------
-    f: file object
+    -------
+    f : file object
         moved to the next non comment line
     """
     pos = f.tell()
@@ -38,15 +38,21 @@ def prefix_filename(path, prefix):
 
     Parameters
     ----------
-    path: string
+    path : string
         file path and name
-    prefix: string
+    prefix : string
         string to prepend
 
     Returns
     -------
     string
         path with the new file name
+
+    Examples
+    --------
+        
+    >>> prefix_filename('/path/to/file.dat', 'new_')
+    /path/to/new_file.dat
     """
     path, fname = os.path.split(path)
     return os.path.join(path, prefix + fname)
