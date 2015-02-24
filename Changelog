@@ -1,5 +1,10 @@
 2015-02-24  Francesco Montesano  <montefra@mpe.mpg.de>
 
+	* pyhetdex/common/dss_image.py: added astropy.wcs info in the documentation
+	* tests/test_wcs.py: added dummy test
+
+2015-02-24  Francesco Montesano  <montefra@mpe.mpg.de>
+
 	* pyhetdex/common/external_server_connect.py: renamed dss_image.py
 	* pyhetdex/common/dss_image.py: deg2pix moved, some code and documentation change
 	* pyhetdex/coordinates/wcs.py: deg2pix moved here

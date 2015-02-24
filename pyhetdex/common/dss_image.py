@@ -4,14 +4,21 @@ Largely copied from ``hetdexshuffle/visualize.py`` with some minor
 modifications
 
 .. todo::
-    Improve the documentation
+    Improve the documentation.
 
     ``ifu_centers``: :func:`~plotFocalPlaneQuicklook` and :func:`~get_image`
     have a ``ifu_centers`` arguments, which is the center of the IFUs in the
     focal plane. This is confusing as in HETDEX jargon IFUCen refers to the
-    fibers **within** one IFU
+    fibers **within** one IFU.
 
-    write tests
+    Write tests.
+
+    The CD matrix could be substituted by `astropy WCS
+    <http://astropy.readthedocs.org/en/v1.0/wcs/index.html>`_:
+
+    * :func:`~retrieve_image_DSS`: create it from the retrieved fits header
+    * :func:`~retrieve_image_SDSS`: create it by hand using ``ra``, ``dec``,
+      ``size`` and ``scale`` information
 """
 
 from __future__ import absolute_import, print_function
