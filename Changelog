@@ -1,3 +1,15 @@
+2015-02-24  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/common/external_server_connect.py: renamed dss_image.py
+	* pyhetdex/common/dss_image.py: deg2pix moved, some code and documentation change
+	* pyhetdex/coordinates/wcs.py: deg2pix moved here
+	* doc/source/common.rst: adapted to the above changes
+	* doc/source/coordinates.rst: adapted to the above changes
+	* pyhetdex/common/__init__.py: adapted to the above changes
+	* tests/test_dss_image.py: adapted to the above changes
+	* tests/test_extserconn.py: moved to test_dss_image
+	* tests/test_wcs.py: added fail test
+
 2015-02-20  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* documentation: all the documentation has been re-checked and made

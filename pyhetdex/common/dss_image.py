@@ -1,13 +1,9 @@
-"""
-Download a SDSS or DSS image and plot them.
+"""Download an image from SDSS or DSS and make the plot
 
 Largely copied from ``hetdexshuffle/visualize.py`` with some minor
 modifications
 
 .. todo::
-    Rename module: the module is not a generic connection to a server, but
-    specific to fetching and plotting DSS and SDSS images.
-
     Improve the documentation
 
     ``ifu_centers``: :func:`~plotFocalPlaneQuicklook` and :func:`~get_image`
@@ -17,6 +13,7 @@ modifications
 
     write tests
 """
+
 from __future__ import absolute_import, print_function
 
 import os
@@ -35,24 +32,7 @@ from astropy.io import fits
 import numpy as np
 
 from pyhetdex.common import file_tools as ft
-
-
-def deg2pix(degree, scale=1.698):
-    """Convert degrees in pixels, given a pixel scale
-
-    Parameters
-    ----------
-    degree : float
-        angle to convert
-    scale : float, optional
-        pixel scale
-
-    Returns
-    -------
-    float
-        number of pixels
-    """
-    return degree * 3600. / scale
+from pyhetdex.coordinates import wcs as pyhwcs
 
 
 def wcs2pix(ra, dec, ra0, dec0, scale=1.698, im_size=848, CD=None):
@@ -68,7 +48,7 @@ def wcs2pix(ra, dec, ra0, dec0, scale=1.698, im_size=848, CD=None):
         pixel scale
     im_size : float, optional
         size of the image
-    CD : ?, optional
+    CD : numpy.matrix, optional
         ??
 
     Returns
@@ -82,33 +62,11 @@ def wcs2pix(ra, dec, ra0, dec0, scale=1.698, im_size=848, CD=None):
         x = pixvec[0, 0] + im_size / 2.
         y = pixvec[1, 0] + im_size / 2.
     else:
-        x = -deg2pix(ra - ra0, scale) * np.cos(dec / 180. * np.pi)
+        x = - pyhwcs.deg2pix(ra - ra0, scale) * np.cos(dec / 180. * np.pi)
         x += im_size / 2.
-        y = deg2pix(dec - dec0, scale) + im_size / 2.
+        y = pyhwcs.deg2pix(dec - dec0, scale) + im_size / 2.
 
     return x, y
-
-
-def SDSS_coverage(ra, dec):
-    """Check if the position at ``ra``, ``dec`` is within the SDSS footprint
-
-    Parameters
-    ----------
-    ra, dec : float
-        coordinates to query in degrees
-
-    Returns
-    -------
-    bool
-        whether the input coordinates are within the SDSS footprint
-    """
-    url_sdssCoverage = 'http://www.sdss3.org/dr9/index.php'
-    request_sdssCoverage = urllib.urlencode({'coverageRA': ra,
-                                             'coverageDec': dec})
-    for line in urllib.urlopen(url_sdssCoverage, request_sdssCoverage):
-        if 'overlaps with the SDSS DR9 survey area.' in line:
-            return True
-    return False
 
 
 def plotFocalPlaneQuicklook(dra, ddec, pa, scale, ifu_centers, ra, dec, CD,
@@ -163,8 +121,8 @@ def plotFocalPlaneQuicklook(dra, ddec, pa, scale, ifu_centers, ra, dec, CD,
 
         # still need to correct the xr?
         rpol = RegularPolygon((xr, yr), 4,
-                              radius=deg2pix(ifu_size, scale) / np.sqrt(2.),
-                              orientation=rpa - np.pi / 4., linewidth=100.)
+                        radius=pyhwcs.deg2pix(ifu_size, scale) / np.sqrt(2.),
+                        orientation=rpa - np.pi / 4., linewidth=100.)
         patches.append(rpol)
 
     return PatchCollection(patches, edgecolor=color, facecolor='none')
@@ -211,7 +169,7 @@ def get_image(ra, dec, pa, size, ifu_centers, yflip, outdir):
     imarray, CD, url, img_src = retrieve_image(ra, dec, size, yflip)
 
     size_pix = len(imarray)
-    scale = deg2pix(size, scale=size_pix)
+    scale = pyhwcs.deg2pix(size, scale=size_pix)
 
     fig = plt.figure()
     ax = fig.add_axes([0, 0, 1, 1], frameon=False)
@@ -257,6 +215,36 @@ def get_image(ra, dec, pa, size, ifu_centers, yflip, outdir):
     return filename
 
 
+# === query the online databases ===
+def SDSS_coverage(ra, dec):
+    """Check if the position at ``ra``, ``dec`` is within the SDSS footprint
+
+    .. warning:: it assumes a radius of 0.02
+
+
+    Parameters
+    ----------
+    ra, dec : float
+        coordinates to query in degrees.
+
+        .. warning:: `SDSS coverage
+          <http://www.sdss3.org/dr9/index.php#coverage>`_ talks about RA/Dec in
+          HH:MM:SS / +-DD:MM:SS
+
+    Returns
+    -------
+    bool
+        whether the input coordinates are within the SDSS footprint
+    """
+    url_sdssCoverage = 'http://www.sdss3.org/dr9/index.php'
+    request_sdssCoverage = urllib.urlencode({'coverageRA': ra,
+                                             'coverageDec': dec})
+    for line in urllib.urlopen(url_sdssCoverage, request_sdssCoverage):
+        if 'overlaps with the SDSS DR9 survey area.' in line:
+            return True
+    return False
+
+
 def retrieve_image(ra, dec, size, yflip):
     """Wrapper function for retrieving image from SDSS. If region outside SDSS
     converage, it uses DSS image instead.
@@ -287,18 +275,23 @@ def retrieve_image(ra, dec, size, yflip):
         return retrieve_image_DSS(ra, dec, size, yflip)
 
 
-def retrieve_image_SDSS(ra, dec, size, yflip):
+def retrieve_image_SDSS(ra, dec, size, yflip, scale=0.396127):
     """Retrieve image from ``SDSS-DR9`` or dss server (jpeg) and returns the
     image array and the url. Note that the transformation from world coordinate
     (``ra``, ``dec``) to pixel position (``x``, ``y``) is simple projection
-    without rotation
+    without rotation::
 
         x = -scale * (ra - ra0) * cos(dec) + x0
         y =  scale * (dec - dec0) + y0
 
+    Options for the query are described `here
+    <http://skyserver.sdss3.org/dr9/en/tools/chart/chart.asp>`_
+
     Parameters
     ----------
     ra, dec, size, yflip : same as :func:`~retrieve_image`
+    scale : float, optional
+        arcsec / pixel (SDSS default); should be 1.698 to match DSS?
 
     Returns
     -------
@@ -312,11 +305,7 @@ def retrieve_image_SDSS(ra, dec, size, yflip):
     """
 
     url_sdss_jpeg = 'http://skyservice.pha.jhu.edu/DR9/ImgCutout/getjpeg.aspx'
-    # pixel scale in arcsec/pixel (1.698 for matching the dss image)
-    scale = 1.698
     size_pix = int(size * 3600. / scale)
-    # options for the finding chart (see
-    # http://skyserver.sdss3.org/dr9/en/tools/chart/chart.asp)
     opt = 'GL'
 
     if size_pix > 2048:
@@ -337,7 +326,7 @@ def retrieve_image_SDSS(ra, dec, size, yflip):
 
 
 def retrieve_image_DSS(ra, dec, size, yflip):
-    """Retrieve image from dss server (fits) and return the image array, the
+    """Retrieve a fits image from dss server and return the image array, the
     url, and the CD matrix (there is rotation in DSS images). ``CD`` matrix
     transforms the pixel position (``x``, ``y``) to world coordinate (``ra``
     ,``dec``).
@@ -356,7 +345,8 @@ def retrieve_image_DSS(ra, dec, size, yflip):
     """
 
     url_dss = 'http://archive.eso.org/dss/dss/image'
-    query = {'ra': ra, 'dec': dec, 'x': size*60, 'y': size*60,
+    query = {'ra': ra, 'dec': dec,
+             'x': size*60, 'y': size*60,  # covert to arc minutes
              'mime-type': 'download-fits'}
     request_dss = urllib.urlencode(query)
 

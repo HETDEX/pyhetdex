@@ -21,6 +21,15 @@
    :undoc-members:
    :private-members:
 
+:py:mod:`wcs` -- World coordinate system
+========================================
+
+.. automodule:: pyhetdex.coordinates.wcs
+   :member-order: groupwise
+   :members:
+   :undoc-members:
+   :private-members:
+
 :py:mod:`distances` -- Angular coordinate distances
 ===================================================
 

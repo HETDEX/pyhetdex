@@ -3,10 +3,10 @@
 :py:mod:`common` -- Common functionality
 ****************************************
 
-:py:mod:`external_server_connect` -- Fetch and plot sdss images
+:py:mod:`dss_image` -- Fetch and plot DSS/SDSS images
 ===============================================================
 
-.. automodule:: pyhetdex.common.external_server_connect
+.. automodule:: pyhetdex.common.dss_image
    :member-order: groupwise
    :members:
    :undoc-members:
