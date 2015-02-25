@@ -17,8 +17,8 @@ from astropy.io import fits
 from astropy.stats import sigma_clip
 import numpy as np
 
-from pyhetdex.common.fitstools import wavelength_to_index
-from pyhetdex.common.file_tools import prefix_filename
+from pyhetdex.tools.files.fits_tools import wavelength_to_index
+from pyhetdex.tools.files.file_tools import prefix_filename
 
 
 # Execute the sky subtraction on the fiber extracted files. The credit for the

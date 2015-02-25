@@ -1,11 +1,11 @@
 """
-tests for pyhetdex/common/file_tools.py
+tests for pyhetdex.tools.files.file_tools
 """
 from __future__ import print_function, absolute_import
 
 import nose.tools as nt
 
-import pyhetdex.common.file_tools as ft
+import pyhetdex.tools.files.file_tools as ft
 
 def test_prefix_filename():
     """

@@ -1,3 +1,14 @@
+2015-02-25  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* **/__init__.py: remove submodule imports to avoid circular imports
+	* pyhetdex/common: removed
+	* python/tools/analysis: renamed pyhetdex/tools/astro
+	* python/common/dss_image.py: moved to pyhetdex/tools/astro
+	* python/common/{file_tools,fitstools}.py: moved to
+	pyhetdex/tools/files/{file_tools,fits_tools}.py
+	* tests/*: adapted to the above changes
+	* doc/source/*: same
+
 2015-02-24  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/common/dss_image.py: added astropy.wcs info in the documentation

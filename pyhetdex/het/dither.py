@@ -6,7 +6,7 @@ from __future__ import print_function, absolute_import
 import os
 import re
 
-import pyhetdex.common.file_tools as ft
+import pyhetdex.tools.files.file_tools as ft
 
 
 class DitherParseError(ValueError):

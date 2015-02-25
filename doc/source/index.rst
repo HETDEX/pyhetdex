@@ -11,12 +11,12 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   common
    coordinates
    cure
    het
    ltl
-   tools
+   tools_astro
+   tools_files
 
 
 Indices and tables

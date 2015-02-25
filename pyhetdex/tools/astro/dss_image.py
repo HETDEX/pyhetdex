@@ -38,7 +38,7 @@ from astropy.io import fits
 
 import numpy as np
 
-from pyhetdex.common import file_tools as ft
+from pyhetdex.tools.files import file_tools as ft
 from pyhetdex.coordinates import wcs as pyhwcs
 
 

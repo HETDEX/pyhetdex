@@ -9,7 +9,7 @@ import os
 import nose.tools as nt
 import numpy as np
 
-from pyhetdex.tools.analysis import iq_fit
+from pyhetdex.tools.astro import iq_fit
 
 import settings as s
 

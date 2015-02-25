@@ -4,7 +4,7 @@ from __future__ import print_function, absolute_import
 
 from collections import defaultdict
 
-import pyhetdex.common.file_tools as ft
+import pyhetdex.tools.files.file_tools as ft
 
 
 class IFUCenterError(ValueError):

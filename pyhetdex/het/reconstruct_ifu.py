@@ -10,7 +10,8 @@ import os
 from astropy.io import fits
 import numpy as np
 
-from pyhetdex.common.fitstools import wavelength_to_index
+from pyhetdex.tools.files.fits_tools import wavelength_to_index
+from pyhetdex import het
 
 
 class RecontructIndexError(IndexError):
@@ -78,7 +79,6 @@ class ReconstructedIFU(object):
 
     def __init__(self, ifu_center, dither, fextract=None,
                  fe_prefix=""):
-        from pyhetdex import het
         if isinstance(dither, het.dither.EmptyDither) and fextract is None:
             msg = "With an empty dither file a fiber extract file name must be"
             msg += " provided"
@@ -137,7 +137,6 @@ class ReconstructedIFU(object):
             msg = "dither_file and/or fextract must be provided"
             raise ReconstructValueError(msg)
 
-        from pyhetdex import het
         _ifu_center = het.ifu_centers.IFUCenter(ifu_center_file)
         if dither_file is None:
             _dither = het.dither.EmptyDither()

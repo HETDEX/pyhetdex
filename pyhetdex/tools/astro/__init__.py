@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from pyhetdex.common import (dss_image, file_tools, fitstools)
+# from pyhetdex.tools.astro import (iq_fit, sky, dss_image)
 
 # don't import it
 del absolute_import

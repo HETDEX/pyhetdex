@@ -11,8 +11,8 @@ from astropy.io import fits
 import nose.tools as nt
 import numpy as np
 
-from pyhetdex.tools.analysis import sky
-from pyhetdex.common.file_tools import prefix_filename
+from pyhetdex.tools.astro import sky
+from pyhetdex.tools.files.file_tools import prefix_filename
 
 import settings as s
 
