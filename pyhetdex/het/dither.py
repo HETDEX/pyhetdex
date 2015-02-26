@@ -52,10 +52,12 @@ class _BaseDither(object):
     def absfname(self):
         """Absolute file name"""
         return self._absfname
+
     @property
     def abspath(self):
         """ Absolute file path """
         return os.path.split(self.absfname)[0]
+
     @property
     def filename(self):
         """ Absolute file path """
@@ -64,7 +66,7 @@ class _BaseDither(object):
 
 class EmptyDither(_BaseDither):
     """Creates a dither object with only one entry.
-    
+
     The dither key is **D1**, ``basename`` and ``absfname` are left emtpy,
     ``dx`` and ``dy`` are set to 0 and image quality, illumination and airmass
     are set to 1. It is provided as a stub dither object in case the real one
@@ -98,7 +100,7 @@ class ParseDither(_BaseDither):
     Raises
     ------
     DitherParseError
-        if the key ``Di`` is not found in the base name 
+        if the key ``Di`` is not found in the base name
     """
 
     def __init__(self, dither_file):

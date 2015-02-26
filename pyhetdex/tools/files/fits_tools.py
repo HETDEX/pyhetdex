@@ -22,7 +22,7 @@ def wavelength_to_index(header, wavelength):
     -------
     int or None
         index of ``wavelength``
-    
+
     Examples
     --------
 

@@ -1,5 +1,8 @@
-"Test pyhetdex.common.dss_image"
+"Test pyhetdex.tools.astro.dss_image"
+
+import pyhetdex.tools.astro.dss_image
+
 
 def test_module():
-    "pyhetdex.common.dss_image needs a tests"
+    "pyhetdex.tools.astro.dss_image needs a tests"
     assert False

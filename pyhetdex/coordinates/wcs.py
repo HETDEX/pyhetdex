@@ -19,4 +19,3 @@ def deg2pix(degree, scale=1.698):
         number of pixels
     """
     return degree * 3600. / scale
-

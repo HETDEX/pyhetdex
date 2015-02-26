@@ -6,7 +6,7 @@ Fits the point-like continuum detections with the `2D Moffat
 <http://astropy.readthedocs.org/en/v1.0/api/astropy.modeling.functional_models.Moffat2D.html>`_
 distribution integrated over the fibers of the reconstructed IFU image.
 
-.. warning:: 
+.. warning::
     The module does run, but it is not tested. Should not be used before proper
     tests are implemented
 """
@@ -151,7 +151,7 @@ class GridSampler(_BaseSampler):
 # http://astropy.readthedocs.org/en/stable/_modules/astropy/modeling/functional_models.html#Beta2D
 class MonteCarlo_Moffat2D(Moffat2D):
     """The model is the 2D Moffat distribution integrated in circles.
-    
+
     The integration is done in a Montecarlo like approach using the points
     provided by the sampler instance.
 
@@ -289,7 +289,7 @@ def fit_image_quality(dither_file, ifucen_file, stars=None, fe_prefix='',
         when getting the names from the dither file, prepend *fe_prefix* to
         the *basename*
     wmin, wmax : float, optional
-        min and max wavelength to use when doing the reconstruction. If *None* :
+        min and max wavelength to use when doing the reconstruction. If *None*:
         use the min and/or max from the file
     Sampler : :class:`~_BaseSampler` child instance, optional
         type of sampler to use

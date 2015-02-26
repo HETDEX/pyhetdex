@@ -23,14 +23,14 @@ class IFUCenter(object):
         # IFU 00001
         #
         # Test date: YYYYMMDD
-        # Total number of dead fibers (T < X %): 
+        # Total number of dead fibers (T < X %):
         #
-        # 
+        #
         # history
         # date     author   change
         # -------------------------
         # 20110702 mF       created
-        # 
+        #
         #
         # FIBERD   FIBERSEP
         1.55      2.20

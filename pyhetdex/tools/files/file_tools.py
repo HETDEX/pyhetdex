@@ -50,7 +50,7 @@ def prefix_filename(path, prefix):
 
     Examples
     --------
-        
+
     >>> prefix_filename('/path/to/file.dat', 'new_')
     /path/to/new_file.dat
     """

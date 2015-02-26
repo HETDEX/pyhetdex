@@ -1,3 +1,10 @@
+2015-02-26  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* **/__init__.py: commented out all unused bits of code
+	* pyhetdex/*: PEP8 compliant
+	* tests/*: all modules are in the test suite, at least with a stub, fail
+	test. Resolve #756
+
 2015-02-25  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* **/__init__.py: remove submodule imports to avoid circular imports

@@ -11,8 +11,8 @@ telescope configuration
     defined in code that uses :mod:`~pyhetdex`. Here referring to ``shot``
 
     either pass the ``illumination_model`` option as parameters to
-    :meth:`~ThroughputServer.fplaneToThroughput` or check that it is implemented when
-    initialising :class:`~ThroughputServer`.
+    :meth:`~ThroughputServer.fplaneToThroughput` or check that it is
+    implemented when initialising :class:`~ThroughputServer`.
 """
 from __future__ import absolute_import, print_function
 

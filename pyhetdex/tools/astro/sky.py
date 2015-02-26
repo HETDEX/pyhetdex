@@ -87,7 +87,7 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
 def fe_sky_background(fname, **kwargs):
     """Estimate the sky background as the (sigma clipped) median of medians
     within the required wavelengths and fiber number boundaries.
-    
+
     The input is read from `fname`. The keyword arguments are passed to
     :func:`~hdu_fe_sky_background`
 

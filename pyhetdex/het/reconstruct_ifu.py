@@ -114,12 +114,12 @@ class ReconstructedIFU(object):
         fextract : None or list of fits files, optional
             if None the list of files is inferred from the second column
             of the ``dither_file``;
-            if not None must have ``ndither`` x ``nchannels`` elements. The channel
-            name and dither number are extracted from the ``CCDPOS`` and the
-            ``DITHER`` header keywords
+            if not None must have ``ndither`` x ``nchannels`` elements. The
+            channel name and dither number are extracted from the ``CCDPOS``
+            and the ``DITHER`` header keywords
         fe_prefix : string, optional
-            when getting the names from the dither file, prepend ``fe_prefix`` to
-            the ``basename``
+            when getting the names from the dither file, prepend ``fe_prefix``
+            to the ``basename``
 
         Raises
         ------

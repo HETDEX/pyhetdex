@@ -15,8 +15,10 @@ import settings as s
 
 dither_fast = os.path.join(s.datadir, "dither_fast_SIMDEX-4000-obs-1_046.txt")
 dither_file = os.path.join(s.datadir, "dither_SIMDEX-4000-obs-1_046.txt")
-dither_other = os.path.join(s.datadir, "dither_other_SIMDEX-4000-obs-1_046.txt")
-dither_wrong = os.path.join(s.datadir, "dither_wrong_SIMDEX-4000-obs-1_046.txt")
+dither_other = os.path.join(s.datadir,
+                            "dither_other_SIMDEX-4000-obs-1_046.txt")
+dither_wrong = os.path.join(s.datadir,
+                            "dither_wrong_SIMDEX-4000-obs-1_046.txt")
 
 ifucenter_file = os.path.join(s.datadir, "IFUcen_HETDEX.txt")
 ifucenter_fail = os.path.join(s.datadir, "IFUcen_HETDEX_fail.txt")
@@ -40,6 +42,7 @@ class TestDither(object):
     def test_wrong_dither(self):
         "Fail in parsing a dither without 'D[123]' in basename"
         dithers = het.dither.ParseDither(dither_wrong)
+
 
 class TestIFUCenters(object):
     "Parse the ifu center file"
@@ -147,7 +150,8 @@ class TestReconstruction(object):
     def test_missmatch_header_info(self):
         "Fails when header entries don't match with expected values"
         fextract = glob.glob(os.path.join(s.datadir, "fast_SIM*D2*.fits"))
-        recifu = rifu.ReconstructedIFU.from_files(ifucenter_file, fextract=fextract)
+        recifu = rifu.ReconstructedIFU.from_files(ifucenter_file,
+                                                  fextract=fextract)
 
     @nt.raises(rifu.RecontructIndexError)
     def test_fib_missmatch(self):
@@ -160,5 +164,5 @@ if __name__ == "__main__":
     tr = TestReconstruction()
     rifu = tr.test_from_file()
     x, y, f = rifu.reconstruct(4000, 5000)
-    #import IPython
-    #IPython.embed()
+    # import IPython
+    # IPython.embed()

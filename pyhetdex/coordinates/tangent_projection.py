@@ -33,8 +33,8 @@ Example of use of this module::
 .. todo::
     check the module and its the documentation
 
-    Tests for :meth:`~IFUAstrom.tan_dir` and :meth:`~IFUAstrom.tan_inv` need values obtain from
-    external codes as reference
+    Tests for :meth:`~IFUAstrom.tan_dir` and :meth:`~IFUAstrom.tan_inv` need
+    values obtain from external codes as reference
 
 References
 ----------
@@ -63,21 +63,21 @@ class IFUAstrom(object):
     Parameters
     ----------
     ra0, dec0 : float
-        ra and dec coordinate that correspond to ``x=0`` and ``y=0`` in the IFUASTROM mapping
-        file
+        ra and dec coordinate that correspond to ``x=0`` and ``y=0`` in the
+        IFUASTROM mapping file
     rot : float
         Rotation of the IFUASTROM, measured East of North such that a
         galaxy with a +10 Deg position angle on sky would be aligned with
         the y-axis in and IFUASTROM that is rotated by +10 Deg.
     x_scale, y_scale  : float, optional
-        IFUASTROM plate scale. 
-        
+        IFUASTROM plate scale.
+
     Notes
     -----
         All the above parameters are saved into the corresponding attributes
 
-        When ``x_scale=-1`` and ``y_scale=1`` the IFUASTROM mapping file is perfect
-        in arcseconds.
+        When ``x_scale=-1`` and ``y_scale=1`` the IFUASTROM mapping file is
+        perfect in arcseconds.
     """
 
     def __init__(self, ra0, dec0, rot, x_scale=-1., y_scale=1.):
@@ -118,11 +118,11 @@ class IFUAstrom(object):
         # AIPS Memo 27, 3.1.1
         xhat = np.cos(rdec_in) * np.sin(rra_in - rra0)
         xhat /= (np.sin(rdec_in) * np.sin(rdec0) +
-                np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
+                 np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
         yhat = np.sin(rdec_in) * np.cos(rdec0)
         yhat -= np.cos(rdec_in) * np.sin(rdec0) * np.cos(rra_in - rra0)
         yhat /= (np.sin(rdec_in) * np.sin(rdec0) +
-                np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
+                 np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
 
         # rotation and scaling
         x = xhat * np.cos(rrot) * x_scale + yhat * np.sin(rrot) * y_scale
@@ -133,8 +133,8 @@ class IFUAstrom(object):
     def tan_inv(self, x_in, y_in):
         """inverse tangent transform
 
-        Calculates RA and DEC coordinates for positions in the IFUAstrom coordinate
-        frame.
+        Calculates RA and DEC coordinates for positions in the IFUAstrom
+        coordinate frame.
 
         Parameters
         ----------
@@ -164,7 +164,7 @@ class IFUAstrom(object):
         # AIPS Memo 27, 3.1.2
         rra_out = rra0 + np.arctan(xhat/(np.cos(rdec0) - yhat * np.sin(rdec0)))
         rdec_out = np.arctan(np.cos(rra_out - rra0) * (yhat * np.cos(rdec0) +
-                                                    np.sin(rdec0)) /
-                            (np.cos(rdec0) - yhat * np.sin(rdec0)))
+                                                       np.sin(rdec0)) /
+                             (np.cos(rdec0) - yhat * np.sin(rdec0)))
 
         return np.rad2deg(rra_out), np.rad2deg(rdec_out)
