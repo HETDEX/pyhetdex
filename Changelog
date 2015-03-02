@@ -1,315 +1,329 @@
+2015-03-02  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* pyhetdex/doc/sphinxext/todo.py: copied and modified from sphinx.ext.todo
+	  to show only the link in the todo list
+	* doc/source/doc.rst: add module documentation (very rough for now)
+	* doc/source/changelog.rst: add changelog to documentation
+	* doc/source/todos.rst: add todo list to documentation
+	* doc/source/index.rst: adapt to the above changes
+	* doc/source/conf.py: adapt to the above changes, change the path to `todo`
+	  extension, add alabaster as theme
+	* setup.py: add alabaster as dependences for sphinx
+	* pyhetdex/tools/astro/dss_image.py: move todos in functions before
+	parameters
+
 2015-02-26  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* **/__init__.py: commented out all unused bits of code
-	* pyhetdex/*: PEP8 compliant
-	* tests/*: all modules are in the test suite, at least with a stub, fail
-	test. Resolve #756
+    * **/__init__.py: commented out all unused bits of code
+    * pyhetdex/*: PEP8 compliant
+    * tests/*: all modules are in the test suite, at least with a stub, fail
+      test. Resolve #756
 
 2015-02-25  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* **/__init__.py: remove submodule imports to avoid circular imports
-	* pyhetdex/common: removed
-	* python/tools/analysis: renamed pyhetdex/tools/astro
-	* python/common/dss_image.py: moved to pyhetdex/tools/astro
-	* python/common/{file_tools,fitstools}.py: moved to
-	pyhetdex/tools/files/{file_tools,fits_tools}.py
-	* tests/*: adapted to the above changes
-	* doc/source/*: same
+    * **/__init__.py: remove submodule imports to avoid circular imports
+    * pyhetdex/common: removed
+    * python/tools/analysis: renamed pyhetdex/tools/astro
+    * python/common/dss_image.py: moved to pyhetdex/tools/astro
+    * python/common/{file_tools,fitstools}.py: moved to
+      pyhetdex/tools/files/{file_tools,fits_tools}.py
+    * tests/*: adapted to the above changes
+    * doc/source/*: same
 
 2015-02-24  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/common/dss_image.py: added astropy.wcs info in the documentation
-	* tests/test_wcs.py: added dummy test
+    * pyhetdex/common/dss_image.py: added astropy.wcs info in the documentation
+    * tests/test_wcs.py: added dummy test
 
 2015-02-24  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/common/external_server_connect.py: renamed dss_image.py
-	* pyhetdex/common/dss_image.py: deg2pix moved, some code and documentation change
-	* pyhetdex/coordinates/wcs.py: deg2pix moved here
-	* doc/source/common.rst: adapted to the above changes
-	* doc/source/coordinates.rst: adapted to the above changes
-	* pyhetdex/common/__init__.py: adapted to the above changes
-	* tests/test_dss_image.py: adapted to the above changes
-	* tests/test_extserconn.py: moved to test_dss_image
-	* tests/test_wcs.py: added fail test
+    * pyhetdex/common/external_server_connect.py: renamed dss_image.py
+    * pyhetdex/common/dss_image.py: deg2pix moved, some code and documentation change
+    * pyhetdex/coordinates/wcs.py: deg2pix moved here
+    * doc/source/common.rst: adapted to the above changes
+    * doc/source/coordinates.rst: adapted to the above changes
+    * pyhetdex/common/__init__.py: adapted to the above changes
+    * tests/test_dss_image.py: adapted to the above changes
+    * tests/test_extserconn.py: moved to test_dss_image
+    * tests/test_wcs.py: added fail test
 
 2015-02-20  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* documentation: all the documentation has been re-checked and made
-	compliant to numpy style.
+    * documentation: all the documentation has been re-checked and made
+      compliant to numpy style.
 
 2015-02-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* setup.py: astropy v1.0 is out
-	* pyhetdex/coordinates/distances.py: calcAngSepDeg moved here and renamed.
-	Some variable names changed
-	* pyhetdex/coordinates/transformations.py: calcAngSepDeg moved from here
-	* doc/source/coordinates.rst: added new distance section
-	* tests/test_distances.py: angular distance test moved here
-	* tests/test_transformations.py: from here
+    * setup.py: astropy v1.0 is out
+    * pyhetdex/coordinates/distances.py: calcAngSepDeg moved here and renamed.
+      Some variable names changed
+    * pyhetdex/coordinates/transformations.py: calcAngSepDeg moved from here
+    * doc/source/coordinates.rst: added new distance section
+    * tests/test_distances.py: angular distance test moved here
+    * tests/test_transformations.py: from here
 
 2015-02-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/coordinates/tangent_projection.py: direct and inverse transform
-	converted to IFUAstrom methods, documentation adapted
-	* tests/test_tangent_projection.py: adapted
+    * pyhetdex/coordinates/tangent_projection.py: direct and inverse transform
+      converted to IFUAstrom methods, documentation adapted
+    * tests/test_tangent_projection.py: adapted
 
 2015-02-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/tools/analysis/iq_fit.py: bugfix with astropy moffat import
+    * pyhetdex/tools/analysis/iq_fit.py: bugfix with astropy moffat import
 
 2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* version: 0.2.0 non backward compatible changes
-	* setup.py: use astropy version>= 1 (it's about to come out and will be a
-	LTS)
-	* pyhetdex/tools/analysis/iq_fit.py: adapted to astropy>=1
-	* pyhetdex/astrometry: renamed pyhetdex/coordinates
-	* pyhetdex/astrometry/astrometry.py: renamed
-	pyhetdex/coordinates/tangent_projection.py
-	* pyhetdex/common/coord.py: renamed
-	pyhetdex/coordinates/transformations.py
-	* pyhetdex: imports in __init__ adapted to new names
-	* tests/: tests adapted to new names
-	* doc/source/*rst: documentation adapted to new names
-	* doc/source/conf.py: version extracted from pyhetdex (not hardcoded)
+    * version: 0.2.0 non backward compatible changes
+    * setup.py: use astropy version>= 1 (it's about to come out and will be a
+      LTS)
+    * pyhetdex/tools/analysis/iq_fit.py: adapted to astropy>=1
+    * pyhetdex/astrometry: renamed pyhetdex/coordinates
+    * pyhetdex/astrometry/astrometry.py: renamed
+      pyhetdex/coordinates/tangent_projection.py
+    * pyhetdex/common/coord.py: renamed
+      pyhetdex/coordinates/transformations.py
+    * pyhetdex: imports in __init__ adapted to new names
+    * tests/: tests adapted to new names
+    * doc/source/*rst: documentation adapted to new names
+    * doc/source/conf.py: version extracted from pyhetdex (not hardcoded)
 
 2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/tools/analysis/sky.py: documentation compliant with standard
-	* doc/source/tools.rst: order documentation as in source
+    * pyhetdex/tools/analysis/sky.py: documentation compliant with standard
+    * doc/source/tools.rst: order documentation as in source
 
 2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* README.md: added some info about documentation
-	* pyhetdex/tools/analysis/iq_fit.py: renamed from
-	`pyhetdex/tools/analysis/seeing.py`. Moffat fit reimplemented using astropy.
-	WARNING: The module is not tested
-	* pyhetdex/tools/analysis/__init__.py: import adjusted
-	* tests/test_iq_fit.py: partial test created. The modules works, but more
-	tests are needed before being able to use it
-	* doc/source/conf.py: added autosummary, fixes some warnings
-	* doc/source/tools.rst: adjust iq_fit documentation parameters
+    * README.md: added some info about documentation
+    * pyhetdex/tools/analysis/iq_fit.py: renamed from
+    `pyhetdex/tools/analysis/seeing.py`. Moffat fit reimplemented using astropy.
+      WARNING: The module is not tested
+    * pyhetdex/tools/analysis/__init__.py: import adjusted
+    * tests/test_iq_fit.py: partial test created. The modules works, but more
+      tests are needed before being able to use it
+    * doc/source/conf.py: added autosummary, fixes some warnings
+    * doc/source/tools.rst: adjust iq_fit documentation parameters
 
 2015-02-18  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* doc/source/het.rst: order het.dither documentation as in the source file
-	* pyhetdex/het/dither.py: documentation comply to numpydoc style
-	* tests/test_reconstructions.py: manual test of the reconstruction added.
+    * doc/source/het.rst: order het.dither documentation as in the source file
+    * pyhetdex/het/dither.py: documentation comply to numpydoc style
+    * tests/test_reconstructions.py: manual test of the reconstruction added.
 
 2015-02-05  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/het/image_quality.py: documentation, PEP8. API change: first
-	letter of class name as capitalized, no config object passed, but necessary
-	settings
-	* pyhetdex/het/throughput.py: same
-	* pyhetdex/het/reconstruct_ifu.py: documentation fixed. API change:
-	fe_prefix defaults to "", not "Fe"
+    * pyhetdex/het/image_quality.py: documentation, PEP8. API change: first
+      letter of class name as capitalized, no config object passed, but necessary
+      settings
+    * pyhetdex/het/throughput.py: same
+    * pyhetdex/het/reconstruct_ifu.py: documentation fixed. API change:
+      fe_prefix defaults to "", not "Fe"
 
 2015-02-04  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/common/coords.py: added link to astlib
-	* pyhetdex/common/external_server_connect.py: documentation added. PEP8
-	compliant. Todos added
-	* pyhetdex/common/file_tools.py: docstring in numpy style
-	* pyhetdex/common/fitstools.py: same
-	* tests/test_coords.py: hms2decimal transform test precision set to 1e-5
-	* tests/test_extserconn.py: added stub test that fails. Write tests after
-	fixing the todos in external_server_connect.py
+    * pyhetdex/common/coords.py: added link to astlib
+    * pyhetdex/common/external_server_connect.py: documentation added. PEP8
+      compliant. Todos added
+    * pyhetdex/common/file_tools.py: docstring in numpy style
+    * pyhetdex/common/fitstools.py: same
+    * tests/test_coords.py: hms2decimal transform test precision set to 1e-5
+    * tests/test_extserconn.py: added stub test that fails. Write tests after
+      fixing the todos in external_server_connect.py
 
 2015-01-30  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/astrometry/astrometry.py: Todo about tests reliability added
+    * pyhetdex/astrometry/astrometry.py: Todo about tests reliability added
 
 2015-01-30  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/astrometry/astrometry.py: author added
-	* pyhetdex/common/coords.py: PEP8 compliant, documentation modified to
-	comply with the standard. Added list of todo about implementation and tests
-	* tests/test_coords.py: tests for the coords module. Almost complete, but
-	some tests fail
-	* doc/source/common.rst: section underlines adjusted to avoid complains from
-	sphinx
+    * pyhetdex/astrometry/astrometry.py: author added
+    * pyhetdex/common/coords.py: PEP8 compliant, documentation modified to
+      comply with the standard. Added list of todo about implementation and tests
+    * tests/test_coords.py: tests for the coords module. Almost complete, but
+      some tests fail
+    * doc/source/common.rst: section underlines adjusted to avoid complains from
+      sphinx
 
 2015-01-28  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* doc/source/conf.py: numpydoc plugin added
-	* doc/source/common.rst: section title added
-	* doc/source/tools.rst: same
-	* doc/source/het.rst: same, plus typo
-	* pyhetdex/astrometry/astrometry.py: documentation now comply with the
-	requirements
-	* pyhetdex/het/ifu_centers.py: same, plus small refactoring
-	* pyhetdex/het/throughput.py
-	* setup.py: sphinx and numpydoc optional dependances added
-	* README.md: documentation section expanded
+    * doc/source/conf.py: numpydoc plugin added
+    * doc/source/common.rst: section title added
+    * doc/source/tools.rst: same
+    * doc/source/het.rst: same, plus typo
+    * pyhetdex/astrometry/astrometry.py: documentation now comply with the
+      requirements
+    * pyhetdex/het/ifu_centers.py: same, plus small refactoring
+    * pyhetdex/het/throughput.py
+    * setup.py: sphinx and numpydoc optional dependances added
+    * README.md: documentation section expanded
 
 2015-01-26  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* tests/test_sky.py: first, non complete, tests for the sky background
-	estimation added. Still need to check the correctness of the output.
+    * tests/test_sky.py: first, non complete, tests for the sky background
+      estimation added. Still need to check the correctness of the output.
 
 2015-01-23  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* tests/test_sky.py: first, non complete, tests for the sky background
-	subtraction added
-	* tests/data/detect046_cont.dat: list of star detected. Used to find
-	coordinates for the image quality fit
-	* setup.cfg: fixed options name (this way it is possible to run nosetests as
-	standalone)
+    * tests/test_sky.py: first, non complete, tests for the sky background
+      subtraction added
+    * tests/data/detect046_cont.dat: list of star detected. Used to find
+      coordinates for the image quality fit
+    * setup.cfg: fixed options name (this way it is possible to run nosetests as
+      standalone)
 
 2015-01-22  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* svn:ignore: .eggs added
-	* pyhetdex/het/dither.py: fixed bug in error handling when parsing the
-	dither
-	* pyhetdex/het/ifu_centers.py: added custom error for easier catch
-	* pyhetdex/het/reconstruct_ifu.py: changed order of error handling
-	* tests/data: old data removed, new data added. They should be enough to
-	test ifu reconstruction, the sky module and image quality fit
-	* tests/test_reconstructions.py: file names adapted. Test failures more
-	rigorously. All reconstruct_ifu.py covered. Still miss check of the output.
+    * svn:ignore: .eggs added
+    * pyhetdex/het/dither.py: fixed bug in error handling when parsing the
+      dither
+    * pyhetdex/het/ifu_centers.py: added custom error for easier catch
+    * pyhetdex/het/reconstruct_ifu.py: changed order of error handling
+    * tests/data: old data removed, new data added. They should be enough to
+      test ifu reconstruction, the sky module and image quality fit
+    * tests/test_reconstructions.py: file names adapted. Test failures more
+      rigorously. All reconstruct_ifu.py covered. Still miss check of the output.
 
 2015-01-21  Jan Snigula  <snigula@mpe.mpg.de>
 
-	* README.md: Added instructions for documentation
+    * README.md: Added instructions for documentation
 
 2015-01-21  Jan Snigula  <snigula@mpe.mpg.de>
 
-	* doc: Added sphinx documentation
+    * doc: Added sphinx documentation
 
 2015-01-20  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* svn:ignore: dist/ added (committed in r24)
-	* pyhetdex/het/dither.py: added dither (absolute) file name and path
-	(committed in r24)
-	* pyhetdex/het/ifu_centers.py: implementation isolated from the ifu
-	reconstruction part (committed in r24)
-	* pyhetdex/het/reconstruct_ifu.py: ifu center part removed. __init__ accept
-	a dither and a ifu center instance. classmethod *from_files* added to use
-	the file names instead of the instances. (partially committed in r24)
-	* tests/settings.py: testing wide variables (not guaranteed to stay as it
-	is)
-	* tests/test_reconstructions.py: test dither and ifu_centers parsing. Test
-	ifu reconstruction
-	* test/data/*: added some data for testing (will likely change as more tests
-	are added)
+    * svn:ignore: dist/ added (committed in r24)
+    * pyhetdex/het/dither.py: added dither (absolute) file name and path
+      (committed in r24)
+    * pyhetdex/het/ifu_centers.py: implementation isolated from the ifu
+      reconstruction part (committed in r24)
+    * pyhetdex/het/reconstruct_ifu.py: ifu center part removed. __init__ accept
+      a dither and a ifu center instance. classmethod *from_files* added to use
+      the file names instead of the instances. (partially committed in r24)
+    * tests/settings.py: testing wide variables (not guaranteed to stay as it
+      is)
+    * tests/test_reconstructions.py: test dither and ifu_centers parsing. Test
+      ifu reconstruction
+    * test/data/*: added some data for testing (will likely change as more tests
+      are added)
 
 2015-01-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/__init__.py: remove absolute_import name
-	* pyhetdex/astrometry/__init__.py: same
-	* pyhetdex/common/__init__.py: same
-	* pyhetdex/het/__init__.py: same
-	* pyhetdex/tools/__init__.py: same
-	* pyhetdex/tools/analysis/__init__.py: same
-	* setup.cfg: added branch coverage
+    * pyhetdex/__init__.py: remove absolute_import name
+    * pyhetdex/astrometry/__init__.py: same
+    * pyhetdex/common/__init__.py: same
+    * pyhetdex/het/__init__.py: same
+    * pyhetdex/tools/__init__.py: same
+    * pyhetdex/tools/analysis/__init__.py: same
+    * setup.cfg: added branch coverage
 
 2015-01-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/__init__.py: import submodules
-	* pyhetdex/astrometry/__init__.py: same
-	* pyhetdex/common/__init__.py: same
-	* pyhetdex/het/__init__.py: same
-	* pyhetdex/tools/__init__.py: same
-	* pyhetdex/tools/analysis/__init__.py: same
-	* setup.py: find packages automatically. But only setuptools
+    * pyhetdex/__init__.py: import submodules
+    * pyhetdex/astrometry/__init__.py: same
+    * pyhetdex/common/__init__.py: same
+    * pyhetdex/het/__init__.py: same
+    * pyhetdex/tools/__init__.py: same
+    * pyhetdex/tools/analysis/__init__.py: same
+    * setup.py: find packages automatically. But only setuptools
 
 2015-01-16  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* svn:ignore: .coverage and cover/ ignored
-	* setup.py: added nosetests
-	* setup.cfg: configure nosetests (mostly coverage)
-	* README.md: test information updated
-	* pyhetdex/tools/analysis/seeing.py: missing parenthesis fixed
+    * svn:ignore: .coverage and cover/ ignored
+    * setup.py: added nosetests
+    * setup.cfg: configure nosetests (mostly coverage)
+    * README.md: test information updated
+    * pyhetdex/tools/analysis/seeing.py: missing parenthesis fixed
 
 2015-01-15  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/astrometry/astrometry.py: pep8 compliant, lower case variables
-	(upper case variable should be used only for global constants)
-	* tests/test_astrometry.py: added some tests for the astrometry module.
-	Someone more expert than me should check whether the input and output
-	values are reasonable 
+    * pyhetdex/astrometry/astrometry.py: pep8 compliant, lower case variables
+      (upper case variable should be used only for global constants)
+    * tests/test_astrometry.py: added some tests for the astrometry module.
+      Someone more expert than me should check whether the input and output
+      values are reasonable 
 
 2015-01-15  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* tests: test directory created
-	* tests/data: will store data related with testing
-	* tests/test_file_tools.py: test file_tools.py
-	* README.md: added testing info
+    * tests: test directory created
+    * tests/data: will store data related with testing
+    * tests/test_file_tools.py: test file_tools.py
+    * README.md: added testing info
 
 2015-01-14  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* svn:ignore: pyhetdex.egg-info added (created when running python setup.py)
-	* README.md: updated with some developer information
-	* pyhetdex/tools/analysis/sky.py: implementation of the sky background
-	estimation moved to a function that takes data and header, instead of the
-	file name
+    * svn:ignore: pyhetdex.egg-info added (created when running python setup.py)
+    * README.md: updated with some developer information
+    * pyhetdex/tools/analysis/sky.py: implementation of the sky background
+      estimation moved to a function that takes data and header, instead of the
+      file name
 
 2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/tools/analysis/sky.py: added sky background estimate from fiber
-	extracted files
+    * pyhetdex/tools/analysis/sky.py: added sky background estimate from fiber
+      extracted files
 
 2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* README.md: brief package description added
+    * README.md: brief package description added
 
 2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* README.md: little update. Install from svn successfully tested
+    * README.md: little update. Install from svn successfully tested
 
 2015-01-13  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* svn:ignore: added. build directory ignored
-	* pyhetdex/__init__.py: version added
-	* setup.py: added
-	* README.md: installation instructions added. After this commit I'll test
-	the installation from svn
+    * svn:ignore: added. build directory ignored
+    * pyhetdex/__init__.py: version added
+    * setup.py: added
+    * README.md: installation instructions added. After this commit I'll test
+      the installation from svn
 
 2015-01-12  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/het/reconstruct_ifu.py: moved from pyhetdex/tools/analysis/reconstruct_ifu.py
-	* pyhetdex/common/file_tools.py: skip_comments moved here from the above
-	module
-	* pyhetdex/het/dither.py: parsing of the dither file isolated here.
+    * pyhetdex/het/reconstruct_ifu.py: moved from pyhetdex/tools/analysis/reconstruct_ifu.py
+    * pyhetdex/common/file_tools.py: skip_comments moved here from the above
+      module
+    * pyhetdex/het/dither.py: parsing of the dither file isolated here.
 
 2015-01-12  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* README.md: added list of dependences
+    * README.md: added list of dependences
 
 2015-01-08  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* __init__.py: removed as this is the top level directory, not the library.
-	* pyhetdex/common/file_tools.py: added. File manipulation should go here
-	* pyhetdex/tools/analysis/sky.py: prefix correctly prepended to file name
+    * __init__.py: removed as this is the top level directory, not the library.
+    * pyhetdex/common/file_tools.py: added. File manipulation should go here
+    * pyhetdex/tools/analysis/sky.py: prefix correctly prepended to file name
 
 2014-12-19  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/common/fitstools.py: added
-	* pyhetdex/tools/analysis/sky.py: added. It does sky subtraction on fiber
-	  extracted frames
-	* pyhetdex/tools/analysis/reconstruct_ifu.py: _indx_w moved to fitstools.py
-	  and renamed. Calls correctly renamed
+    * pyhetdex/common/fitstools.py: added
+    * pyhetdex/tools/analysis/sky.py: added. It does sky subtraction on fiber
+      extracted frames
+    * pyhetdex/tools/analysis/reconstruct_ifu.py: _indx_w moved to fitstools.py
+      and renamed. Calls correctly renamed
 
 2014-12-04  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* tool/analysis: __init__.py added
+    * tool/analysis: __init__.py added
 
 2014-12-04  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* pyhetdex/tools/analysis: added
-	* pyhetdex/tools/analysis/seeing.py: added
-	* pyhetdex/tools/analysis/reconstruct_ifu.py: added
+    * pyhetdex/tools/analysis: added
+    * pyhetdex/tools/analysis/seeing.py: added
+    * pyhetdex/tools/analysis/reconstruct_ifu.py: added
 
 2014-12-03  Maximilian Fabricius  <mxhf@mpe.mpg.de>
 
-	* pyhetdex: Added. Moved all other subpackages here. 
-	* pyhetdex/astrometry/astrometry.py: Added tan_dir and tan_inv routines.
-	* pyhetdex/common: Added.
-	* pyhetdex/common/coords.py: Added. Contains h2m2decimal conversions and similar.
-	
+    * pyhetdex: Added. Moved all other subpackages here. 
+    * pyhetdex/astrometry/astrometry.py: Added tan_dir and tan_inv routines.
+    * pyhetdex/common: Added.
+    * pyhetdex/common/coords.py: Added. Contains h2m2decimal conversions and similar.
+    
 2014-11-28  Francesco Montesano  <montefra@mpe.mpg.de>
 
-	* *: created directory structure
+    * *: created directory structure
 

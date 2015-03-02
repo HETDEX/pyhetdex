@@ -35,16 +35,18 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     #'sphinx.ext.doctest',
-    'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
+    #'sphinx.ext.todo',
+    'pyhetdex.doc.sphinxext.todo',
     'sphinx.ext.viewcode',
     'numpydoc',
 ]
 
 # todo settings
 todo_include_todos = True
+todo_link_only = True
 
 # numpydoc setting
 numpydoc_show_class_members = False
@@ -119,17 +121,22 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output ----------------------------------------------
 
+import alabaster
+
+extensions.append('alabaster')
+
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'agogo'
+html_theme = 'alabaster'
+
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {"github_button": False}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+html_theme_path = [alabaster.get_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -166,7 +173,12 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+        '**': [
+                'about.html', 'navigation.html', 'searchbox.html',
+                'sourcelink.html',
+               ]
+        }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

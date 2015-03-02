@@ -17,7 +17,10 @@ Contents:
    ltl
    tools_astro
    tools_files
+   doc
 
+* :doc:`changelog`
+* :doc:`todos`
 
 Indices and tables
 ==================
@@ -25,4 +28,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

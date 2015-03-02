@@ -84,6 +84,12 @@ def plotFocalPlaneQuicklook(dra, ddec, pa, scale, ifu_centers, ra, dec, CD,
     :class:`~matplotlib.collections.PatchCollection`, which can be added to a
     plot using :meth:`~matplotlib.Axes.add_collection`.
 
+    .. todo::
+
+        `ifu_size` is hard coded to 0.012. Move to optional argument
+
+        Rename the function: function does not plot!
+
     Parameters
     ----------
     dra, ddec : float
@@ -109,12 +115,6 @@ def plotFocalPlaneQuicklook(dra, ddec, pa, scale, ifu_centers, ra, dec, CD,
     -------
     :class:`~matplotlib.collection.PatchCollection` instance
         collection of patrol circles
-
-    .. todo::
-
-        `ifu_size` is hard coded to 0.012. Move to optional argument
-
-        Rename the function: function does not plot!
     """
     ifu_size = 0.012
     patches = []
@@ -138,6 +138,16 @@ def plotFocalPlaneQuicklook(dra, ddec, pa, scale, ifu_centers, ra, dec, CD,
 def get_image(ra, dec, pa, size, ifu_centers, yflip, outdir):
     """Create the SDSS image around the given coordinates
 
+    .. todo::
+        ``filename``: is hard coded. Instead of the output directory pass the
+        full output name in the function arguments
+
+        Rename the function: probably ``plot_image`` would be more appropriate
+
+        ``box``, ``size_cut_out``: they should not be hard coded
+
+        html size should not be hard code
+
     Parameters
     ----------
     ra, dec : float
@@ -157,17 +167,6 @@ def get_image(ra, dec, pa, size, ifu_centers, yflip, outdir):
     -------
     outfile : string
         full name of the saved plot
-
-
-    .. todo::
-        ``filename``: is hard coded. Instead of the output directory pass the
-        full output name in the function arguments
-
-        Rename the function: probably ``plot_image`` would be more appropriate
-
-        ``box``, ``size_cut_out``: they should not be hard coded
-
-        html size should not be hard code
     """
     filename = "quicklook_sky_%f_%f_%f.jpeg" % (ra, dec, pa)
     filename = os.path.join(outdir, filename)
@@ -228,15 +227,13 @@ def SDSS_coverage(ra, dec):
 
     .. warning:: it assumes a radius of 0.02
 
+        `SDSS coverage <http://www.sdss3.org/dr9/index.php#coverage>`_ talks
+        about RA/Dec in HH:MM:SS / +-DD:MM:SS
 
     Parameters
     ----------
     ra, dec : float
         coordinates to query in degrees.
-
-        .. warning:: `SDSS coverage
-          <http://www.sdss3.org/dr9/index.php#coverage>`_ talks about RA/Dec in
-          HH:MM:SS / +-DD:MM:SS
 
     Returns
     -------
@@ -255,6 +252,11 @@ def SDSS_coverage(ra, dec):
 def retrieve_image(ra, dec, size, yflip):
     """Wrapper function for retrieving image from SDSS. If region outside SDSS
     converage, it uses DSS image instead.
+
+    .. todo::
+        either catch errors from :meth:`~urllib.urlopen` in
+        :meth:`~retrieve_image_SDSS` and :meth:`~retrieve_image_DSS` or add the
+        notion that it's raised and do something about it in :func:`~get_image`
 
     Parameters
     ----------
@@ -303,12 +305,6 @@ def retrieve_image_SDSS(ra, dec, size, yflip, scale=0.396127):
     Returns
     -------
     same as :func:`~retrieve_image`
-
-    .. todo::
-        either catch errors from :meth:`~urllib.urlopen` or add the notion that
-        it's raised and do something about it in :func:`~get_image`
-
-        ``scale``: should be hard coded?
     """
 
     url_sdss_jpeg = 'http://skyservice.pha.jhu.edu/DR9/ImgCutout/getjpeg.aspx'
@@ -346,9 +342,6 @@ def retrieve_image_DSS(ra, dec, size, yflip):
     -------
     same as :func:`~retrieve_image`
 
-    .. todo::
-        either catch errors from :meth:`~urllib.urlopen` or add the notion that
-        it's raised and do something about it in :func:`~get_image`
     """
 
     url_dss = 'http://archive.eso.org/dss/dss/image'
