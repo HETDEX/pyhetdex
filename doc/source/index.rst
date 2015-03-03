@@ -19,6 +19,8 @@ Contents:
    tools_files
    doc
 
+* :doc:`authors`
+* :doc:`licence`
 * :doc:`changelog`
 * :doc:`todos`
 

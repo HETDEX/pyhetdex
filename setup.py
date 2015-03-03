@@ -5,7 +5,7 @@ import os
 def extract_version():
     """
     Extracts version values from the main pyhetdex __init__.py and
-    returns them as a dictionary.
+    returns it.
     Taken from matplotlib/setupext.py
     """
     with open('pyhetdex/__init__.py') as fd:
@@ -19,7 +19,7 @@ setup(
     # package description and version
     name="pyhetdex",
     version=extract_version(),
-    author="Francesco Montesano",
+    author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",
     long_description=open("README.md").read(),
@@ -30,11 +30,11 @@ setup(
     zip_safe=False,
 
     # dependences
-    install_requires=['numpy', 'scipy', 'astropy==1', 'Pillow', 'matplotlib'],
+    install_requires=['numpy', 'scipy', 'astropy>=1', 'Pillow', 'matplotlib'],
 
-    extras_require={'nosetests': ['nose>=1', 'coverage'],
-                    'doc': ['sphinx', 'numpydoc', 'alabaster']},
+    extras_require={'doc': ['sphinx', 'numpydoc', 'alabaster'],},
 
     # tests
+    tests_require=['nose>=1', 'coverage'],
     test_suite='nose.collector',
 )

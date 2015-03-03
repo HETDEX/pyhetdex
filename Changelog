@@ -1,3 +1,9 @@
+2015-03-03  Francesco Montesano  <montefra@mpe.mpg.de>
+
+	* AUTHORS, LICENCE: added
+	* doc/source/{index,authors,licence}.rst: added to the documentation
+	* setup.py: authors updated, dependences fixed.
+
 2015-03-02  Francesco Montesano  <montefra@mpe.mpg.de>
 
 	* pyhetdex/doc/sphinxext/todo.py: copied and modified from sphinx.ext.todo
