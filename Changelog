@@ -1,5 +1,10 @@
 2015-03-03  Francesco Montesano <montefra@mpe.mpg.de>
 
+	* doc/source/conf.py: added project description in the side bar. Added
+	sphinx.ext.intersphinx 
+
+2015-03-03  Francesco Montesano <montefra@mpe.mpg.de>
+
 	* pyhetdex: all modules with tests run with python3 
 	* pyhetdex/tools/astro/{sky,dss_image}.py: adapted for the above
 

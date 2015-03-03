@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     #'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
@@ -67,7 +68,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pyhetdex'
-copyright = u'2015, Francesco Montesano, Jan Snigula, Daniel Farrow'
+copyright = u'2015, the HETDEX collaboration'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -133,7 +134,8 @@ html_theme = 'alabaster'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {"github_button": False}
+html_theme_options = {"github_button": False,
+                      "description": "heterogeneous HETDEX software library"}
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = [alabaster.get_path()]
@@ -175,8 +177,9 @@ html_static_path = ['_static']
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
         '**': [
-                'about.html', 'navigation.html', 'searchbox.html',
-                'sourcelink.html',
+                'about.html',
+                'navigation.html',
+                'searchbox.html',
                ]
         }
 
@@ -291,3 +294,12 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {'python2': ('http://docs.python.org/2', None),
+                       'python3': ('http://docs.python.org/3', None),
+                       'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+                       'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
+                       'matplotlib': ('http://matplotlib.sourceforge.net/', None),
+                       }
