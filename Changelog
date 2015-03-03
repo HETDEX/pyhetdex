@@ -1,10 +1,15 @@
-2015-03-03  Francesco Montesano  <montefra@mpe.mpg.de>
+2015-03-03  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex: all modules with tests run with python3 
+	* pyhetdex/tools/astro/{sky,dss_image}.py: adapted for the above
+
+2015-03-03  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* AUTHORS, LICENCE: added
 	* doc/source/{index,authors,licence}.rst: added to the documentation
 	* setup.py: authors updated, dependences fixed.
 
-2015-03-02  Francesco Montesano  <montefra@mpe.mpg.de>
+2015-03-02  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/doc/sphinxext/todo.py: copied and modified from sphinx.ext.todo
 	  to show only the link in the todo list

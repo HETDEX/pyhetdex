@@ -13,6 +13,8 @@ modifications
 
     Write tests.
 
+    Use :class:`io.StringIO` instead of :class:`StringIO.StringIO` in python2
+
     The CD matrix could be substituted by `astropy WCS
     <http://astropy.readthedocs.org/en/v1.0/wcs/index.html>`_:
 
@@ -24,7 +26,14 @@ modifications
 from __future__ import absolute_import, print_function
 
 import os
-from StringIO import StringIO
+import warnings
+try:
+    from StringIO import StringIO
+    with warnings.catch_warnings():
+        warnings.simplefilter("default", ImportWarning)
+        warnings.warn("Move to io.StringIO module", category=ImportWarning)
+except ImportError:
+    from io import StringIO
 import urllib
 
 from PIL import Image

@@ -193,8 +193,8 @@ def moving_window(mask, cindex, width=20):
     window_mask : 1d array of bool
         *mask* with all the elements outside the window set to False
     """
-    imin = max(0, cindex - width/2)  # lower bound
-    imax = min(len(mask)-1, cindex + width/2)  # lower bound
+    imin = max(0, cindex - width//2)  # lower bound
+    imax = min(len(mask)-1, cindex + width//2)  # lower bound
 
     indx_out = list(range(imin)) + list(range(imax, len(mask)))
 
