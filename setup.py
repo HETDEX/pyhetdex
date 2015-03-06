@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import os
 
 
 def extract_version():
@@ -14,6 +13,21 @@ def extract_version():
                 version = line.split('=')[1].strip().strip('"')
                 break
     return version
+
+
+def extras_require():
+    """Deal with extra requirements
+
+    Returns
+    -------
+    dictionary of requirements
+    """
+    req_dic = {'doc': ['sphinx', 'numpydoc', 'alabaster', ],
+               }
+
+    req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild', ]
+
+    return req_dic
 
 setup(
     # package description and version
@@ -32,7 +46,7 @@ setup(
     # dependences
     install_requires=['numpy', 'scipy', 'astropy>=1', 'Pillow', 'matplotlib'],
 
-    extras_require={'doc': ['sphinx', 'numpydoc', 'alabaster'],},
+    extras_require=extras_require(),
 
     # tests
     tests_require=['nose>=1', 'coverage'],

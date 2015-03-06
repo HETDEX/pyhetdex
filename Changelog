@@ -1,7 +1,15 @@
+2015-03-06  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* doc/Makefile: added sphinx-autobuild (automatic sphinx build)
+	* setup.py: added as dependence
+	* doc/source/install.rst: added
+	* doc/source/contributions.rst: added
+	* doc/source/index.rst: adapted to the above
+
 2015-03-03  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* doc/source/conf.py: added project description in the side bar. Added
-	sphinx.ext.intersphinx 
+	  sphinx.ext.intersphinx 
 
 2015-03-03  Francesco Montesano <montefra@mpe.mpg.de>
 

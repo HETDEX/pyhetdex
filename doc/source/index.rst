@@ -6,23 +6,40 @@
 Welcome to pyhetdex's documentation!
 ====================================
 
-Contents:
+Instructions
+------------
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
+   
+    install
+    contributions
 
-   coordinates
-   cure
-   het
-   ltl
-   tools_astro
-   tools_files
-   doc
 
-* :doc:`authors`
-* :doc:`licence`
-* :doc:`changelog`
-* :doc:`todos`
+Code documentation
+------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    coordinates
+    cure
+    het
+    ltl
+    tools_astro
+    tools_files
+    doc
+
+About
+-----
+
+.. toctree::
+    :maxdepth: 1
+
+    authors
+    licence
+    changelog
+    todos
 
 Indices and tables
 ==================
