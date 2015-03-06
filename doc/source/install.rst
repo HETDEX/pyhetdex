@@ -64,6 +64,7 @@ Optional dependences
 
    nose>=1
    coverage
+   tissue
 
 * documentation::
 

@@ -49,6 +49,6 @@ setup(
     extras_require=extras_require(),
 
     # tests
-    tests_require=['nose>=1', 'coverage'],
+    tests_require=['nose>=1', 'coverage', 'tissue'],
     test_suite='nose.collector',
 )

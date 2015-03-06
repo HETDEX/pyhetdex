@@ -1,5 +1,10 @@
 2015-03-06  Francesco Montesano <montefra@mpe.mpg.de>
 
+	* setup.*: added tissue, enable PEP8 checks during nosetests
+	* doc/source/install.rst: same
+
+2015-03-06  Francesco Montesano <montefra@mpe.mpg.de>
+
 	* doc/Makefile: added sphinx-autobuild (automatic sphinx build)
 	* setup.py: added as dependence
 	* doc/source/install.rst: added
