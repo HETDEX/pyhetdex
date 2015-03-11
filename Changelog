@@ -1,3 +1,9 @@
+2015-03-11  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/files/file_tools.py: added file search in directory
+	* tests/test_file_tools.py: test part of it
+	* doc/source/install.rst: little formatting fixed
+
 2015-03-06  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* setup.*: added tissue, enable PEP8 checks during nosetests

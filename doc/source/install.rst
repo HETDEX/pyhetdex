@@ -17,7 +17,7 @@ The easiest way to install ``pyhetdex`` is using `pip
 This will take care of installing :ref:`pyhetdex dependances <Dependances>`.
 
 From local ``pyhetdex`` copy
------------------------
+----------------------------
 
 If you want a local copy of ``pyhetdex``, you can checkout the repository with::
 
