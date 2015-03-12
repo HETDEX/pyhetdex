@@ -1,3 +1,14 @@
+2015-03-12  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/processes.py: first implementation of
+	  single/multiprocessor abstraction
+	* tests/test_processes.py: test it
+	* doc/source/tools_processes.rst: document it
+	* doc/source/index.rst: same
+	* doc/source/tools_files.rst: typo fixed
+	* setup.py: bootstrap nose to make nosetests available
+	* doc/Makefile: livehtml triggered by code changes
+
 2015-03-11  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/files/file_tools.py: added file search in directory
@@ -45,7 +56,7 @@
 	  extension, add alabaster as theme
 	* setup.py: add alabaster as dependences for sphinx
 	* pyhetdex/tools/astro/dss_image.py: move todos in functions before
-	parameters
+	  parameters
 
 2015-02-26  Francesco Montesano  <montefra@mpe.mpg.de>
 
@@ -132,8 +143,8 @@
 
     * README.md: added some info about documentation
     * pyhetdex/tools/analysis/iq_fit.py: renamed from
-    `pyhetdex/tools/analysis/seeing.py`. Moffat fit reimplemented using astropy.
-      WARNING: The module is not tested
+	  `pyhetdex/tools/analysis/seeing.py`. Moffat fit reimplemented using
+	  astropy.  WARNING: The module is not tested
     * pyhetdex/tools/analysis/__init__.py: import adjusted
     * tests/test_iq_fit.py: partial test created. The modules works, but more
       tests are needed before being able to use it

@@ -1,4 +1,4 @@
-.. :py:currentmodule:: pyhetdex.common
+.. :py:currentmodule:: pyhetdex.tools
 
 :py:mod:`tools.files` -- File utilities
 ***************************************

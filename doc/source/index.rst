@@ -28,6 +28,7 @@ Code documentation
     ltl
     tools_astro
     tools_files
+    tools_processes
     doc
 
 About

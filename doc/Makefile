@@ -14,8 +14,8 @@ $(error The '$(SPHINXBUILD)' command was not found. Make sure you have Sphinx in
 endif
 
 # livehtml ignore and include options
-LIVEHTML_EX = -i 'source/.??*' -i 'source/*~'
-# LIVEHTML_IN = -z '../libvhc'
+LIVEHTML_EX = -i 'source/.??*' -i 'source/*~' -i '../pyhetdex/__pycache__/*' -i '../pyhetdex/.??*' -i '../pyhetdex/*~' -i '../pyhetdex/*/__pycache__/*' 
+LIVEHTML_IN = -z '../pyhetdex'
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
