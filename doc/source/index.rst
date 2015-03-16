@@ -29,6 +29,7 @@ Code documentation
     tools_astro
     tools_files
     tools_processes
+    tools_config
     doc
 
 About

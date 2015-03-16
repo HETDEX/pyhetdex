@@ -1,3 +1,11 @@
+2015-03-16  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/configuration.py: custom config parser added (from
+	  quicklook)
+	* tests/test_configuration.py: tested almost completely
+	* doc/source/tools_config.rst: added in documentation
+	* doc/source/index.rst: added section
+
 2015-03-12  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/processes.py: first implementation of
