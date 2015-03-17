@@ -1,3 +1,10 @@
+2015-03-17  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/doc/docstring.py: decorate functions to allow format string
+	  substiution
+	* doc/source/doc.rst: add documentation
+	* tests/test_docstring.py: add test
+
 2015-03-16  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/configuration.py: custom config parser added (from
