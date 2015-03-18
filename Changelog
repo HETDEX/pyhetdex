@@ -1,3 +1,10 @@
+2015-03-18  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/configuration.py: add cross section interpolation also to
+	  python 2
+	* doc/source/tools_config.rst: document it
+	* tests/test_configuration.py: add test
+
 2015-03-17  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/doc/docstring.py: decorate functions to allow format string
