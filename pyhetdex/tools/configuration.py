@@ -12,7 +12,38 @@ python 3:
 * :meth:`ConfigParser.read_dict`
 * the possibility to use `extended interpolation
   <https://docs.python.org/3.4/library/configparser.html#configparser.ExtendedInterpolation>`_
+
+Examples
+--------
+>>> # python2
+>>> import pyhetdex.tools.configuration as pconf
+>>> # standard config parser interpolation
+>>> stdparser = pconf.ConfigParser()
+>>> # extended config parser interpolation
+>>> extparser = pconf.ConfigParser(interpolation=pconf.ExtendedInterpolation())
+
+>>> # python3
+>>> import pyhetdex.tools.configuration as pconf
+>>> from configparser import ExtendedInterpolation
+>>> # standard config parser interpolation
+>>> stdparser = pconf.ConfigParser()
+>>> # extended config parser interpolation
+>>> extparser = pconf.ConfigParser(interpolation=ExtendedInterpolation())
+
+>>> # Configuration file: default interpolation
+>>> [general]
+>>> dir1 = /path/to
+>>> [section]
+>>> dir1 = /path/to
+>>> file1 = %(dir1)/file1
+
+>>> # Configuration file: extended interpolation
+>>> [general]
+>>> dir1 = /path/to
+>>> [section]
+>>> file1 = %{general:dir1}/file1
 """
+
 from __future__ import absolute_import, print_function
 
 import ast
@@ -21,7 +52,6 @@ try:  # python 2.x
 except ImportError:  # python 3.x
     import configparser as confp
 import re
-import sys
 
 
 # =============================================================================
@@ -308,15 +338,13 @@ class ExtendedInterpolation(Interpolation):
 
     For example::
 
-        [sect1]
+        [general]
         dir1 = /path/to
+        [section]
+        file1 = %{general:dir1}/file1
 
-        [sect2]
-        dir2 = ${sect1:dir1}/subdir
-        file = ${dir2}/file.txt
 
-    would resolve ``dir2 = /path/to/subdir`` and ``file =
-    /path/to/subdir/file.txt``.
+    would resolve ``file1 = /path/to/file1``.
     """
 
     _KEYCRE = re.compile(r"\$\{([^}]+)\}")

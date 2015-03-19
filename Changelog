@@ -1,3 +1,7 @@
+2015-03-19  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/configuration.py: example added
+
 2015-03-18  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/configuration.py: add cross section interpolation also to
