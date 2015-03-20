@@ -80,6 +80,7 @@ class TestConf(object):
 class TestExtendedInterpolation(object):
     "Test the extended interpolation in the configuration parser"
     INTERPOLATION = ExtendedInterpolation()
+    INTERPNAME = "ExtendedInterpolation"
     # configuration defaults
     CONF = {"general": {"dir1": "/path/to"},
             "section": {"subdir": "${general:dir1}/subdir",
@@ -94,6 +95,9 @@ class TestExtendedInterpolation(object):
         cls.exp_subdir = "/path/to/subdir"
         cls.exp_file1 = "/path/to/subdir/afile"
         cls.exp_file2 = "/path/to/other/otherfile"
+        cls.exp_subdirraw = "${general:dir1}/subdir"
+        cls.exp_fileraw1 = "${subdir}/afile"
+        cls.exp_fileraw2 = "${dir2}/otherfile"
         # initialise the parser
         c = pyhconf.ConfigParser(interpolation=cls.INTERPOLATION)
         c.read_dict(cls.CONF)
@@ -101,49 +105,62 @@ class TestExtendedInterpolation(object):
         return cls
 
     def test_in_section_int(self):
-        "[ExtendedInterpolation] Intra-section interpolation"
+        "Intra-section interpolation"
         file2 = self.c.get("section", "file2")
         nt.assert_equal(file2, self.exp_file2)
 
     def test_cross_section_int(self):
-        "[ExtendedInterpolation] Cross-section interpolation"
+        "Cross-section interpolation"
         subdir = self.c.get("section", "subdir")
         nt.assert_equal(subdir, self.exp_subdir)
 
     def test_cross_section_int_rec(self):
-        "[ExtendedInterpolation] Cross-section recursive interpolation"
+        "Cross-section recursive interpolation"
         file1 = self.c.get("section", "file1")
         nt.assert_equal(file1, self.exp_file1)
+
+    def test_in_section_int_raw(self):
+        "Intra-section interpolation, raw"
+        file2 = self.c.get("section", "file2", raw=True)
+        nt.assert_equal(file2, self.exp_fileraw2)
+
+    def test_cross_section_int_raw(self):
+        "Cross-section interpolation, raw"
+        subdir = self.c.get("section", "subdir", raw=True)
+        nt.assert_equal(subdir, self.exp_subdirraw)
+
+    def test_cross_section_int_rec_raw(self):
+        "Cross-section recursive interpolation, raw"
+        file1 = self.c.get("section", "file1", raw=True)
+        nt.assert_equal(file1, self.exp_fileraw1)
 
 
 class TestDefInterpolation(TestExtendedInterpolation):
     "Test the interpolation in the configuration parser"
 
     INTERPOLATION = BasicInterpolation()
-    # configuration defaults
+    INTERPNAME = "BasicInterpolation"
 
+    # configuration defaults
     @classmethod
     def setup_class(cls):
         super(TestDefInterpolation, cls).setup_class()
         # convert ${} into %()s
         r = re.compile(r"\${(.*)\}")
+        sub = r"%(\1)s"
         for opt, val in cls.c.items("section"):
-            cls.c.set("section", opt, r.sub(r"%(\1)s", val))
+            cls.c.set("section", opt, r.sub(sub, val))
+        cls.exp_fileraw1 = r.sub(sub, cls.exp_fileraw1)
+        cls.exp_fileraw2 = r.sub(sub, cls.exp_fileraw2)
+        cls.exp_subdirraw = r.sub(sub, cls.exp_subdirraw)
         return cls
-
-    def test_in_section_int(self):
-        "[BasicInterpolation] Intra-section interpolation"
-        file2 = self.c.get("section", "file2")
-        nt.assert_equal(file2, self.exp_file2)
 
     @nt.raises(confp.InterpolationMissingOptionError)
     def test_cross_section_int(self):
-        "[BasicInterpolation] Cross-section interpolation fails"
-        subdir = self.c.get("section", "subdir")
-        nt.assert_equal(subdir, self.exp_subdir)
+        "Cross-section interpolation fails"
+        super(TestDefInterpolation, self).test_cross_section_int()
 
     @nt.raises(confp.InterpolationMissingOptionError)
     def test_cross_section_int_rec(self):
-        "[BasicInterpolation] Cross-section recursive interpolation fails"
-        file1 = self.c.get("section", "file1")
-        nt.assert_equal(file1, self.exp_file1)
+        "Cross-section recursive interpolation fails"
+        super(TestDefInterpolation, self).test_cross_section_int_rec()

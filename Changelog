@@ -1,3 +1,7 @@
+2015-03-20  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* tests/test_configuration.py: test now interpolation when getting options
+
 2015-03-19  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/configuration.py: example added
