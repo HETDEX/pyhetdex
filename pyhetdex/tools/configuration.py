@@ -87,24 +87,22 @@ class ConfigParser(confp.ConfigParser):
     def get_list_of_list(self, section, option, use_default=False):
         """
         A convenience method which coerces the option in the specified section
-        to a list of lists.
+        to a list of lists. If the options is empty returns ``[[None, None]]``
 
         Examples
         --------
-        ::
 
-            >>> cat settings.cfg:
-            [section]
-            wranges_bkg = 3500-4500,4500-5500
-            >>> conf.get_list_of_list("section", "wranges_bkg")
-            [[3500, 4500], [4500, 5500]]
-
-            >>> cat settings.cfg:
-            [section]
-            >>> conf.get_list_of_list("section", "wranges_bkg")
-            NoOptionError
-            >>> conf.get_list_of_list("section", "wranges_bkg", default=True)
-            [[None, None]]
+        >>> cat settings.cfg:
+        [section]
+        wranges_bkg = 3500-4500,4500-5500
+        >>> conf.get_list_of_list("section", "wranges_bkg")
+        [[3500, 4500], [4500, 5500]]
+        >>> cat settings.cfg:
+        [section]
+        >>> conf.get_list_of_list("section", "wranges_bkg")
+        NoOptionError
+        >>> conf.get_list_of_list("section", "wranges_bkg", default=True)
+        [[None, None]]
 
         Parameters
         ----------
@@ -128,32 +126,36 @@ class ConfigParser(confp.ConfigParser):
         """
         try:
             value = self.get(section, option)
-            value = value.split(',')  # divide the various groups
-            # split each of the '-' separated couples and convert to float
-            value = [list(map(float, i.split('-'))) for i in value]
-            return value
         except confp.NoOptionError:
             if use_default:
                 return [[None, None]]
             else:
                 raise
 
+        if not value.strip():
+            return [[None, None]]
+
+        value = value.split(',')  # divide the various groups
+        # split each of the '-' separated couples and convert to float
+        value = [list(map(float, i.split('-'))) for i in value]
+        return value
+
     def get_list(self, section, option, use_default=False):
         """
         A convenience method which coerces the option in the specified section
-        to a list
+        to a list. If the options is empty returns the empty list ``[]``.
 
-        Examples:
-        ::
+        Examples
+        --------
 
-            >>> cat settings.cfg:
-            [section]
-            wranges_iq = 3500, 4500, 5500
-            literal_list = ['a', 'b', 'c']
-            >>> conf.get_list_of_list("section", "wranges_bkg")
-            [3500, 4500, 5500]
-            >>> conf.get_list_of_list("section", "literal_list")
-            ['a', 'b', 'c']
+        >>> cat settings.cfg:
+        [section]
+        wranges_iq = 3500, 4500, 5500
+        literal_list = ['a', 'b', 'c']
+        >>> conf.get_list_of_list("section", "wranges_bkg")
+        [3500, 4500, 5500]
+        >>> conf.get_list_of_list("section", "literal_list")
+        ['a', 'b', 'c']
 
         Parameters
         ----------
@@ -176,6 +178,15 @@ class ConfigParser(confp.ConfigParser):
         """
         try:
             value = self.get(section, option)
+        except confp.NoOptionError:
+            if use_default:
+                return []
+            else:
+                raise
+
+        if not value.strip():
+            return []
+        try:
             return list(ast.literal_eval(value))
         except ValueError:  # ValueError: malformed string
             # e.g. "a, b, c" which is valid cannot be converted into a list of
@@ -183,11 +194,6 @@ class ConfigParser(confp.ConfigParser):
             # strip and return it
             values = value.split(',')
             return [v.strip() for v in values]
-        except confp.NoOptionError:
-            if use_default:
-                return []
-            else:
-                raise
 
     def read_dict(self, dictionary, source='<dict>'):
         """Read configuration from a dictionary.

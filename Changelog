@@ -1,3 +1,8 @@
+2015-03-24  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/configuration.py: handle empty lists
+	* tests/test_configuration.py: test it
+
 2015-03-20  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* tests/test_configuration.py: test now interpolation when getting options

@@ -23,17 +23,37 @@ class TestConf(object):
         conf = {"listolist": {"lists": "3500-4500,4500-5500"},
                 "list": {"float_list": "3500, 4500, 5500",
                          "literal_list": "['a', 'b', 'c']",
-                         "literal_list2": "a, b, c"
+                         "literal_list2": "a, b, c",
                          },
+                "empty": {"empty_list": " ",
+                          "literal_empty_list": "[]",
+                          },
                 }
         cls.lists_exp = [[3500, 4500], [4500, 5500]]
         cls.float_list_exp = [3500, 4500, 5500]
         cls.literal_list_exp = ['a', 'b', 'c']
+        cls.empty_list_exp = []
+        cls.empty_list_of_list_exp = [[None, None]]
         # initialise the parser
         c = pyhconf.ConfigParser()
         c.read_dict(conf)
         cls.c = c
         return cls
+
+    def test_empty_list(self):
+        "empty list"
+        emptyl = self.c.get_list('empty', 'empty_list')
+        nt.assert_equal(emptyl, self.empty_list_exp)
+
+    def test_literal_empty_list(self):
+        "literal empty list"
+        emptyl = self.c.get_list('empty', 'literal_empty_list')
+        nt.assert_equal(emptyl, self.empty_list_exp)
+
+    def test_empty_list_of_list(self):
+        "empty list of lists"
+        emptyl = self.c.get_list_of_list('empty', 'empty_list')
+        nt.assert_equal(emptyl, self.empty_list_of_list_exp)
 
     def test_list_of_list(self):
         "list of lists"
