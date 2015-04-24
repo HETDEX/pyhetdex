@@ -1,3 +1,14 @@
+2015-04-24  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/het/fplane.py: add base classes for IFU container and FPlane parser
+	* doc/source/het.rst: add it to the documentations
+	* tests/data/fplane.txt: add fplane file
+	* tests/test_fplane.py: add test
+	* tests/test_processes.py: make multiprocessing tests faster
+	* setup.cfg: remove tissue options
+	* setup.py: same. Use sphinx-autobuild >= 0.52
+	* doc/Makefile: use regex exclusion for sphinx-autobuild
+
 2015-03-24  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/configuration.py: handle empty lists

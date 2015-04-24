@@ -14,7 +14,7 @@ $(error The '$(SPHINXBUILD)' command was not found. Make sure you have Sphinx in
 endif
 
 # livehtml ignore and include options
-LIVEHTML_EX = -i 'source/.??*' -i 'source/*~' -i '../pyhetdex/__pycache__/*' -i '../pyhetdex/.??*' -i '../pyhetdex/*~' -i '../pyhetdex/*/__pycache__/*' 
+LIVEHTML_EX = -r '\.\S+?sw[a-z]' -r '__pycache__' -r '\S+?~'
 LIVEHTML_IN = -z '../pyhetdex'
 
 # Internal variables.

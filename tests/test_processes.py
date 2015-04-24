@@ -8,7 +8,7 @@ import pyhetdex.tools.processes as pr
 def _foo(i):
     "function to execute"
     print("sleeping for", i)
-    time.sleep(i)
+    time.sleep(i/10.)
     print("awoken", i)
 
 

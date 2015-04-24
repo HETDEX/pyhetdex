@@ -3,6 +3,15 @@
 :py:mod:`het` -- HET specific functionality
 *******************************************
 
+:py:mod:`fplane` -- Focal plane
+===============================
+
+.. automodule:: pyhetdex.het.fplane
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :private-members:
+
 :py:mod:`dither` -- Dither file parser
 ========================================
 

@@ -25,7 +25,7 @@ def extras_require():
     req_dic = {'doc': ['sphinx', 'numpydoc', 'alabaster', ],
                }
 
-    req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild', ]
+    req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild>=0.52', ]
 
     return req_dic
 
@@ -50,6 +50,6 @@ setup(
     setup_requires=['nose>=1', ],
 
     # tests
-    tests_require=['nose>=1', 'coverage', 'tissue'],
+    tests_require=['nose>=1', 'coverage'],
     test_suite='nose.collector',
 )
