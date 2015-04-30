@@ -15,7 +15,7 @@ def format_docstring(*args, **kwarg):
     ...    pass
     >>> help(foo)
     foo()
-        I want to say 'ciao' 10 times
+        I want to say 'hi' 10 times
     """
     def wrapper(func):
         doc = func.__doc__

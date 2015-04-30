@@ -1,3 +1,9 @@
+2015-04-30  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* README.md: some formatting changed
+	* pyhetdex/doc/docstring.py: fixed type in the function documenation
+	* setup.py: fix sphinx-autobuild version number
+
 2015-04-24  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/het/fplane.py: add base classes for IFU container and FPlane parser

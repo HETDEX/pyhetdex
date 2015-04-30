@@ -1,4 +1,4 @@
-#pyhetdex
+# pyhetdex
 
 `pyhetdex` is a python library designed to collect code can could be used by
 different project like
@@ -57,13 +57,13 @@ install first `numpy` then `pyhetdex`
 
     pip install [--user] numpy
 
-###Setuptools Configuration
+### Setuptools Configuration
 Each of the subcommands in `python setup.py` can be configured either through a
 `setup.cfg` file or through command line arguments. The latter overrides the
 settings in the `setup.cfg` file. For more information check to [official
 documentation](https://docs.python.org/2/distutils/configfile.html)
 
-##Dependencies
+## Dependencies
 
 Mandatory
 
@@ -82,7 +82,7 @@ NOTE: as `pyfits` has been integrated into `astropy` and going out of support
 and since the latter provides much more functionalities that the former, we do
 not support pyfits.
 
-##Development
+## Development
 If you are developing the library, consider it's possible to use the `develop`
 command
 
@@ -97,7 +97,7 @@ The command comes also with a `--uninstall` option that removes the link.
 [stackoverflow](http://stackoverflow.com/questions/19048732/python-setup-py-develop-vs-install),
 [a blog](http://www.siafoo.net/article/77#id10))
 
-###Testing
+### Testing
 
 The tests are run using the [`nose`](https://nose.readthedocs.org/en/latest/)
 framework. To run the tests execute
@@ -117,7 +117,7 @@ that nothing has been broken and that we can recover the same results as before
 (unless there was a bug, of course). The developer should commit after all the
 tests succeed.
 
-##Documentation
+## Documentation
 
 To build the documentation just go into the `doc` directory and run `make html`
 or `make latex` there.
@@ -133,7 +133,7 @@ When writing (28.01.2015) the modules `pyhetdex.astrometry.astrometry` and
 `pyhetdex.het.ifu_centers` are appropriately documented to comply to the
 standard. Other modules with follow.
 
-##Notes
+## Notes
 
 Please use [markdown](http://daringfireball.net/projects/markdown/syntax) syntax
 so it can be easily converted to html or wiki format if needed **and** remains
