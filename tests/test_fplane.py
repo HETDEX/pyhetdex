@@ -17,6 +17,13 @@ def test_ifu():
     nt.assert_equal(ifu.ihmpid, "003")
 
 
+def test_ifu_str():
+    "Test IFU object string output"
+    ifu = fp.IFU("001", 1, 1, 0, 3, "001")
+
+    nt.assert_equal(str(ifu), "ifu: '001'; IHMP: '003'; spectrograph: '001'")
+
+
 class TestFPlane(object):
     """Test the fplane class
     """

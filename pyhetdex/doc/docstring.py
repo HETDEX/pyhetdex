@@ -10,12 +10,11 @@ def format_docstring(*args, **kwarg):
     Examples
     --------
     >>> @format_docstring(a=10, b="hi")
-    >>> def foo():
+    ... def foo():
     ...    "I want to say '{b}' {a} times"
     ...    pass
-    >>> help(foo)
-    foo()
-        I want to say 'hi' 10 times
+    >>> foo.__doc__
+    "I want to say 'hi' 10 times"
     """
     def wrapper(func):
         doc = func.__doc__

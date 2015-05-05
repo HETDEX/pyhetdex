@@ -60,18 +60,29 @@ def prefix_filename(path, prefix):
     --------
 
     >>> prefix_filename('/path/to/file.dat', 'new_')
-    /path/to/new_file.dat
+    '/path/to/new_file.dat'
     """
     path, fname = os.path.split(path)
     return os.path.join(path, prefix + fname)
 
 
-def _wildcards_to_regex(wildcards, re_compile=True):
+def wildcards_to_regex(wildcards, re_compile=True):
     """Convert shell wildcard to regex
 
     If ``wildcards`` is None, a match-nothing regex is used
     If ``wildcards`` is a list, the resulting regex are concatenated with ``|``
     (or)
+
+    Examples
+    --------
+    >>> wildcards_to_regex("[0-9]*fits")  # doctest: +SKIP
+    "re.compile('[0-9].*fits\\\\Z(?ms)', re.MULTILINE|re.DOTALL)"
+    >>> wildcards_to_regex("[0-9]*fits", re_compile=False)
+    '[0-9].*fits\\\\Z(?ms)'
+    >>> wildcards_to_regex(None, re_compile=False)
+    'a^'
+    >>> wildcards_to_regex(["[0-3]*fits", "[5-9]*fits"], re_compile=False)
+    '[0-3].*fits\\\\Z(?ms)|[5-9].*fits\\\\Z(?ms)'
 
     Parameters
     ----------
@@ -95,23 +106,24 @@ def _wildcards_to_regex(wildcards, re_compile=True):
     if re_compile:
         return re.compile(regex)
     else:
-        regex
+        return regex
 
 
 def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
                recursive=True):
-    """Generator that search and serves files
+    """Generator that search and serves files.
 
     Parameters
     ----------
     path : string
         path to search
     matches : string or list of strings, optional
-        Unix shell-style wildcards to filter
+        Unix shell-style wildcards to filter; done on the full path+filename
     exclude : string or list of strings, optional
-        Unix shell-style wildcards to exclude files and subdirectories
+        Unix shell-style wildcards to exclude files; done on the full
+        path+filename
     exclude_dirs : string or list of strings, optional
-        Unix shell-style wildcards to exclude files and subdirectories
+        Unix shell-style wildcards to exclude subdirectories
     recursive : bool, optional
         search files recursively into ``path``
 
@@ -120,27 +132,34 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
     fn: string
         name of the file (it's an iterator, not a return)
 
+    .. todo::
+        use ``Yields`` instead of ``Returns`` when the numpydoc 0.6 update will
+        be available
+
     Yields
     ------
     fn: string
         name of the file
 
-    .. todo::
-        remove returns when the numpydoc 0.6 update will be available
     """
     # convert ``matches``, ``exclude`` and ``exclude_dirs`` into compiled regex
-    matches = _wildcards_to_regex(matches)
-    exclude = _wildcards_to_regex(exclude)
-    exclude_dirs = _wildcards_to_regex(exclude_dirs)
+    matches = wildcards_to_regex(matches)
+    exclude = wildcards_to_regex(exclude)
+    exclude_dirs = wildcards_to_regex(exclude_dirs)
 
     for pathname, dirnames, filenames in os.walk(path, topdown=True):
         if not recursive:  # don't walk subdirectories
             dirnames[:] = ''
         # removes directories
-        for i, d in enumerate(dirnames):
+        to_remove = []
+        for d in dirnames:
             if exclude_dirs.search(d) is not None:
-                dirnames.remove(d)
+                to_remove.append(d)
+        for tr in to_remove:
+            dirnames.remove(tr)
 
         for fn in filenames:
-            if matches.match(fn) is not None and exclude.match(fn) is None:
-                yield os.path.join(pathname, fn)
+            fname = os.path.join(pathname, fn)
+            if (matches.match(fname) is not None and
+                    exclude.match(fname) is None):
+                yield fname

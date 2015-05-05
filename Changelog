@@ -1,3 +1,18 @@
+2015-05-05  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* setup.cfg: run also doctest with nosetests
+	* pyhetdex/coordinates/transformations.py: fix docstring, doctest works
+	* pyhetdex/doc/docstring.py: same
+	* pyhetdex/tools/configuration.py: same
+	* pyhetdex/tools/files/file_tools.py: same
+	* pyhetdex/het/fplane.py: same, fix IFU.__str__ output
+	* pyhetdex/tools/files/file_tools.py(wildcards_to_regex): renamed, fix
+	  return bug
+	* pyhetdex/tools/files/file_tools.py(scan_files): matches and exclusion done
+	  on the full path + filename
+	* tests/test_file_tools.py: add more tests for better coverage
+	* tests/test_fplane.py: add IFU output string
+
 2015-04-30  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* README.md: some formatting changed

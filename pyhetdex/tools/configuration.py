@@ -15,33 +15,30 @@ python 3:
 
 Examples
 --------
->>> # python2
 >>> import pyhetdex.tools.configuration as pconf
->>> # standard config parser interpolation
->>> stdparser = pconf.ConfigParser()
->>> # extended config parser interpolation
->>> extparser = pconf.ConfigParser(interpolation=pconf.ExtendedInterpolation())
-
->>> # python3
->>> import pyhetdex.tools.configuration as pconf
->>> from configparser import ExtendedInterpolation
+>>> try:
+...     from configparser import ExtendedInterpolation  # python 3
+... except ImportError:  # python 2
+...     from pyhetdex.tools.configuration import ExtendedInterpolation
 >>> # standard config parser interpolation
 >>> stdparser = pconf.ConfigParser()
 >>> # extended config parser interpolation
 >>> extparser = pconf.ConfigParser(interpolation=ExtendedInterpolation())
 
->>> # Configuration file: default interpolation
->>> [general]
->>> dir1 = /path/to
->>> [section]
->>> dir1 = /path/to
->>> file1 = %(dir1)/file1
+::
 
->>> # Configuration file: extended interpolation
->>> [general]
->>> dir1 = /path/to
->>> [section]
->>> file1 = %{general:dir1}/file1
+    # Configuration file: default interpolation
+    [general]
+    dir1 = /path/to
+    [section]
+    dir1 = /path/to
+    file1 = %(dir1)/file1
+
+    # Configuration file: extended interpolation
+    [general]
+    dir1 = /path/to
+    [section]
+    file1 = %{general:dir1}/file1
 """
 
 from __future__ import absolute_import, print_function
@@ -92,16 +89,19 @@ class ConfigParser(confp.ConfigParser):
         Examples
         --------
 
-        >>> cat settings.cfg:
-        [section]
-        wranges_bkg = 3500-4500,4500-5500
+        >>> # cat settings.cfg:
+        >>> # [section]
+        >>> # wranges_bkg = 3500-4500,4500-5500
+        >>> conf = ConfigParser()
+        >>> conf.read_dict({"section": {"wranges_bkg": "3500-4500,4500-5500"}})
         >>> conf.get_list_of_list("section", "wranges_bkg")
-        [[3500, 4500], [4500, 5500]]
-        >>> cat settings.cfg:
-        [section]
-        >>> conf.get_list_of_list("section", "wranges_bkg")
-        NoOptionError
-        >>> conf.get_list_of_list("section", "wranges_bkg", default=True)
+        [[3500.0, 4500.0], [4500.0, 5500.0]]
+        >>> conf.get_list_of_list("section", "not_exist")
+        ... # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        NoOptionError: No option 'not_exist' in section: 'section'
+        >>> conf.get_list_of_list("section", "not_exist", use_default=True)
         [[None, None]]
 
         Parameters
@@ -148,14 +148,24 @@ class ConfigParser(confp.ConfigParser):
         Examples
         --------
 
-        >>> cat settings.cfg:
-        [section]
-        wranges_iq = 3500, 4500, 5500
-        literal_list = ['a', 'b', 'c']
-        >>> conf.get_list_of_list("section", "wranges_bkg")
+        >>> # cat settings.cfg:
+        >>> # [section]
+        >>> # wranges_iq = 3500, 4500, 5500
+        >>> # literal_list = ['a', 'b', 'c']
+        >>> conf = ConfigParser()
+        >>> conf.read_dict({"section": {"wranges_iq": "3500, 4500, 5500",
+        ...                             "literal_list": "['a', 'b', 'c']"}})
+        >>> conf.get_list("section", "wranges_iq")
         [3500, 4500, 5500]
-        >>> conf.get_list_of_list("section", "literal_list")
+        >>> conf.get_list("section", "literal_list")
         ['a', 'b', 'c']
+        >>> conf.get_list("section", "not_exist")
+        ... # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        NoOptionError: No option 'not_exist' in section: 'section'
+        >>> conf.get_list("section", "not_exist", use_default=True)
+        []
 
         Parameters
         ----------
@@ -242,6 +252,7 @@ class ConfigParser(confp.ConfigParser):
         """
         return self._interpolation.before_get(self, section, option, rawval,
                                               vars)
+
 
 # =============================================================================
 # Copied from python 3.5.dev to enable cross-section interpolation in python
