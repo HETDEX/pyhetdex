@@ -9,11 +9,7 @@ import fnmatch
 import os
 import re
 
-# python 2/3 compatibility
-try:  # Python 2
-    basestring
-except NameError:  # python 3
-    basestring = str
+import six
 
 
 def skip_comments(f):
@@ -98,7 +94,7 @@ def wildcards_to_regex(wildcards, re_compile=True):
     """
     if wildcards is None:
         regex = r'a^'
-    elif isinstance(wildcards, basestring):
+    elif isinstance(wildcards, six.string_types):
         regex = fnmatch.translate(wildcards)
     else:
         regex = r'|'.join(fnmatch.translate(wc) for wc in wildcards)

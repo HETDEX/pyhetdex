@@ -1,3 +1,12 @@
+2015-05-06  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* setup.py: add ``six`` to the dependency list
+	* pyhetdex/tools/configuration.py: use six
+	* pyhetdex/tools/files/file_tools.py: use six
+	* pyhetdex/tools/astro/dss_image.py: use six, adjust imports order
+	* pyhetdex/tools/six_ext.py: add some more variable in the spirit of six
+	* pyhetdex/doc/sphinxext/todo.py: PEP8 compliant
+
 2015-05-05  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* setup.cfg: run also doctest with nosetests

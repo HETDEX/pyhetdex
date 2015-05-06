@@ -22,8 +22,13 @@ from sphinx.environment import NoUri
 from sphinx.util.nodes import set_source_info
 from sphinx.util.compat import Directive, make_admonition
 
-class todo_node(nodes.Admonition, nodes.Element): pass
-class todolist(nodes.General, nodes.Element): pass
+
+class todo_node(nodes.Admonition, nodes.Element):
+    pass
+
+
+class todolist(nodes.General, nodes.Element):
+    pass
 
 
 class Todo(Directive):
@@ -124,7 +129,8 @@ def process_todo_nodes(app, doctree, fromdocname):
 
             # Create a reference
             newnode = nodes.reference('', '', internal=True)
-            innernode = nodes.emphasis(_('original entry'), _('original entry'))
+            innernode = nodes.emphasis(_('original entry'),
+                                       _('original entry'))
             try:
                 newnode['refuri'] = app.builder.get_relative_uri(
                     fromdocname, todo_info['docname'])
@@ -166,8 +172,10 @@ def merge_info(app, env, docnames, other):
 def visit_todo_node(self, node):
     self.visit_admonition(node)
 
+
 def depart_todo_node(self, node):
     self.depart_admonition(node)
+
 
 def setup(app):
     app.add_config_value('todo_include_todos', False, 'html')

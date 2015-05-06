@@ -44,7 +44,8 @@ setup(
     zip_safe=False,
 
     # dependences
-    install_requires=['numpy', 'scipy', 'astropy>=1', 'Pillow', 'matplotlib'],
+    install_requires=['numpy', 'scipy', 'astropy>=1', 'Pillow', 'matplotlib',
+                      'six'],
     extras_require=extras_require(),
     # bootstrap nose to make `nosetests` available to setup.py
     setup_requires=['nose>=1', ],

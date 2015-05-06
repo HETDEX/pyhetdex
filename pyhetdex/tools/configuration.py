@@ -44,11 +44,9 @@ Examples
 from __future__ import absolute_import, print_function
 
 import ast
-try:  # python 2.x
-    import ConfigParser as confp
-except ImportError:  # python 3.x
-    import configparser as confp
 import re
+
+import six.moves.configparser as confp
 
 
 # =============================================================================

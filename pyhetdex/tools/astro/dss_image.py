@@ -21,31 +21,26 @@ modifications
     * :func:`~retrieve_image_DSS`: create it from the retrieved fits header
     * :func:`~retrieve_image_SDSS`: create it by hand using ``ra``, ``dec``,
       ``size`` and ``scale`` information
+
+    Check if :class:`io.StringIO` works for python2, if yes, we don't need it
+    :mod:`pyhetdex.tools.six`
 """
 
 from __future__ import absolute_import, print_function
 
 import os
 import warnings
-try:
-    from StringIO import StringIO
-    with warnings.catch_warnings():
-        warnings.simplefilter("default", ImportWarning)
-        warnings.warn("Move to io.StringIO module", category=ImportWarning)
-except ImportError:
-    from io import StringIO
 import urllib
 
-from PIL import Image
-from PIL import ImageFilter
-
+from astropy.io import fits
 import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
 from matplotlib.collections import PatchCollection
-
-from astropy.io import fits
-
 import numpy as np
+from PIL import Image
+from PIL import ImageFilter
+from six import StringIO
+
 
 from pyhetdex.tools.files import file_tools as ft
 from pyhetdex.coordinates import wcs as pyhwcs
