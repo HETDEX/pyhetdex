@@ -30,6 +30,7 @@ Code documentation
     tools_files
     tools_processes
     tools_config
+    tools_six_ext
     doc
 
 About
