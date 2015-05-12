@@ -106,7 +106,7 @@ def wildcards_to_regex(wildcards, re_compile=True):
 
 
 def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
-               recursive=True):
+               recursive=True, followlinks=True):
     """Generator that search and serves files.
 
     Parameters
@@ -143,7 +143,8 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
     exclude = wildcards_to_regex(exclude)
     exclude_dirs = wildcards_to_regex(exclude_dirs)
 
-    for pathname, dirnames, filenames in os.walk(path, topdown=True):
+    for pathname, dirnames, filenames in os.walk(path, topdown=True,
+                                                 followlinks=followlinks):
         if not recursive:  # don't walk subdirectories
             dirnames[:] = ''
         # removes directories

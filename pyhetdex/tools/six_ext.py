@@ -21,3 +21,15 @@ else:
     class ConfigFileError(OSError):
         """Configuration file not found"""
         pass
+
+mock = six.MovedModule("mock", "mock", "unittest.mock")
+"""This is to be imported as a standard module.
+
+Examples
+--------
+>>> from pyhetdex.tools.six_ext import mock
+>>> help(mock.patch)  # doctest: +ELLIPSIS
+Signature: mock.patch(target, new=sentinel.DEFAULT, ...)
+Docstring:
+...
+"""

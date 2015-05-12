@@ -1,3 +1,8 @@
+2015-05-08  Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/files/file_tools.py(scan_files): add "followsymlink" option
+    * pyhetdex/tools/six_ext.py: import mock under a common name
+
 2015-05-06  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/six_ext.py: ``ConfigFileError`` and docstrings added
