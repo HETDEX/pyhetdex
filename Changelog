@@ -1,3 +1,8 @@
+2015-05-17  Daniel Farrow <dfarrow@mpe.mpg.de>
+        
+        * pyhetdex/common/file_tools.py: added a function to search for and 
+          yield directories.
+
 2015-05-08  Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/files/file_tools.py(scan_files): add "followsymlink" option

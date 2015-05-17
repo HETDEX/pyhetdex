@@ -160,3 +160,39 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
             if (matches.match(fname) is not None and
                     exclude.match(fname) is None):
                 yield fname
+
+
+def scan_dirs(path, matches='*', exclude=None):
+
+    """Generator that searches for and serves directories
+
+    Parameters
+    ----------
+    path : string
+        path to search
+    matches : string or list of strings, optional
+        Unix shell-style wildcards to filter
+    exclude : string or list of strings, optional
+        Unix shell-style wildcards to exclude directories
+
+    Returns
+    -------
+    fn: string
+        name of the directory (it's an iterator, not a return)
+
+    Yields
+    ------
+    fn: string
+        name of the directory
+
+    .. todo::
+        remove returns when the numpydoc 0.6 update will be available
+    """
+    # convert ``matches``, ``exclude`` into compiled regex
+    matches = wildcards_to_regex(matches)
+    exclude = wildcards_to_regex(exclude)
+
+    for names in os.listdir(path):       
+        if matches.match(names) is not None and exclude.match(names) is None:
+            yield names
+
