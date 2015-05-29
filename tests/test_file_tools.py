@@ -68,17 +68,16 @@ class Test_scan_files(object):
         return cls
 
     def _scan_files(self, *args, **kwargs):
-        """Returns the number of elements found by scan_files with the give
+        """Returns the sorted elements found by scan_files with the give
         args and kwargs
         """
         return sorted(list(ft.scan_files(self.test_dir, *args, **kwargs)))
 
     def _find_files(self, options=[]):
         """Use shell ``find path -type f`` command to get a list of files to
-        compare with the output of ft.scan_files. Returns the number of files
+        compare with the output of ft.scan_files. Returns the sorted list
 
         ``options`` is a list of string with the options to pass to ``find``.
-        ``exclude_dirs`` exclude some directory
         """
         command = ['find', self.test_dir, '-type', 'f']
         command.extend(options)
@@ -116,3 +115,64 @@ class Test_scan_files(object):
         flist = self._scan_files(exclude=["*py"])
         find_list = self._find_files(options=['!', '-name', '*py'])
         nt.assert_equal(flist, find_list)
+
+
+class Test_scan_dir(object):
+    """Test the scanning of directories. Results compared with shell
+    commands"""
+
+    @classmethod
+    def setup_class(cls):
+        "setup the class"
+        cls.test_dir = os.path.join(os.path.dirname(__file__), "..",
+                                    "pyhetdex")
+        return cls
+
+    def _scan_dirs(self, *args, **kwargs):
+        """Returns the sorted elements found by scan_dirs with the given
+        args and kwargs
+        """
+        return sorted(list(ft.scan_dirs(self.test_dir, *args, **kwargs)))
+
+    def _find_dirs(self, options=[]):
+        """Use shell ``find path -type d`` command to get a list of files to
+        compare with the output of ft.scan_dirs. Returns the sorted list of
+        directories
+
+        ``options`` is a list of string with the options to pass to ``find``.
+        """
+        command = ['find', self.test_dir, '-type', 'd']
+        command.extend(options)
+        output = subprocess.check_output(command, stderr=DEVNULL,
+                                         universal_newlines=True)
+        output = output.splitlines()
+        try:
+            output.remove(self.test_dir)
+        except ValueError:
+            pass
+        return sorted(output)
+
+    def test_scan_dirs(self):
+        """scan all directories"""
+        dlist = self._scan_dirs()
+        find_list = self._find_dirs()
+        nt.assert_equal(dlist, find_list)
+
+    def test_scan_dirs_norecursive(self):
+        """scan all directories, no recursive"""
+        dlist = self._scan_dirs(recursive=False)
+        find_list = self._find_dirs(options=['-maxdepth', '1'])
+        nt.assert_equal(dlist, find_list)
+
+    def test_filter_dirs(self):
+        """Filter only directory 'tools' """
+        dlist = self._scan_dirs(matches=["*tool*"])
+        find_list = self._find_dirs(options=['-path', '*tool*'])
+        nt.assert_equal(dlist, find_list)
+
+    def test_directory_exclusion(self):
+        """exclude directory 'tools'"""
+        dlist = self._scan_dirs(exclude=['*tool*', '*pycache*'])
+        find_list = self._find_dirs(options=['!', '-path', '*tool*', '!',
+                                             '-path', '*pycache*'])
+        nt.assert_equal(dlist, find_list)

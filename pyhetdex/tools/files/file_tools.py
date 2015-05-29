@@ -122,10 +122,12 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
         Unix shell-style wildcards to exclude subdirectories
     recursive : bool, optional
         search files recursively into ``path``
+    followlinks : bool, optional
+        follow symlinks
 
     Returns
     -------
-    fn: string
+    fn : string
         name of the file (it's an iterator, not a return)
 
     .. todo::
@@ -134,7 +136,7 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
 
     Yields
     ------
-    fn: string
+    fn : string
         name of the file
 
     """
@@ -162,8 +164,8 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
                 yield fname
 
 
-def scan_dirs(path, matches='*', exclude=None):
-
+def scan_dirs(path, matches='*', exclude=None, recursive=True,
+              followlinks=True):
     """Generator that searches for and serves directories
 
     Parameters
@@ -174,15 +176,19 @@ def scan_dirs(path, matches='*', exclude=None):
         Unix shell-style wildcards to filter
     exclude : string or list of strings, optional
         Unix shell-style wildcards to exclude directories
+    recursive : bool, optional
+        search files recursively into ``path``
+    followlinks : bool, optional
+        follow symlinks
 
     Returns
     -------
-    fn: string
+    dirname : string
         name of the directory (it's an iterator, not a return)
 
     Yields
     ------
-    fn: string
+    dirname : string
         name of the directory
 
     .. todo::
@@ -192,7 +198,13 @@ def scan_dirs(path, matches='*', exclude=None):
     matches = wildcards_to_regex(matches)
     exclude = wildcards_to_regex(exclude)
 
-    for names in os.listdir(path):       
-        if matches.match(names) is not None and exclude.match(names) is None:
-            yield names
+    for pathname, dirnames, _ in os.walk(path, topdown=True,
+                                         followlinks=followlinks):
+        for dn in dirnames:
+            dirname = os.path.join(pathname, dn)
+            if (matches.match(dirname) is not None and
+                    exclude.match(dirname) is None):
+                yield dirname
 
+        if not recursive:  # don't walk subdirectories
+            dirnames[:] = ''
