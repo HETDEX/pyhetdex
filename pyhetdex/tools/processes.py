@@ -10,10 +10,6 @@ instances :func:`get_worker`
     Warn the user when getting an existing name with the other options not set
     to the defaults
 
-    Shut down a pool: :meth:`~multiprocessing.pool.Pool.close`,
-    :meth:`~multiprocessing.pool.Pool.terminate` and
-    :meth:`~multiprocessing.pool.Pool.join`
-
     Add context manager?
 """
 from __future__ import print_function

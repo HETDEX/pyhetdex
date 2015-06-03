@@ -41,7 +41,8 @@ To build the documentation in html format go to the ``doc`` directory and run::
 
   make html
 
-The output is saved in ``doc/build/html``. For the full list of available targets.
+The output is saved in ``doc/build/html``. For the full list of available
+targets type ``make help``.
 
 If you are updating the documentation and want avoid the
 ``edit-compile-browser refresh`` cycle, and you have installed

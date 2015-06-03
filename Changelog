@@ -1,3 +1,10 @@
+2015-06-03  Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/build: ignore html and doctrees
+    * doc/source/contributions.rst: fix text
+    * doc/source/install.rst: update instructions
+    * pyhetdex/tools/processes.py: remove item from todo
+
 2015-05-29  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/files/file_tools.py(scan_dirs): reimplement with

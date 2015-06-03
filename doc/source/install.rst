@@ -37,6 +37,10 @@ or::
   cd /path/to/pyhetdex
   pip install .
 
+.. note::
+    
+  At the moment ``pyhetdex`` is under active development, so we suggest to
+  follow the instructions in :ref:`inst_devel`
 
 .. _Dependances:
 
@@ -53,6 +57,7 @@ Mandatory dependences
   astropy>=1
   Pillow
   matplotlib
+  six
 
 
 .. _optdep:
@@ -64,7 +69,6 @@ Optional dependences
 
    nose>=1
    coverage
-   tissue
 
 * documentation::
 
@@ -76,6 +80,7 @@ Optional dependences
 
     sphinx-autobuild
 
+.. _inst_devel:
 
 Development
 ===========
