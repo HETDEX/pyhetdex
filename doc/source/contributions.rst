@@ -13,7 +13,8 @@ the existing documentation.
 Testing
 =======
 
-*Every part of the code should be tested.*
+*Every part of the code should be tested and should run at least under python
+2.7 and 3.4.*
 
 To every unit of code, should correspond one or more tests.
 

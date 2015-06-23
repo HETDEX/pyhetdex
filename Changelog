@@ -1,3 +1,9 @@
+2015-06-23  Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/install.rst: installation instruction improved
+    * doc/source/contributions.rst: add python version support
+    * doc/source/index.rst: add little description
+
 2015-06-03  Francesco Montesano <montefra@mpe.mpg.de>
 
     * doc/build: ignore html and doctrees

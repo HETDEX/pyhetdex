@@ -6,6 +6,10 @@
 Welcome to pyhetdex's documentation!
 ====================================
 
+``pyhetdex`` is a heterogeneous software collection written to support other
+python codes created for the analysis of `HET Dark Energy Experiment (HETDEX)
+<http://hetdex.org>`_. ``pyhetdex`` supports at least python 2.7 and 3.4.
+
 Instructions
 ------------
 

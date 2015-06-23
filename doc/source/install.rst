@@ -4,43 +4,80 @@ Installation
 Instructions
 ============
 
+.. _sourceinst:
+
+From local ``pyhetdex`` copy
+----------------------------
+
+First you need to obtain the source ``pyhetdex`` code with ::
+
+  svn checkout svn://luna.mpe.mpg.de/pyhetdex
+
+or ::
+
+  svn checkout svn://luna.mpe.mpg.de/pyhetdex/trunk pyhetdex
+
+if only the trunk is desired.
+
+Once this command has finished you can install ``pyhetdex`` using `pip
+<https://pip.pypa.io/en/latest/>`_ :: 
+
+  pip install /path/to/pyhetdex
+
+or ::
+
+  cd /path/to/pyhetdex
+  pip install .
+
+where ``/path/to/pyhetdex`` is the base directory containing the ``setup.py``
+file.
+
+The above command installs ``pyhetdex`` in a system directory, so might be
+necessary to use superuser powers, a.k.a. ``sudo``, to succeed. It is possible
+to install the software in the user directories, usually
+``$HOME/.local/lib/pythonX.X/site-packages`` adding the option ``--user``.
+
+An other option is to use a `virtual environment
+<https://virtualenv.pypa.io/en/latest/>`_ [#venvw]_: in this case ``pyhetdex`` will
+be installed inside the environment with the above command.
+
 .. _svninst:
 
 From online svn repository
 --------------------------
 
-The easiest way to install ``pyhetdex`` is using `pip
-<https://pip.pypa.io/en/latest/>`_::
+It is also possible to install ``pyhetdex`` directly from the svn repository
+with ::
 
   pip install svn+svn://luna.mpe.mpg.de/pyhetdex/trunk#egg=pyhetdex
 
-This will take care of installing :ref:`pyhetdex dependances <Dependances>`.
+If you want to install a specific commit or from a different branch or tag, you
+can do it issuing one of the following commands ::
 
-From local ``pyhetdex`` copy
-----------------------------
+    pip install svn+svn://luna.mpe.mpg.de/pyhetdex/trunk@5#egg=pyhetdex
+    pip install svn+svn://luna.mpe.mpg.de/pyhetdex/tag/v0.0.0#egg=pyhetdex
 
-If you want a local copy of ``pyhetdex``, you can checkout the repository with::
+Other ways
+----------
 
-  svn checkout svn://luna.mpe.mpg.de/pyhetdex
+Once you obtained the source code as in :ref:`sourceinst`, you can install the
+code also using the good old ::
 
-or::
+    cd /path/to/pyhetdex
+    python setup.py build
+    python setup.py install
 
-  svn checkout svn://luna.mpe.mpg.de/pyhetdex/trunk pyhetdex
-
-if only the trunk is desired. Similarly to the :ref:`previous instructions
-<svninst>` now you can install with::
-
-  pip install /path/to/pyhetdex
-
-or::
-
-  cd /path/to/pyhetdex
-  pip install .
+We do not recommend this method, as you have to deal with dependences yourself.
 
 .. note::
     
-  At the moment ``pyhetdex`` is under active development, so we suggest to
-  follow the instructions in :ref:`inst_devel`
+  * At the moment ``pyhetdex`` is under active development, so we suggest to
+    follow the instructions in :ref:`inst_devel`
+  * If the installation gets interrupted with an error like::
+
+      ImportError: No module named 'numpy'
+
+    run ``pip install numpy`` and then retry ``pyhetdex`` installation
 
 .. _Dependances:
 
@@ -91,33 +128,13 @@ repository and to install it in `"editable" mode
 and to install all the optional dependances::
 
   cd /path/to/pyhetdex
-  pip install -e .
+  pip install -e .[livedoc]
+
+You can also use [not recommended] ::
+
+    python setup.py develop
 
 See :doc:`contributions` for more information.
-
-Notes and problems
-==================
-
-* We suggest to use a `virtual environment
-  <https://virtualenv.pypa.io/en/latest/>`_ [#venvw]_. Outside a virtual
-  environment the above command installs in a system directory, so might be
-  necessary to use superuser powers, a.k.a. ``sudo``. It is possible to install
-  the software in the user directory, usually ``$HOME/.local`` adding the option
-  ``--user``.
-* It is possible to change the version to install from svn selecting a specific
-  commit::
-
-    pip install svn+svn://luna.mpe.mpg.de/pyhetdex/trunk@5#egg=pyhetdex
-
-  or a different branch/tag::
-
-    pip install svn+svn://luna.mpe.mpg.de/pyhetdex/tag/v0.0.0#egg=pyhetdex
-
-* If the installation gets interrupted with an error like::
-
-    ImportError: No module named 'numpy'
-
-  run ``pip install numpy`` and then retry ``pyhetdex`` installation
 
 .. rubric:: Footnotes
 
