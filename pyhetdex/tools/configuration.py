@@ -16,12 +16,14 @@ python 3:
 Examples
 --------
 >>> import pyhetdex.tools.configuration as pconf
->>> try:
-...     from configparser import ExtendedInterpolation  # python 3
-... except ImportError:  # python 2
-...     from pyhetdex.tools.configuration import ExtendedInterpolation
+>>> # This can be imported only after `pyhetdex.tools.configuration` has been
+>>> # imported
+>>> from six.moves import BasicInterpolation
+>>> from six.moves import ExtendedInterpolation
 >>> # standard config parser interpolation
 >>> stdparser = pconf.ConfigParser()
+>>> # equivalent
+>>> stdparser = pconf.ConfigParser(interpolation=BasicInterpolation())
 >>> # extended config parser interpolation
 >>> extparser = pconf.ConfigParser(interpolation=ExtendedInterpolation())
 
@@ -46,6 +48,7 @@ from __future__ import absolute_import, print_function
 import ast
 import re
 
+import six
 import six.moves.configparser as confp
 
 
@@ -86,6 +89,9 @@ class ConfigParser(confp.ConfigParser):
 
         Examples
         --------
+        .. testsetup:: *
+
+            from pyhetdex.tools.configuration import ConfigParser
 
         >>> # cat settings.cfg:
         >>> # [section]
@@ -145,6 +151,10 @@ class ConfigParser(confp.ConfigParser):
 
         Examples
         --------
+
+        .. testsetup:: *
+
+            from pyhetdex.tools.configuration import ConfigParser
 
         >>> # cat settings.cfg:
         >>> # [section]
@@ -430,3 +440,14 @@ class ExtendedInterpolation(Interpolation):
                     option, section,
                     "'$' must be followed by '$' or '{', "
                     "found: %r" % (rest,))
+
+# Register interpolators in six.moves
+# === attributes
+
+# add them to six.moves
+six.add_move(six.MovedAttribute("BasicInterpolation",
+                                "pyhetdex.tools.configuration",
+                                "configparser"))
+six.add_move(six.MovedAttribute("ExtendedInterpolation",
+                                "pyhetdex.tools.configuration",
+                                "configparser"))

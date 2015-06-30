@@ -1,10 +1,10 @@
-"""Multi/single processing abstraction
+"""Multi/single processing abstraction.
 
 Execute functions hiding the information whether are executed in parallel,
-using :class:`multiprocessing.Pool` or serially.
+using :class:`multiprocessing.pool.Pool` or serially.
 
 The module provides a high level factory function to create and retrieve worker
-instances :func:`get_worker`
+instances :func:`get_worker`.
 
 .. todo::
     Warn the user when getting an existing name with the other options not set
@@ -49,7 +49,7 @@ def get_worker(name='default', multiprocessing=False, **kwargs):
         use multi processing
     kwargs : dictionary
         options passed to :class:`multiprocessing.Pool`; ignored if
-        ``multiprocessing`` is ``True``
+        ``multiprocessing`` is ``False``
 
     Returns
     -------

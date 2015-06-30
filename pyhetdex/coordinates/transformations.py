@@ -31,6 +31,11 @@ Notes
     Should we use `astropy.coordinates
     <http://astropy.readthedocs.org/en/v1.0/coordinates/index.html>`_ instead
     of this implementation?
+
+
+.. testsetup:: *
+
+    from pyhetdex.coordinates.transformations import *
 """
 
 
@@ -53,8 +58,11 @@ def hms2decimal(ra_string, delimiter=":"):
 
     Examples
     --------
-    >>> hms2decimal("02:41:43.033")
-    40.42930416666667
+
+    .. doctest::
+
+        >>> hms2decimal("02:41:43.033")
+        40.42930416666667
     """
     # is it in HH:MM:SS format?
     if delimiter == "":
@@ -94,8 +102,10 @@ def dms2decimal(dec_string, delimiter=":"):
 
     Examples
     --------
-    >>> dms2decimal("+40:25:45.50")
-    40.42930555555555
+    .. doctest::
+
+        >>> dms2decimal("+40:25:45.50")
+        40.42930555555555
     """
     # is it in DD:MM:SS format?
     if delimiter == "":
@@ -139,8 +149,10 @@ def decimal2hms(RADeg, delimiter=":"):
 
     Examples
     --------
-    >>> decimal2hms(40.42930556)
-    '02:41:43.033'
+    .. doctest::
+
+        >>> decimal2hms(40.42930556)
+        '02:41:43.033'
     """
     hours = (RADeg / 360.0) * 24
     if hours < 10 and hours >= 1:
@@ -199,8 +211,10 @@ def decimal2dms(decDeg, delimiter=":"):
 
     Examples
     --------
-    >>> decimal2dms(40.42930556)
-    '+40:25:45.50'
+    .. doctest::
+
+        >>> decimal2dms(40.42930556)
+        '+40:25:45.50'
     """
     # Positive
     if decDeg > 0:

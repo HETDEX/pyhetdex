@@ -8,7 +8,9 @@ Welcome to pyhetdex's documentation!
 
 ``pyhetdex`` is a heterogeneous software collection written to support other
 python codes created for the analysis of `HET Dark Energy Experiment (HETDEX)
-<http://hetdex.org>`_. ``pyhetdex`` supports at least python 2.7 and 3.4.
+<http://hetdex.org>`_.
+
+``pyhetdex`` supports at least python 2.7 and 3.4.
 
 Instructions
 ------------
@@ -28,13 +30,9 @@ Code documentation
 
     coordinates
     cure
-    het
+    het/index
     ltl
-    tools_astro
-    tools_files
-    tools_processes
-    tools_config
-    tools_six_ext
+    tools/index
     doc
 
 About

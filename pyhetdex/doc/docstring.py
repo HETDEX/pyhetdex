@@ -9,6 +9,11 @@ def format_docstring(*args, **kwarg):
 
     Examples
     --------
+
+    .. testsetup:: *
+
+        from pyhetdex.doc.docstring import format_docstring
+
     >>> @format_docstring(a=10, b="hi")
     ... def foo():
     ...    "I want to say '{b}' {a} times"

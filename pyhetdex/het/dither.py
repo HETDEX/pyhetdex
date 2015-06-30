@@ -1,4 +1,11 @@
-"""HETDEX dither files parsing
+"""Fake an empty dither (:class:`EmptyDither`) or parse a dither file like the
+following (:class:`ParseDither`) ::
+
+    # basename          modelbase           ditherx dithery seeing norm airmass
+    SIMDEX-obs-1_D1_046 SIMDEX-obs-1_D1_046   0.00   0.00    1.60  1.00  1.22
+    SIMDEX-obs-1_D2_046 SIMDEX-obs-1_D2_046   0.61   1.07    1.60  1.00  1.22
+    SIMDEX-obs-1_D3_046 SIMDEX-obs-1_D3_046   1.23   0.00    1.60  1.00  1.22
+
 """
 
 from __future__ import print_function, absolute_import
@@ -67,7 +74,7 @@ class _BaseDither(object):
 class EmptyDither(_BaseDither):
     """Creates a dither object with only one entry.
 
-    The dither key is **D1**, ``basename`` and ``absfname` are left emtpy,
+    The dither key is **D1**, ``basename`` and ``absfname`` are left emtpy,
     ``dx`` and ``dy`` are set to 0 and image quality, illumination and airmass
     are set to 1. It is provided as a stub dither object in case the real one
     does not exists.

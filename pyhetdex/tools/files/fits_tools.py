@@ -26,6 +26,10 @@ def wavelength_to_index(header, wavelength):
     Examples
     --------
 
+    .. testsetup:: *
+
+        from pyhetdex.tools.files.fits_tools import wavelength_to_index
+
     >>> wavelength_to_index({'CRVAL1': 3500, 'CDELT1': 2}, 4000)
     250
     """

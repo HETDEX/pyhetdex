@@ -7,28 +7,31 @@ taken from sections 3.1.1 and 3.1.2 of [1]_
 
 Examples
 --------
+
+.. testsetup:: *
+
+    from pyhetdex.coordinates.tangent_projection import IFUAstrom
+
 Example of use of this module::
 
->>> ra0 = 0.
->>> dec0 = 70.
->>> rot = 0.
->>> x_in, y_in = 10., 0.
-
->>> # multiply by -1 to make positive x point east for 0 Deg rotation
->>> ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
->>> ra, dec = ifu.tan_inv(x_in, y_in)
->>> x_out, y_out = ifu.tan_dir(ra, dec)
->>> ra, dec
-(-0.0081216788349454117, 69.999999814997963)
->>> x_out, y_out
-(9.9999999999999964, 2.2899993733449891e-11)
-
->>> # Naive calculation
->>> import numpy as np
->>> -1. * (ra - ra0) * 3600. * np.cos(np.deg2rad(dec0))
-9.9999999330230906
->>> (dec - dec0) * 3600.
--0.00066600733248378674
+    >>> ra0 = 0.
+    >>> dec0 = 70.
+    >>> rot = 0.
+    >>> x_in, y_in = 10., 0.
+    >>> # multiply by -1 to make positive x point east for 0 Deg rotation
+    >>> ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
+    >>> ra, dec = ifu.tan_inv(x_in, y_in)
+    >>> x_out, y_out = ifu.tan_dir(ra, dec)
+    >>> ra, dec
+    (-0.0081216788349454117, 69.999999814997963)
+    >>> x_out, y_out
+    (9.9999999999999964, 2.2899993733449891e-11)
+    >>> # Naive calculation
+    >>> import numpy as np
+    >>> -1. * (ra - ra0) * 3600. * np.cos(np.deg2rad(dec0))
+    9.9999999330230906
+    >>> (dec - dec0) * 3600.
+    -0.00066600733248378674
 
 .. todo::
     check the module and its the documentation

@@ -1,5 +1,10 @@
 """ Module containing file manipulation functions
 
+.. testsetup:: *
+
+    from pyhetdex.tools.files.file_tools import wildcards_to_regex
+    from pyhetdex.tools.files.file_tools import prefix_filename
+
 .. moduleauthor: Francesco Montesano <montefra@mpe.mpg.de>
 """
 
@@ -71,6 +76,7 @@ def wildcards_to_regex(wildcards, re_compile=True):
 
     Examples
     --------
+
     >>> wildcards_to_regex("[0-9]*fits")  # doctest: +SKIP
     "re.compile('[0-9].*fits\\\\Z(?ms)', re.MULTILINE|re.DOTALL)"
     >>> wildcards_to_regex("[0-9]*fits", re_compile=False)

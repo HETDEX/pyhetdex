@@ -41,6 +41,11 @@ def angular_separation_deg(ra1, dec1, ra2, dec2):
 
     Examples
     --------
+
+    .. testsetup::
+
+        from pyhetdex.coordinates.distances import angular_separation_deg
+
     >>> ra1, dec1 = 31.4324, 68.5432
     >>> ra2, dec2 = 45.65, 23.452
     >>> angular_separation_deg(ra1, dec1, ra2, dec2)
