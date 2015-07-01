@@ -1,3 +1,7 @@
+2015-07-01  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* doc/source/tools/*/*rst: forgotten to add them in previous commit
+
 2015-06-30  Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/logging_helper.py: implemented
