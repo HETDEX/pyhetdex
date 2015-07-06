@@ -1,5 +1,10 @@
 2015-07-06  Francesco Montesano <montefra@mpe.mpg.de>
 
+    * tests/test_logging_helper.py: added some more test
+    * doc/source/tools/logging.rst: reorganization of the documentation
+
+2015-07-06  Francesco Montesano <montefra@mpe.mpg.de>
+
     * doc/source/tools/logging.rst: show imports in documentations
     * pyhetdex/tools/processes.py: add wait method to the _Worker class
     * tests/test_logging_helper.py: test logging from the main and the child

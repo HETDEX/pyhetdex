@@ -27,14 +27,28 @@ def setup_module(module):
                      " how like a god -- the beauty of the world, the paragon"
                      " of animals!")
     module.n_logs = 10  # number of log messages
-    pattern = r'\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}\]'
-    pattern += r' \[(?:CRITICAL|ERROR|WARNING|INFO|DEBUG)\]'
-    pattern += r' (?:' + module.logmsg + r')'
+    # re match standard log formatting
+    pattern_date = r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}'
+    pattern_pid = r'\d{1,7}'
+    pattern_level = r'(?:CRITICAL|ERROR|WARNING|INFO|DEBUG)'
+
+    pattern = r'\[' + pattern_pid + r' - ' + pattern_date + r'\]'
+    pattern += r' \[' + pattern_level + r'\] (?:' + module.logmsg + r')'
     module.pattern = re.compile(pattern)
+
+    # formatter for the Logger adapter
+    module.extras = {"custom": "custom key"}
+    module.adapter_fmt = ("[%(custom)s - %(asctime)s] [%(levelname)s]"
+                          " %(message)s")
+
+    # re match adapter log formatting
+    pattern = r'\[' + module.extras['custom'] + r' - ' + pattern_date + r'\]'
+    pattern += r' \[' + pattern_level + r'\] (?:' + module.logmsg + r')'
+    module.adapter_pattern = re.compile(pattern)
 
 
 def _filehandler(fname="",
-                 fmt="[%(asctime)s] [%(levelname)s] %(message)s",
+                 fmt="[%(process)d - %(asctime)s] [%(levelname)s] %(message)s",
                  level=None):
     """Return a file handler for the tests.
 
@@ -80,15 +94,16 @@ def _log_one_logname(logname):
     logger.log(next(LEVELS), logmsg)
 
 
-def _compare_log_line(logfile):
+def _compare_log_line(logfile, pattern_=None):
     """Compare all the lines in the log file are as expected
     Returns a list of True or False whether the whole lines match or not
     """
     matched = []
+    pattern_ = pattern_ if pattern_ else pattern
     with open(logfile, mode='r') as f:
         for l in f:
             l = l.strip('\n')  # strip the new line
-            match = pattern.match(l)
+            match = pattern_.match(l)
             if match is not None and match.endpos == len(l):
                 matched.append(True)
             else:
@@ -121,7 +136,7 @@ def teardown_func():
 
 @nt.with_setup(teardown=teardown_func)
 def test_log_sp():
-    """Test the QueueHandler and QueueListener in the same process
+    """QueueHandler and QueueListener in the same process
     """
     q = multiprocessing.Queue()
     qhandler = phlog.QueueHandler(q)
@@ -143,7 +158,7 @@ def test_log_sp():
 
 @nt.with_setup(teardown=teardown_func)
 def test_log_setup():
-    """Test the SetupQueueListener in a separate process
+    """Use SetupQueueListener in a separate process
     """
     q = multiprocessing.Queue()
     qhandler = phlog.QueueHandler(q)
@@ -166,7 +181,7 @@ def test_log_setup():
 @nt.with_setup(teardown=teardown_func)
 @nt.raises(RuntimeError)
 def test_log_setup_exception():
-    """Test the SetupQueueListener with exceptions
+    """SetupQueueListener with exceptions
     """
     q = multiprocessing.Queue()
     qhandler = phlog.QueueHandler(q)
@@ -183,7 +198,7 @@ def test_log_setup_exception():
 
 @nt.with_setup(teardown=teardown_func)
 def test_log_setup_caught_exception():
-    """Test the SetupQueueListener with caught exception
+    """Catch the exception after exiting SetupQueueListener
     """
     q = multiprocessing.Queue()
     qhandler = phlog.QueueHandler(q)
@@ -209,7 +224,7 @@ def test_log_setup_caught_exception():
 
 @nt.with_setup(teardown=teardown_func)
 def test_log_setup_level_respect():
-    """Test the QueueListener in a separate process: respect handler level
+    """QueueListener respecting the handler level
     """
     q = multiprocessing.Queue()
     qhandler = phlog.QueueHandler(q)
@@ -233,7 +248,7 @@ def test_log_setup_level_respect():
 
 @nt.with_setup(teardown=teardown_func)
 def test_log_setup_nolevel_respect():
-    """Test the QueueListener in a separate process: don't respect handler level
+    """QueueListener not respecting the handler level
     """
     q = multiprocessing.Queue()
     qhandler = phlog.QueueHandler(q)
@@ -256,13 +271,41 @@ def test_log_setup_nolevel_respect():
 
 
 @nt.with_setup(teardown=teardown_func)
-def test_log_multiprocessing():
-    """Test the logging from multiple processes to a subprocess
+def test_log_multiprocessing_initmain():
+    """Log from multiple processes to subprocess, handler initialised in main
     """
     q = multiprocessing.Queue()
-    logger_name = "queue_multiprocess"
+    logger_name = "queue_multiprocess_initmain"
 
-    worker = phproc.get_worker(name="use_process", multiprocessing=True,
+    _init_queue_handler(logger_name, q)
+
+    worker = phproc.get_worker(name="use_process_initmain",
+                               multiprocessing=True)
+
+    with phlog.SetupQueueListener(q, handlers=[_filehandler()],
+                                  use_process=True):
+        for i in range(n_logs):
+            worker(_log_one_logname, logger_name)
+        worker.get_results()
+        worker.close()
+
+    q.close()
+
+    # check that the number of log lines and the messages are correct
+    matched = _compare_log_line(logfile)
+    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
+    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
+                    " lines")
+
+
+@nt.with_setup(teardown=teardown_func)
+def test_log_multiprocessing():
+    """Log from multiple processes to subprocess, handler initialised in worker
+    """
+    q = multiprocessing.Queue()
+    logger_name = "queue_multiprocess_worker"
+
+    worker = phproc.get_worker(name="use_process_worker", multiprocessing=True,
                                initializer=_init_queue_handler,
                                initargs=(logger_name, q))
 
@@ -283,8 +326,36 @@ def test_log_multiprocessing():
 
 
 @nt.with_setup(teardown=teardown_func)
+def test_log_multiprocessing_thread_initmain():
+    """Log from multiple processes to a thread, handler initialised main
+    """
+    q = multiprocessing.Queue()
+    logger_name = "queue_multiprocess_thread_initmain"
+
+    _init_queue_handler(logger_name, q)
+
+    worker = phproc.get_worker(name="use_thread_initmain",
+                               multiprocessing=True)
+
+    with phlog.SetupQueueListener(q, handlers=[_filehandler()],
+                                  use_process=False):
+        for i in range(n_logs):
+            worker(_log_one_logname, logger_name)
+        worker.get_results()
+        worker.close()
+
+    q.close()
+
+    # check that the number of log lines and the messages are correct
+    matched = _compare_log_line(logfile)
+    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
+    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
+                    " lines")
+
+
+@nt.with_setup(teardown=teardown_func)
 def test_log_multiprocessing_thread():
-    """Test the logging from multiple processes to a thread
+    """Log from multiple processes to a thread, handler initialised in worker
     """
     q = multiprocessing.Queue()
     logger_name = "queue_multiprocess_thread"
@@ -311,19 +382,17 @@ def test_log_multiprocessing_thread():
 
 @nt.with_setup(teardown=teardown_func)
 def test_log_multiprocessing_and_main():
-    """Test the logging from main and multiple processes to a subprocess
+    """Log from main and child processes to a subprocess; initialised in main
     """
     q = multiprocessing.Queue()
     logger_name = "queue_main_multiprocess"
 
     # create the logger in the main process
     qhandler = phlog.QueueHandler(q)
-    logger = _make_logger(logger_name+"main", qhandler)
+    logger = _make_logger(logger_name, qhandler)
 
     # create the workers and the respective loggers
-    worker = phproc.get_worker(name="mm_use_process", multiprocessing=True,
-                               initializer=_init_queue_handler,
-                               initargs=(logger_name, q))
+    worker = phproc.get_worker(name="mm_use_process", multiprocessing=True)
 
     with phlog.SetupQueueListener(q, handlers=[_filehandler()],
                                   use_process=True):
@@ -339,4 +408,28 @@ def test_log_multiprocessing_and_main():
     matched = _compare_log_line(logfile)
     nt.assert_equal(len(matched), 2*n_logs, msg="Wrong number of log lines")
     nt.assert_equal(sum(matched), 2*n_logs, msg="Wrong number of matching log"
+                    " lines")
+
+
+@nt.with_setup(teardown=teardown_func)
+def test_log_adapter():
+    """QueueHandler with logger adapter
+    """
+    q = multiprocessing.Queue()
+    qhandler = phlog.QueueHandler(q)
+
+    logger_ = _make_logger("logger_adapt", qhandler)
+
+    logger = logging.LoggerAdapter(logger_, extras)
+
+    with phlog.SetupQueueListener(q, handlers=[_filehandler(fmt=adapter_fmt)],
+                                  use_process=False):
+        _random_log(logger)
+
+    q.close()
+
+    # check that the number of log lines and the messages are correct
+    matched = _compare_log_line(logfile, pattern_=adapter_pattern)
+    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
+    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
                     " lines")
