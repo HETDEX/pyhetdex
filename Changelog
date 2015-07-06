@@ -1,3 +1,10 @@
+2015-07-06  Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/tools/logging.rst: show imports in documentations
+    * pyhetdex/tools/processes.py: add wait method to the _Worker class
+    * tests/test_logging_helper.py: test logging from the main and the child
+	  processes using the QueueHandler and QueueListener
+
 2015-07-01  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* doc/source/tools/*/*rst: forgotten to add them in previous commit

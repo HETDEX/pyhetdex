@@ -8,18 +8,18 @@
 Examples
 --------
 
-.. testsetup:: *
+.. doctest::
 
-    import multiprocessing as mp
-    import logging
-    import sys
-    import pyhetdex.tools.logging_helper as phlog
-    import pyhetdex.tools.processes as p
+    >>> import multiprocessing as mp
+    >>> import logging
+    >>> import sys
+    >>> import pyhetdex.tools.logging_helper as phlog
+    >>> import pyhetdex.tools.processes as p
 
 Log from the main process to a listener in a thread. Can help with blocking
 handlers, like handlers that require network connection or that send mails.
 
-.. doctest:: single_proc
+.. doctest::
     
     >>> # create the logger and add the QueueHandler
     >>> logger_name = "single_proc"
@@ -44,7 +44,7 @@ handlers, like handlers that require network connection or that send mails.
 
 Log from multiple processes without mangling the log messages
 
-.. doctest:: multi_proc
+.. doctest::
     
     >>> logger_name = "multi_proc"
     >>> q_mp = mp.Queue()

@@ -14,9 +14,6 @@ import pyhetdex.tools.logging_helper as phlog
 import pyhetdex.tools.processes as phproc
 
 
-_queue_loggers = {}
-
-
 def setup_module(module):
     """nose fixture: setup the module variables"""
     module.logfile = os.path.join(settings.datadir, "queue.log")
@@ -36,7 +33,8 @@ def setup_module(module):
     module.pattern = re.compile(pattern)
 
 
-def _filehandler(fname="", fmt="[%(asctime)s] [%(levelname)s] %(message)s",
+def _filehandler(fname="",
+                 fmt="[%(asctime)s] [%(levelname)s] %(message)s",
                  level=None):
     """Return a file handler for the tests.
 
@@ -308,4 +306,37 @@ def test_log_multiprocessing_thread():
     matched = _compare_log_line(logfile)
     nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
     nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
+                    " lines")
+
+
+@nt.with_setup(teardown=teardown_func)
+def test_log_multiprocessing_and_main():
+    """Test the logging from main and multiple processes to a subprocess
+    """
+    q = multiprocessing.Queue()
+    logger_name = "queue_main_multiprocess"
+
+    # create the logger in the main process
+    qhandler = phlog.QueueHandler(q)
+    logger = _make_logger(logger_name+"main", qhandler)
+
+    # create the workers and the respective loggers
+    worker = phproc.get_worker(name="mm_use_process", multiprocessing=True,
+                               initializer=_init_queue_handler,
+                               initargs=(logger_name, q))
+
+    with phlog.SetupQueueListener(q, handlers=[_filehandler()],
+                                  use_process=True):
+        _random_log(logger)  # log from the main process
+        for i in range(n_logs):
+            worker(_log_one_logname, logger_name)
+        worker.get_results()
+        worker.close()
+
+    q.close()
+
+    # check that the number of log lines and the messages are correct
+    matched = _compare_log_line(logfile)
+    nt.assert_equal(len(matched), 2*n_logs, msg="Wrong number of log lines")
+    nt.assert_equal(sum(matched), 2*n_logs, msg="Wrong number of matching log"
                     " lines")

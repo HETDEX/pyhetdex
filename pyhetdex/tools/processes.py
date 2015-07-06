@@ -17,6 +17,7 @@ from __future__ import print_function
 import multiprocessing as mp
 import signal
 import sys
+import time
 
 import six
 
@@ -117,7 +118,7 @@ class _Worker(object):
 
         Returns
         -------
-        job : :class:`~multiprocessing.pool.AsyncResult` or :class:`Result` 
+        job : :class:`~multiprocessing.pool.AsyncResult` or :class:`Result`
             stores the result of the computation can be recovered with the
             :meth:`multiprocessing.pool.AsyncResult.get` or the
             :meth:`Result.get` methods, respectively. The jobs are also stored
@@ -188,6 +189,26 @@ class _Worker(object):
         n_error = sum(not j.successful() for j in completed)
 
         return len(completed), n_error, len(self._jobs)
+
+    def wait(self, timeout=None):
+        """Wait for all the jobs to finish or until ``timeout`` seconds passed
+
+        Parameters
+        ----------
+        timeout : float, optional
+            seconds for the timeout
+        """
+        if timeout is not None:
+            now = time.time()
+
+        for j in self._jobs:
+            j.wait(timeout=timeout)
+
+            # if the timeout is already expired, set it to zero
+            if timeout is not None:
+                remain_timeout = timeout - (time.time() - now)
+                timeout = remain_timeout if remain_timeout > 0. else 0.
+                now = time.time()
 
     def close(self):
         """Close and join the pool: normal termination"""
