@@ -1,3 +1,12 @@
+2015-07-10  Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/Makefile: add some ignore for livehtml 
+	* pyhetdex/tools/processes.py (_Worker): now can be use as one-off context
+	  manager
+    * tests/test_processes.py: add tests
+    * doc/source/tools/processes.rst: reorganize examples
+    * pyhetdex/tools/logging_helper.py: better if
+
 2015-07-06  Francesco Montesano <montefra@mpe.mpg.de>
 
     * tests/test_logging_helper.py: added some more test

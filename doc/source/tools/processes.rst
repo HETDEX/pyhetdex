@@ -8,58 +8,63 @@
 Examples
 ========
 
-.. testsetup:: *
+.. doctest::
 
-    import pyhetdex.tools.processes as p
+    >>> import pyhetdex.tools.processes as p
+    >>> def func(args):
+    ...     print(", ".join(args))
+    ...     return " ".join(args)
 
-Create a single or a multiprocessing worker
+Run single processor jobs
 
 .. doctest::
 
     >>> worker_sp = p.get_worker(name="singlep")
-    >>> worker_mp = p.get_worker(name="multip", multiprocessing=True)
+    >>> job = worker_sp(func, ["from", "single", "processor"])
+    from, single, processor
+    >>> job
+    <pyhetdex.tools.processes.Result object at ...>
+    >>> job.get()
+    'from single processor'
+    >>> worker_sp.get_results()
+    ['from single processor']
+    >>> worker_sp.close()
 
-Execute a function when initialising a multiprocessing worker
+Or multiprocessor jobs
+
+.. doctest::
+
+    >>> worker_mp = p.get_worker(name="multip", multiprocessing=True)
+    >>> job = worker_mp(func, ["from", "multi", "processor"])
+    >>> job
+    <multiprocessing.pool.ApplyResult object at ...>
+    >>> job.get()  # doctest: +SKIP
+    'from single processor'
+    >>> worker_mp.get_results()  # doctest: +SKIP
+    ['from multi processor']
+    >>> worker_mp.close()
+
+Run some initialisation function when creating the multiprocessing pool
 
 .. doctest::
 
     >>> def init_func(message):
     ...     print(message)
-    >>> worker_mp_init = p.get_worker(name="multip", multiprocessing=True,
+    >>> worker_mp_init = p.get_worker(name="multip_init", multiprocessing=True,
     ...                               initializer=init_func,
-    ...                               initargs=("docstring"))
-
-Execute a function by one of the workers
-
-.. doctest::
-
-    >>> def func(args):
-    ...     print(", ".join(args))
-    ...     return " ".join(args)
-    >>> job = worker_sp(func, ["from", "single", "processor"])
-    from, single, processor
-    >>> job  # docstring: +ELLIPSES
-    <pyhetdex.tools.processes.Result object at ...>
-    >>> job = worker_mp(func, ["from", "multi", "processor"])
-    >>> job  # docstring: +ELLIPSES
-    <multiprocessing.pool.ApplyResult object at ...>
-
-Get the results
-
-.. doctest::
-
-    >>> worker_sp.get_results()
-    ['from single processor']
-    >>> worker_mp.get_results()  # doctest: +SKIP
-    ['from multi processor']
-
-Close the workers, does nothing for single processor workers
-    
-.. doctest::
-
-    >>> worker_sp.close()
-    >>> worker_mp.close()
+    ...                               initargs=("docstring",))
     >>> worker_mp_init.close()
+
+Alternatively, you can use the worker within a :keyword:`with` statement
+
+.. doctest::
+    
+    >>> def func1(args):
+    ...     return " ".join(args[::-1])
+    >>> with p.get_worker(name="inwith", multiprocessing=True) as wworker:
+    ...     wworker(func1, ["in", "with", "statement"])
+    ...     wworker.get_results()  # doctest: +SKIP
+    ['in with statement']
 
 Public inteface
 ===============

@@ -114,3 +114,20 @@ def test_single_processes_failsafe():
 def test_multi_processes_failsafe():
     "multi process, catch failures"
     _execute_fail_safe(pr.get_worker(name="mp_fs", multiprocessing=True))
+
+
+def test_with():
+    """multiprocessing and with statement"""
+    with pr.get_worker(name='with_success') as worker:
+        for i in range(10):
+            worker(_sleep, i)
+    worker.clear_jobs()
+
+
+@nt.raises(RuntimeError)
+def test_with_fail():
+    """multiprocessing and with statement with an error raise"""
+    with pr.get_worker(name='with_success', multiprocessing=True) as worker:
+        for i in range(10):
+            worker(_sleep, i)
+        raise RuntimeError("block computation")

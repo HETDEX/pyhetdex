@@ -329,7 +329,7 @@ class SetupQueueListener(object):
         self.stop()  # stop the listener
 
         # log the error, just in case
-        if not all([exc_type is None, exc_value is None, traceback is None]):
+        if any([exc_type, exc_value, traceback]):
             # create new record
             straceback = "".join(tb.format_exception(exc_type, exc_value,
                                  traceback))[:-1]  # remove last newline

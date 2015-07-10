@@ -31,7 +31,8 @@ _workers_dict = {}
 # =============================================================================
 # Public interface
 # =============================================================================
-def get_worker(name='default', multiprocessing=False, **kwargs):
+def get_worker(name='default', multiprocessing=False, always_wait=False,
+               **kwargs):
     """Returns a worker with the specified name.
 
     At the first call with a given ``name``, the worker is created using the
@@ -48,6 +49,10 @@ def get_worker(name='default', multiprocessing=False, **kwargs):
         raised
     multiprocessing : bool, optional
         use multi processing
+    always_wait : bool, optional
+        if ``False``, terminate the jobs when exiting the :keyword:`with`
+        statement upon an error; if ``True`` wait for the running job to finish
+        before closing
     kwargs : dictionary
         options passed to :class:`multiprocessing.Pool`; ignored if
         ``multiprocessing`` is ``False``
@@ -59,7 +64,8 @@ def get_worker(name='default', multiprocessing=False, **kwargs):
     try:
         return _workers_dict[name]
     except KeyError:
-        worker = _Worker(multiprocessing=multiprocessing, **kwargs)
+        worker = _Worker(multiprocessing=multiprocessing,
+                         always_wait=always_wait, **kwargs)
         _workers_dict[name] = worker
         return worker
 
@@ -79,20 +85,28 @@ class _Worker(object):
     class declaration should be considered as private and should be created and
     retrieved through the :func:`get_worker` factory functions.
 
+    The instance can be used once in a :keyword:`with` statement. Upon exiting,
+    it close/terminate and join the pool, if multiprocessing is used.
+
     Parameters
     ----------
     multiprocessing : bool, optional
         use multi processing
+    always_wait : bool, optional
+        if ``False``, terminate the jobs when exiting the :keyword:`with`
+        statement upon an error; if ``True`` wait for the running job to finish
+        before closing
     kwargs : dictionary
         options passed to :class:`multiprocessing.Pool`; ignored if
         ``multiprocessing`` is ``False``
     """
-    def __init__(self, multiprocessing=False, **kwargs):
+    def __init__(self, multiprocessing=False, always_wait=False, **kwargs):
         if multiprocessing:
             self._pool = mp.Pool(**kwargs)
         else:
             self._pool = None
 
+        self._always_wait = always_wait
         # store all the jobs run or applied
         self._jobs = []
 
@@ -221,6 +235,22 @@ class _Worker(object):
         if self._pool is not None:
             self._pool.terminate()
             self._pool.join()
+
+    def __enter__(self):
+        """Entry point for the ``with`` statement"""
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Exit point for the with statement
+
+        If there are no errors or ``always_wait`` is ``True`` close, otherwise
+        terminate.
+        """
+        # log the error, just in case
+        if not any([exc_type, exc_value, traceback]) or self._always_wait:
+            self.close()
+        else:
+            self.terminate()
 
 
 # =============================================================================
