@@ -32,7 +32,7 @@ _workers_dict = {}
 # Public interface
 # =============================================================================
 def get_worker(name='default', multiprocessing=False, always_wait=False,
-               **kwargs):
+               poolclass=mp.Pool, **kwargs):
     """Returns a worker with the specified name.
 
     At the first call with a given ``name``, the worker is created using the
@@ -53,6 +53,8 @@ def get_worker(name='default', multiprocessing=False, always_wait=False,
         if ``False``, terminate the jobs when exiting the :keyword:`with`
         statement upon an error; if ``True`` wait for the running job to finish
         before closing
+    poolclass : class
+        class implementing the :class:`multiprocessing.Pool` interface
     kwargs : dictionary
         options passed to :class:`multiprocessing.Pool`; ignored if
         ``multiprocessing`` is ``False``
@@ -96,13 +98,16 @@ class _Worker(object):
         if ``False``, terminate the jobs when exiting the :keyword:`with`
         statement upon an error; if ``True`` wait for the running job to finish
         before closing
+    poolclass : class, optional
+        class implementing the :class:`multiprocessing.Pool` interface
     kwargs : dictionary
         options passed to :class:`multiprocessing.Pool`; ignored if
         ``multiprocessing`` is ``False``
     """
-    def __init__(self, multiprocessing=False, always_wait=False, **kwargs):
+    def __init__(self, multiprocessing=False, always_wait=False,
+                 poolclass=mp.Pool, **kwargs):
         if multiprocessing:
-            self._pool = mp.Pool(**kwargs)
+            self._pool = poolclass(**kwargs)
         else:
             self._pool = None
 
