@@ -1,3 +1,8 @@
+2015-07-21  Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: *ast* raise a syntax error when trying to
+	  interpret path strings
+
 2015-07-13  Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/processes.py: allow to use a different pool implementation

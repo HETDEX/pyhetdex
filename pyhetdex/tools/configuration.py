@@ -206,7 +206,9 @@ class ConfigParser(confp.ConfigParser):
             return []
         try:
             return list(ast.literal_eval(value))
-        except ValueError:  # ValueError: malformed string
+        except (ValueError, SyntaxError):
+            # ValueError: malformed string
+            # SyntaxError: with e.g. file path
             # e.g. "a, b, c" which is valid cannot be converted into a list of
             # strings. So if this happens simply split the value on commas,
             # strip and return it
