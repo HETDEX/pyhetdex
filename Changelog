@@ -1,3 +1,11 @@
+2015-10-06  Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: back port mapping interface from python
+	  3.5 to 2.7
+    * tests/test_configuration.py: add tests for the mapping
+	* pyhetdex/tools/processes.py: add property to know if multiprocessing is on
+	  or not
+
 2015-07-21  Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/configuration.py: *ast* raise a syntax error when trying to

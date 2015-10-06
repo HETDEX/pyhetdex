@@ -1,17 +1,19 @@
 """Test pyhetdex.tools.configuration"""
 
 import re
-try:  # python 2.x
-    import ConfigParser as confp
-    from pyhetdex.tools.configuration import (BasicInterpolation,
-                                              ExtendedInterpolation)
-except ImportError:  # python 3.x
-    import configparser as confp
-    from configparser import BasicInterpolation, ExtendedInterpolation
 
 import nose.tools as nt
-
+import six
+from six.moves import configparser as confp
 import pyhetdex.tools.configuration as pyhconf
+
+if six.PY2:
+    from pyhetdex.tools.configuration import (BasicInterpolation,
+                                              ExtendedInterpolation,
+                                              SectionProxy)
+else:
+    from configparser import (BasicInterpolation, ExtendedInterpolation,
+                              SectionProxy)
 
 
 class TestConf(object):
@@ -184,3 +186,94 @@ class TestDefInterpolation(TestExtendedInterpolation):
     def test_cross_section_int_rec(self):
         "Cross-section recursive interpolation fails"
         super(TestDefInterpolation, self).test_cross_section_int_rec()
+
+
+class TestMapping(object):
+    "Test the mapping interface to the configuration"
+
+    @classmethod
+    def setup_class(cls):
+        cls.sections = {'section1': {'key1': 'value1',
+                                     'key2': 'value2',
+                                     'key3': 'value3'},
+                        'section2': {'keyA': 'valueA',
+                                     'keyB': 'valueB',
+                                     'keyC': 'valueC'},
+                        }
+        # configuration defaults
+        c = pyhconf.ConfigParser()
+        c.read_dict(cls.sections)
+        cls.c = c
+        return cls
+
+    def test_in_section(self):
+        """Mapping: test 'in' assertion for sections"""
+        nt.assert_in('section1', self.c)
+        nt.assert_in('section2', self.c)
+
+    def test_in_option(self):
+        """Mapping: test 'in' assertion for options"""
+        nt.assert_in('key1', self.c['section1'])
+
+    def test_get_section(self):
+        """Mapping: test that the section is correctly given"""
+        section = self.c['section1']
+        nt.assert_is_instance(section, SectionProxy)
+
+    def test_get_option(self):
+        """Mapping: test that the option is correctly given"""
+        section = self.c['section1']
+        nt.assert_equal(section['key1'], 'value1')
+
+    def test_n_options(self):
+        """Mapping: test that the number of options is correct"""
+        section = self.c['section1']
+        nt.assert_equal(len(section), len(self.sections['section1']))
+
+    def test_n_sections(self):
+        """Mapping: test that the number of sections is correct"""
+        nt.assert_equal(len(self.c), len(self.sections)+1)
+
+    @nt.raises(KeyError)
+    def test_no_section(self):
+        """Mapping: ask for the wrong section"""
+        self.c['section3']
+
+    @nt.raises(KeyError)
+    def test_no_option(self):
+        """Mapping: ask for the wrong option"""
+        try:
+            section = self.c['section2']
+        except KeyError:
+            raise confp.NoSectionError('section2')
+        section['key']
+
+    def test_add_rm_section(self):
+        """Mapping: add and remove a new section"""
+        self.c['new_section'] = {}
+        nt.assert_true(self.c.has_section('new_section'))
+        nt.assert_equal(len(self.c), len(self.sections)+2)
+        del self.c['new_section']
+        nt.assert_false(self.c.has_section('new_section'))
+
+    def test_add_rm_option(self):
+        """Mapping: add and remove a new option"""
+        self.c['section1']['key4'] = 'value4'
+        nt.assert_true(self.c.has_option('section1', 'key4'))
+        nt.assert_equal(self.c.get('section1', 'key4'), 'value4')
+        del self.c['section1']['key4']
+        nt.assert_false(self.c.has_option('section1', 'key4'))
+
+    @nt.raises(KeyError)
+    def test_delete_wrong_section(self):
+        """Mapping: delete a non existing section"""
+        del self.c['no_exists']
+
+    @nt.raises(KeyError)
+    def test_delete_wrong_option(self):
+        """Mapping: delete a non existing option"""
+        try:
+            section = self.c['section2']
+        except KeyError:
+            raise confp.NoSectionError('section2')
+        del section['no_exists']

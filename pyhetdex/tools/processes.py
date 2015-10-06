@@ -121,6 +121,16 @@ class _Worker(object):
         computations"""
         return self._pool
 
+    @property
+    def multiprocessing(self):
+        """Whether multiprocessing is enabled or not
+
+        Returns
+        -------
+        bool
+        """
+        return self._pool is not None
+
     def __call__(self, func, *args, **kwargs):
         """
         Apply ``func`` on ``args`` and ``kwargs`` (asynchronously if

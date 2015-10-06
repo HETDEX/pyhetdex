@@ -12,6 +12,8 @@ python 3:
 * :meth:`ConfigParser.read_dict`
 * the possibility to use `extended interpolation
   <https://docs.python.org/3.4/library/configparser.html#configparser.ExtendedInterpolation>`_
+* mapping protocol as described `here
+  <https://docs.python.org/3.5/library/configparser.html#mapping-protocol-access>`_.
 
 Examples
 --------
@@ -26,6 +28,20 @@ Examples
 >>> stdparser = pconf.ConfigParser(interpolation=BasicInterpolation())
 >>> # extended config parser interpolation
 >>> extparser = pconf.ConfigParser(interpolation=ExtendedInterpolation())
+>>> # test mapping interface
+>>> parser = ConfigParser()
+>>> sections = {'section1': {'key1': 'value1',
+...                          'key2': 'value2',
+...                          'key3': 'value3'},
+...             'section2': {'keyA': 'valueA',
+...                          'keyB': 'valueB',
+...                          'keyC': 'valueC'},
+...             }
+>>> parser.read_dict(sections)
+>>> parser['section1']
+<Section: section1>
+>>> parser['section2']['keyA']
+'valueA'
 
 ::
 
@@ -46,6 +62,7 @@ Examples
 from __future__ import absolute_import, print_function
 
 import ast
+import itertools
 import re
 
 import six
@@ -81,6 +98,7 @@ class ConfigParser(confp.ConfigParser):
             self._interpolation = kwargs.pop('interpolation',
                                              BasicInterpolation())
             confp.ConfigParser.__init__(self, *args, **kwargs)
+            self.default_section = confp.DEFAULTSECT
 
     def get_list_of_list(self, section, option, use_default=False):
         """
@@ -262,6 +280,119 @@ class ConfigParser(confp.ConfigParser):
         """
         return self._interpolation.before_get(self, section, option, rawval,
                                               vars)
+
+    def __getitem__(self, key):
+        try:
+            return super(ConfigParser, self).__getitem__(key)
+        except TypeError:
+            # python 2: ConfigParser is old style and doesn't have mapping
+            # style access
+            if key != self.default_section and not self.has_section(key):
+                raise KeyError(key)
+            return SectionProxy(self, key)
+
+    def __setitem__(self, key, value):
+        try:
+            super(ConfigParser, self).__setitem__(key, value)
+        except TypeError:
+            # To conform with the mapping protocol, overwrites existing values
+            # in the section.
+            self.remove_section(key)
+            self.read_dict({key: value})
+
+    def __delitem__(self, key):
+        try:
+            super(ConfigParser, self).__delitem__(key)
+        except TypeError:
+            if key == self.default_section:
+                raise ValueError("Cannot remove the default section.")
+            if not self.has_section(key):
+                raise KeyError(key)
+            self.remove_section(key)
+
+    def __contains__(self, key):
+        try:
+            return super(ConfigParser, self).__contains__(key)
+        except TypeError:
+            return key == self.default_section or self.has_section(key)
+
+    def __len__(self):
+        try:
+            return super(ConfigParser, self).__len__()
+        except TypeError:
+            return len(self._sections) + 1  # the default section
+
+    def __iter__(self):
+        try:
+            return super(ConfigParser, self).__iter__()
+        except TypeError:
+            # XXX does it break when underlying container state changed?
+            return itertools.chain((self.default_section,),
+                                   self._sections.keys())
+
+
+class SectionProxy():
+    """A proxy for a single section from a parser.
+
+    Adapted for the use with python 2.7 from `the python 3.5 implementation
+    <https://hg.python.org/cpython/file/3.5/Lib/configparser.py#l1213>`_
+    """
+
+    def __init__(self, parser, name):
+        """Creates a view on a section of the specified `name` in `parser`."""
+        self._parser = parser
+        self._name = name
+
+    def __repr__(self):
+        return '<Section: {}>'.format(self._name)
+
+    def __getitem__(self, key):
+        if not self._parser.has_option(self._name, key):
+            raise KeyError(key)
+        return self._parser.get(self._name, key)
+
+    def __setitem__(self, key, value):
+        return self._parser.set(self._name, key, value)
+
+    def __delitem__(self, key):
+        if not (self._parser.has_option(self._name, key) and
+                self._parser.remove_option(self._name, key)):
+            raise KeyError(key)
+
+    def __contains__(self, key):
+        return self._parser.has_option(self._name, key)
+
+    def __len__(self):
+        return len(self._options())
+
+    def __iter__(self):
+        return self._options().__iter__()
+
+    def _options(self):
+        if self._name != self._parser.default_section:
+            return self._parser.options(self._name)
+        else:
+            return self._parser.defaults()
+
+    @property
+    def parser(self):
+        # The parser object of the proxy is read-only.
+        return self._parser
+
+    @property
+    def name(self):
+        # The name of the section on a proxy is read-only.
+        return self._name
+
+    def get(self, option, raw=False, vars=None):
+        """Get an option value.
+
+        Unless `fallback` is provided, `None` will be returned if the option
+        is not found.
+
+        """
+        _impl = self._parser.get
+        return _impl(self._name, option, raw=raw, vars=vars)
 
 
 # =============================================================================
