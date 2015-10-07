@@ -1,3 +1,9 @@
+2015-10-07  Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/configuration.py: don't fail with lists composed by one
+	  entry without commas
+    * tests/test_configuration.py: test it
+
 2015-10-06  Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/configuration.py: back port mapping interface from python

@@ -62,6 +62,7 @@ Examples
 from __future__ import absolute_import, print_function
 
 import ast
+import collections
 import itertools
 import re
 
@@ -223,15 +224,24 @@ class ConfigParser(confp.ConfigParser):
         if not value.strip():
             return []
         try:
-            return list(ast.literal_eval(value))
+            value = ast.literal_eval(value)
         except (ValueError, SyntaxError):
             # ValueError: malformed string
             # SyntaxError: with e.g. file path
             # e.g. "a, b, c" which is valid cannot be converted into a list of
             # strings. So if this happens simply split the value on commas,
             # strip and return it
-            values = value.split(',')
-            return [v.strip() for v in values]
+            value = value.split(',')
+            value = [v.strip() for v in value]
+
+        if isinstance(value, six.string_types):
+            value = [value]
+        else:
+            try:
+                value = list(value)
+            except TypeError:
+                value = [value]
+        return value
 
     def read_dict(self, dictionary, source='<dict>'):
         """Read configuration from a dictionary.
@@ -328,7 +338,7 @@ class ConfigParser(confp.ConfigParser):
         except TypeError:
             # XXX does it break when underlying container state changed?
             return itertools.chain((self.default_section,),
-                                   self._sections.keys())
+                                    self._sections.keys())
 
 
 class SectionProxy():

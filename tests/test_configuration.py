@@ -30,6 +30,8 @@ class TestConf(object):
                 "empty": {"empty_list": " ",
                           "literal_empty_list": "[]",
                           },
+                "one": {'list': "3500",
+                        'listolist': "3500-4500", },
                 }
         cls.lists_exp = [[3500, 4500], [4500, 5500]]
         cls.float_list_exp = [3500, 4500, 5500]
@@ -97,6 +99,16 @@ class TestConf(object):
     def test_list_fail(self):
         "list of lists, use default"
         self.c.get_list('list', 'noexist')
+
+    def test_list_one_element(self):
+        """List of one element, without commas"""
+        l = self.c.get_list('one', 'list')
+        nt.assert_equal(l, [3500])
+
+    def test_listolist_one_element(self):
+        """List of lists of one element, without commas"""
+        l = self.c.get_list_of_list('one', 'listolist')
+        nt.assert_equal(l, [[3500, 4500]])
 
 
 class TestExtendedInterpolation(object):
