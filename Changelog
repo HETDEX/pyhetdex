@@ -1,6 +1,24 @@
+2015-10-23 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+     * tests/test_dither.py: tests for new dither file creator
+     * tests/data/fplane.txt: data for above
+     * tests/data/dither.example.txt: as above
+     * tests/data/dither_positions.txt: as above
+     * setup.py: added dither_file entry point
+     * pyhetdex/het/image_quality.py: Now accepts guide probe information. Added
+                                      abstract _FwhmModel class to give a common
+                                      interface to different IQ models.
+     * pyhetdex/het/dither.py: Added code to generate dither files
+     * pyhetdex/het/telescope.py: Created a Shot class that stores tracker and GP
+                                     information.
+     * pyhetdex/het/illumination.py: Returns a (dummy) illumination value in the
+                                     focal plane.
+     * doc/source/dither_file.rst: Documentation for the new dither file creator
+     * doc/source/index.rst: as above
+
 2015-10-07  Francesco Montesano <montefra@mpe.mpg.de>
 
-	* pyhetdex/tools/configuration.py: don't fail with lists composed by one
+    * pyhetdex/tools/configuration.py: don't fail with lists composed by one
 	  entry without commas
     * tests/test_configuration.py: test it
 

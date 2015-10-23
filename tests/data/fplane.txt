@@ -1,4 +1,23 @@
-##IFUID x["]   y["] xpos ypos specid
+# Focal plane file
+# For each fiber bundle it maps its id to the position on the focal plane and
+# the id of the spectrograph to which it is connected
+#
+# last modification:
+# date = $Date: 2015-06-11 18:36:24 +0200 (Thu, 11 Jun 2015) $
+# revision = $Revision: 12 $
+# author = $Author: montefra $
+#
+# ================================================================================
+# Column description of file: overscan.txt
+# --------------------------------------------------------------------------------
+# Column Type     Units   Labels          Explanations
+# --------------------------------------------------------------------------------
+# 1      int      none    IFUID           fiber bundle id
+# 2      float    arcsec  x               x position on the focal plane
+# 3      float    arcsec  y               y position on the focal plane
+# 4      int      none    xpos            x index of the ifu on the focal plane
+# 5      int      none    ypos            y index of the ifu on the focal plane
+# 6      int      none    spectid         spectrograph id
 001 -450.0  150.0 1 3 001
 002 -450.0   50.0 1 4 002
 003 -450.0  -50.0 1 5 003

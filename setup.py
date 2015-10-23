@@ -29,6 +29,8 @@ def extras_require():
 
     return req_dic
 
+entry_points = {'console_scripts': ['dither_file = pyhetdex.het.dither:create_dither_file']}
+ 
 setup(
     # package description and version
     name="pyhetdex",
@@ -42,6 +44,8 @@ setup(
     packages=find_packages(),
     # don't zip when installing
     zip_safe=False,
+
+    entry_points = entry_points,
 
     # dependences
     install_requires=['numpy', 'scipy', 'astropy>=1', 'Pillow', 'matplotlib',

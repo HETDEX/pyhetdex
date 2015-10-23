@@ -20,7 +20,15 @@ Instructions
    
     install
     contributions
+  
 
+Command Line Tools
+------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    dither_file
 
 Code documentation
 ------------------
