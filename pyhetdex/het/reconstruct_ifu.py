@@ -306,3 +306,146 @@ class ReconstructedIFU(object):
             _flux.append(f[:, _imin:_imax].sum(axis=1))
 
         return self.x, self.y, np.concatenate(_flux)
+
+
+class QuickReconstructedIFU(object):
+    r"""Reconstructed IFU head image from the fiber extracted frames given the
+    ``ifu_center`` and the ``dither``.
+
+    Parameters
+    ----------
+    ifu_center : instance of :class:`~pyhetdex.het.ifu_centers.IFUCenter`
+        fiber number to fiber position mapping
+    files : Basefilename of the image to be reconstructed, or a tuple of three images to reconstruct a complete dither.
+    dist : Distortion file for the ifu
+
+    Attributes
+    ----------
+    ifu_center
+
+    Raises
+    ------
+    ReconstructValueError
+        if an empty dither is passed and ``fextract`` is ``None``
+    ReconstructIOError
+        if the number and/or number of fiber extracted frames is not correct;
+        raised by :meth:`~_fedict`
+    RecontructIndexError
+        if the number of fibers from the fiber extracted files and from the ifu
+        center files do not match; raised by :meth:`~_reconstruct`
+    """
+
+    def __init__(self, ifu_center, files, dist):
+        if not ifu_center:
+            raise ReconstructValueError('An IFU center file is needed to quickreconstruct an image')
+            
+        if not dist:
+            raise ReconstructValueError('A distortion is needed to quickreconstruct an image')
+            
+        self.ifu_center = ifu_center
+        self.dist = dist
+        self.files = files
+
+        # public attributes, filled in *_reconstruct*
+        self.x, self.y = np.array([[], []], dtype=float)
+        self.flux, self.header = [], []
+
+        self._reconstruct()
+
+    def _reconstruct(self):
+        """
+        Read the fiber extracted files and creates a set of three lists for x,
+        y and flux.
+
+        Parameters
+        ----------
+        dfextract : dictionary
+            name of the fiber extracted file
+        """
+        for ch, d in it.product(self.ifu_center.channels, self.dither.dithers):
+            # get the correct values of x and y
+            self.x = np.concatenate([self.x, self.xpos(ch, d)])
+            self.y = np.concatenate([self.y, self.ypos(ch, d)])
+
+            # read the fiber extracted file, order the fibers and save the
+            # necessary keys into self.h
+            # python starts from 0
+            fib_numbs = [fn - 1 for fn in self.ifu_center.fib_number[ch]]
+
+            k = self._key.format(ch=ch, d=d)
+            with fits.open(dfextract[k]) as hdu:
+                h = hdu[0].header
+                data = hdu[0].data
+                # if the number of fiber from the fiber extracted file is
+                # different from the number of fibers, something wrong
+                if data.shape[0] != len(fib_numbs):
+                    msg = "The number of rows in file '{0}' ({1:d}) does not"
+                    msg += " agree with the number of active fibers from file"
+                    msg += " '{2}' ({3:d})"
+                    msg = msg.format(hdu.filename(), data.shape[0],
+                                     self.ifu_center.filename, len(fib_numbs))
+                    raise RecontructIndexError(msg)
+                self.flux.append(data[fib_numbs, :])  # order the fibers
+                # get the header keywords needed to get the index at a given
+                # wavelength
+                self.header.append({k: h.get(k) for k in ["CRVAL1", "CDELT1"]})
+
+    def xpos(self, channel, dither):
+        """get the position for the x *dither* in *channel*
+
+        Parameters
+        ----------
+        channel : string
+            name of the channel [L, R]
+        dither : string
+            name of the dither [D1, D2, ..]
+
+        Returns
+        -------
+        ndarray
+            x position of the fibers for the given channel and dither
+        """
+        return np.array(self.ifu_center.xifu[channel]) + self.dither.dx[dither]
+
+    def ypos(self, channel, dither):
+        """get the position for the y *dither* in *channel*
+
+        Parameters
+        ----------
+        channel : string
+            name of the channel [L, R]
+        dither : string
+            name of the dither [D1, D2, ..]
+
+        Returns
+        -------
+        ndarray
+            y position of the fibers for the given channel and dither
+        """
+        return np.array(self.ifu_center.yifu[channel]) + self.dither.dy[dither]
+
+    def reconstruct(self, wmin=None, wmax=None):
+        """
+        Returns the reconstructed IFU with the flux computed between
+        [``wmin``, ``wmax``]
+
+        Parameters
+        ----------
+        wmin, wmax : float, optional
+            min and max wavelength to use. If ``None``: use the min and/or max
+            from the file
+
+        Returns
+        -------
+        x, y : 1d arrays
+            x and y position of the fibers
+        flux : 1d array
+            flux of the fibers within ``wmin`` and ``wmax``
+        """
+        _flux = []
+        for f, h in zip(self.flux, self.header):
+            _imin = wavelength_to_index(h, wmin)
+            _imax = wavelength_to_index(h, wmax)
+            _flux.append(f[:, _imin:_imax].sum(axis=1))
+
+        return self.x, self.y, np.concatenate(_flux)

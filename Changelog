@@ -1,3 +1,10 @@
+2015-10-25  Jan Snigula <snigula@mpe.mpg.de>
+
+	* pyhetdex/tools/io_helpers.py: Moved code from curewise.cureutil here.
+	* pyhetdex/ltl/MArray.py: Moved here from curewise
+	* pyhetdex/cure/Distortion.py: Moved here from curewise
+	* pyhetdex/cure/Fibermodel.py: Moved here from curewise
+
 2015-10-23 Francesco Montesano <montefra@mpe.mpg.de>
 
      * pyhetdex/tools/configuration.py: remove not used import
@@ -20,6 +27,7 @@
      * doc/source/dither_file.rst: Documentation for the new dither file creator
      * doc/source/index.rst: as above
 
+>>>>>>> .r88
 2015-10-07  Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/configuration.py: don't fail with lists composed by one
@@ -130,6 +138,7 @@
     * pyhetdex/tools/files/file_tools.py(scan_files): add "followsymlink" option
     * pyhetdex/tools/six_ext.py: import mock under a common name
 
+>>>>>>> .r85
 2015-05-06  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/six_ext.py: ``ConfigFileError`` and docstrings added
