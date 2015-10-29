@@ -289,3 +289,18 @@ class TestMapping(object):
         except KeyError:
             raise confp.NoSectionError('section2')
         del section['no_exists']
+
+    def test_get_option_get(self):
+        """Get options value with get"""
+        section = self.c['section1']
+        nt.assert_equal(section.get('key1'), self.c['section1']['key1'])
+
+    def test_get_no_option_fallback(self):
+        """Get options value with get and"""
+        section = self.c['section1']
+        nt.assert_equal(section.get('key'), None)
+
+    def test_get_no_option_custom_fallback(self):
+        """Get options value with get and"""
+        section = self.c['section1']
+        nt.assert_equal(section.get('key', 'a value'), 'a value')

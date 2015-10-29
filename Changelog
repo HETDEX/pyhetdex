@@ -1,3 +1,8 @@
+2015-10-29 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: add fallback to section proxy
+    * tests/test_configuration.py: test fallback
+
 2015-10-25  Jan Snigula <snigula@mpe.mpg.de>
 
 	* pyhetdex/tools/io_helpers.py: Moved code from curewise.cureutil here.

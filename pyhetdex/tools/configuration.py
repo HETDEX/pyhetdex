@@ -393,7 +393,7 @@ class SectionProxy():
         # The name of the section on a proxy is read-only.
         return self._name
 
-    def get(self, option, raw=False, vars=None):
+    def get(self, option, fallback=None, raw=False, vars=None):
         """Get an option value.
 
         Unless `fallback` is provided, `None` will be returned if the option
@@ -401,7 +401,10 @@ class SectionProxy():
 
         """
         _impl = self._parser.get
-        return _impl(self._name, option, raw=raw, vars=vars)
+        try:
+            return _impl(self._name, option, raw=raw, vars=vars)
+        except confp.NoOptionError:
+            return fallback
 
 
 # =============================================================================
