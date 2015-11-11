@@ -1,6 +1,7 @@
 """World coordinate system
-
 """
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 
 def deg2pix(degree, scale=1.698):

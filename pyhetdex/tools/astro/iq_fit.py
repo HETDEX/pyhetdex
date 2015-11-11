@@ -10,8 +10,8 @@ distribution integrated over the fibers of the reconstructed IFU image.
     The module does run, but it is not tested. Should not be used before proper
     tests are implemented
 """
-
-from __future__ import print_function, absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from astropy.modeling.functional_models import Moffat2D
 import astropy.modeling.fitting as apf

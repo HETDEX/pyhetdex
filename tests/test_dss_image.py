@@ -1,4 +1,6 @@
 "Test pyhetdex.tools.astro.dss_image"
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import pyhetdex.tools.astro.dss_image
 

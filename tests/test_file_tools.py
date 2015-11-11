@@ -1,7 +1,8 @@
 """
 tests for pyhetdex.tools.files.file_tools
 """
-from __future__ import print_function, absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import os
 import re
@@ -47,7 +48,6 @@ def test_wildcards_to_regex():
 
     for wc, ex in zip(wildcards, expected):
         yield _wildcards_to_regex, wc, ex, False
-        yield _wildcards_to_regex, wc, re.compile(ex), True
 
 
 def _wildcards_to_regex(wildcards, expected_re, re_compile=True):

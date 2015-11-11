@@ -1,7 +1,2 @@
-# from __future__ import absolute_import
-
-# from pyhetdex.het import (dither, ifu_centers, image_quality,
-#                           reconstruct_ifu, throughput)
-
-# don't import it
-# del absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)

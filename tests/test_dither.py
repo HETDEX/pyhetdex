@@ -1,4 +1,6 @@
 """Test pyhetdetyx.het.dither"""
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import os
 from os.path import join

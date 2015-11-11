@@ -2,8 +2,8 @@
 
 .. moduleauthor:: Francesco Montesano <montefra@mpe.mpg.de>
 """
-
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 
 def wavelength_to_index(header, wavelength):
@@ -37,5 +37,5 @@ def wavelength_to_index(header, wavelength):
         return None
     wmin = header["CRVAL1"]
     deltaw = header["CDELT1"]
-    i = int(round((wavelength - wmin) / deltaw))
+    i = (wavelength - wmin) // deltaw
     return i

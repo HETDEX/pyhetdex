@@ -4,8 +4,8 @@ Stores information related to the guide, i.e. guide probe and tracker
 information. Also deals with illumination and image quality servers.
 
 """
-
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from pyhetdex.het.illumination import IlluminationServer
 from pyhetdex.het.image_quality import ImageQualityServer

@@ -12,7 +12,8 @@ instances :func:`get_worker`.
 
     Add context manager?
 """
-from __future__ import print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import multiprocessing as mp
 import signal

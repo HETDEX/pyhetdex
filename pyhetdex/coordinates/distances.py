@@ -10,6 +10,8 @@ objects
     http://www.asdc.asi.it/dist.html gives very different answers, and none of
     them agrees with the output of the function
 """
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import numpy as np
 

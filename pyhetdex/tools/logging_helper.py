@@ -29,6 +29,8 @@ and `here
 3.5 branch <https://hg.python.org/cpython>`_ commit ``9aee273bf8b7`` and
 slightly modified (mostly documentation).
 """
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import logging
 import multiprocessing

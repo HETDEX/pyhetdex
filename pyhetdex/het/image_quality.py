@@ -6,12 +6,12 @@ Created on Aug 1, 2012
 .. moduleauthor:: Daniel Farrow <dfarrow@mpe.mpg.de>
 
 '''
-
-from __future__ import absolute_import, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from abc import ABCMeta, abstractmethod
 import numpy as np
-import pyhetdex.het.image_quality 
+import pyhetdex.het.image_quality
 
 class _FwhmModel(object):
     """

@@ -1,4 +1,6 @@
 """Test pyhetdex/doc/docstring.py"""
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from pyhetdex.doc.docstring import format_docstring
 

@@ -13,6 +13,8 @@ Copyright 2007-2015 by the Sphinx team, see `AUTHORS
 
 BSD, see LICENSE for details.
 """
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from docutils import nodes
 

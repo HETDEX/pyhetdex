@@ -14,7 +14,8 @@ telescope configuration
     :meth:`~ThroughputServer.fplaneToThroughput` or check that it is
     implemented when initialising :class:`~ThroughputServer`.
 """
-from __future__ import absolute_import, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import numpy as np
 

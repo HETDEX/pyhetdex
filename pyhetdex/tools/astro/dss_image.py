@@ -25,8 +25,8 @@ modifications
     Check if :class:`io.StringIO` works for python2, if yes, we don't need it
     :mod:`pyhetdex.tools.six`
 """
-
-from __future__ import absolute_import, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import os
 import warnings

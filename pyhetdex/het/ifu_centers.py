@@ -48,7 +48,8 @@ extracted. The rest of the file is parsed as follow:
 * if the throughput if a valid fiber is less than ``0.01`` a
     :class:`IFUCenterError` is raised as such a fiber should be ignored.
 """
-from __future__ import print_function, absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from collections import defaultdict
 

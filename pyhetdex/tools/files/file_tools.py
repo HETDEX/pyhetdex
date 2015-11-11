@@ -7,8 +7,8 @@
 
 .. moduleauthor: Francesco Montesano <montefra@mpe.mpg.de>
 """
-
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import fnmatch
 import os
@@ -60,8 +60,8 @@ def prefix_filename(path, prefix):
     Examples
     --------
 
-    >>> prefix_filename('/path/to/file.dat', 'new_')
-    '/path/to/new_file.dat'
+    >>> print(prefix_filename('/path/to/file.dat', 'new_'))
+    /path/to/new_file.dat
     """
     path, fname = os.path.split(path)
     return os.path.join(path, prefix + fname)
@@ -77,14 +77,15 @@ def wildcards_to_regex(wildcards, re_compile=True):
     Examples
     --------
 
-    >>> wildcards_to_regex("[0-9]*fits")  # doctest: +SKIP
+    >>> wildcards_to_regex("[0-9]*fits")   # doctest: +SKIP
     "re.compile('[0-9].*fits\\\\Z(?ms)', re.MULTILINE|re.DOTALL)"
-    >>> wildcards_to_regex("[0-9]*fits", re_compile=False)
-    '[0-9].*fits\\\\Z(?ms)'
-    >>> wildcards_to_regex(None, re_compile=False)
-    'a^'
-    >>> wildcards_to_regex(["[0-3]*fits", "[5-9]*fits"], re_compile=False)
-    '[0-3].*fits\\\\Z(?ms)|[5-9].*fits\\\\Z(?ms)'
+    >>> print(wildcards_to_regex("[0-9]*fits", re_compile=False))
+    [0-9].*fits\Z(?ms)
+    >>> print(wildcards_to_regex(None, re_compile=False))
+    a^
+    >>> print(wildcards_to_regex(["[0-3]*fits", "[5-9]*fits"],
+    ...       re_compile=False))
+    [0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)
 
     Parameters
     ----------

@@ -1,5 +1,11 @@
 2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/*: import the __future__
+    * tests/*: same
+    * little fixes to make the tests pass
+
+2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
+
     * setup.cfg: doctest enabled
     * setup.py: remove forgotten nose dependency
     * tests/conftest.py: ignore setup.py

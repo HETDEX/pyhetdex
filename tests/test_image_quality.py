@@ -1,4 +1,6 @@
 "Test pyhetdex.het.image_quality"
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import pyhetdex.het.image_quality
 

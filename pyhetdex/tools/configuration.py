@@ -40,8 +40,8 @@ Examples
 >>> parser.read_dict(sections)
 >>> parser['section1']
 <Section: section1>
->>> parser['section2']['keyA']
-'valueA'
+>>> print(parser['section2']['keyA'])
+valueA
 
 ::
 
@@ -58,8 +58,8 @@ Examples
     [section]
     file1 = %{general:dir1}/file1
 """
-
-from __future__ import absolute_import, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import ast
 import itertools

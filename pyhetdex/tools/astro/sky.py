@@ -10,8 +10,8 @@ The main products are:
   the file is passed)
 
 """
-
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from astropy.io import fits
 from astropy.stats import sigma_clip
