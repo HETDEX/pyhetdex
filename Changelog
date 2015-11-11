@@ -1,5 +1,12 @@
 2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * setup.cfg: doctest enabled
+    * setup.py: remove forgotten nose dependency
+    * tests/conftest.py: ignore setup.py
+    * pyhetdex/coordinates/transformations.py: fix failing doctests
+
+2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/coordinates/transformations.py: import __future__
     * setup.py: replace nose with pytest and add tox
     * setup.cfg: same

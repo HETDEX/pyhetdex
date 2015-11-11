@@ -150,8 +150,8 @@ def decimal2hms(RADeg, delimiter=":"):
     --------
     .. doctest::
 
-        >>> decimal2hms(40.42930556)
-        '02:41:43.033'
+        >>> print(decimal2hms(40.42930556))
+        02:41:43.033
     """
     hours = (RADeg / 360.0) * 24
     if hours < 10 and hours >= 1:
@@ -211,8 +211,8 @@ def decimal2dms(decDeg, delimiter=":"):
     --------
     .. doctest::
 
-        >>> decimal2dms(40.42930556)
-        '+40:25:45.50'
+        >>> print(decimal2dms(40.42930556))
+        +40:25:45.50
     """
     # Positive
     if decDeg > 0:
