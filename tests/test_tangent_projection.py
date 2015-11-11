@@ -3,49 +3,73 @@ Test pyhetdex/astrometry/astrometry.py
 """
 from __future__ import print_function, absolute_import
 
-import nose.tools as nt
+import pytest
 
 import pyhetdex.coordinates.tangent_projection as tp
 
 
-class TestAstrometry(object):
-    """
-    class to test the astrometry
-    """
+@pytest.fixture
+def ifuastrom():
+    """return a pyhetdex.coordinates.tangent_projection.IFUAstrom instance"""
+    ra0 = 0.
+    dec0 = 70.
+    rot = 0.
+    return tp.IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale=-1, y_scale=1)
 
-    def setUp(self):
-        ra0 = 0.
-        dec0 = 70.
-        rot = 0.
-        self.x_in, self.y_in = 10., 0.
-        self.ra_in, self.dec_in = 60, 0.
-        self.ifuastrom = tp.IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale=-1,
-                                      y_scale=1)
 
-    def test_tan_dir(self):
-        "Test the direct transform"
-        x, y = self.ifuastrom.tan_dir(self.ra_in, self.dec_in)
-        exp_x, exp_y = -1044561.64704, -566707.897592
-        nt.assert_almost_equal(exp_x, x, delta=1e-5)
-        nt.assert_almost_equal(exp_y, y, delta=1e-5)
+@pytest.fixture
+def x_y_in():
+    "returns input x and y."
+    return 10., 0.
 
-    def test_tan_inv(self):
-        "Test the inverse transform"
-        ra, dec = self.ifuastrom.tan_inv(self.x_in, self.y_in)
-        exp_ra, exp_dec = -0.00812167883495, 69.999999815
-        nt.assert_almost_equal(exp_ra, ra)
-        nt.assert_almost_equal(exp_dec, dec)
 
-    def test_tan_dirinv(self):
-        """Test chaining the direct and inverse transform"""
-        x, y = self.ifuastrom.tan_dir(self.ra_in, self.dec_in)
-        ra, dec = self.ifuastrom.tan_inv(x, y)
-        nt.assert_almost_equal(self.ra_in, ra)
-        nt.assert_almost_equal(self.dec_in, dec)
+@pytest.fixture
+def x_y_exp():
+    "returns expected x and y."
+    return -1044561.64704, -566707.897592
 
-    def test_tan_invdir(self):
-        """Test chaining the inverse and direct transform"""
-        ra, dec = self.ifuastrom.tan_inv(self.x_in, self.y_in)
-        x, y = self.ifuastrom.tan_dir(ra, dec)
-        nt.assert_almost_equal(self.x_in, x)
-        nt.assert_almost_equal(self.y_in, y)
+
+@pytest.fixture
+def ra_dec_in():
+    "returns input ra and dec"
+    return 60, 0.
+
+
+@pytest.fixture
+def ra_dec_exp():
+    "returns expected ra and dec"
+    return -0.00812167883495, 69.999999815
+
+
+def test_tan_dir(ifuastrom, ra_dec_in, x_y_exp):
+    "Test the direct transform"
+    x, y = ifuastrom.tan_dir(*ra_dec_in)
+    exp_x, exp_y = x_y_exp
+    assert round(exp_x - x, 5) == 0
+    assert round(exp_y - y, 5) == 0
+
+
+def test_tan_inv(ifuastrom, x_y_in, ra_dec_exp):
+    "Test the inverse transform"
+    ra, dec = ifuastrom.tan_inv(*x_y_in)
+    exp_ra, exp_dec = ra_dec_exp
+    assert round(exp_ra - ra, 10) == 0
+    assert round(exp_dec - dec, 10) == 0
+
+
+def test_tan_dirinv(ifuastrom, ra_dec_in):
+    """Test chaining the direct and inverse transform"""
+    ra_in, dec_in = ra_dec_in
+    x, y = ifuastrom.tan_dir(ra_in, dec_in)
+    ra, dec = ifuastrom.tan_inv(x, y)
+    assert round(ra_in - ra, 10) == 0
+    assert round(dec_in - dec, 10) == 0
+
+
+def test_tan_invdir(ifuastrom, x_y_in):
+    """Test chaining the inverse and direct transform"""
+    x_in, y_in = x_y_in
+    ra, dec = ifuastrom.tan_inv(x_in, y_in)
+    x, y = ifuastrom.tan_dir(ra, dec)
+    assert round(x_in - x, 10) == 0
+    assert round(y_in - y, 10) == 0

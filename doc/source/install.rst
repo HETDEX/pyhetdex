@@ -104,8 +104,10 @@ Optional dependences
 
 * testing::
 
-   nose>=1
-   coverage
+   pytest
+   pytest-cov
+
+   tox
 
 * documentation::
 

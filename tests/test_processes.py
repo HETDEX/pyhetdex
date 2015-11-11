@@ -2,7 +2,7 @@
 
 import time
 
-import nose.tools as nt
+import pytest
 
 import pyhetdex.tools.processes as pr
 
@@ -23,21 +23,21 @@ def _execute_sleep(worker):
     # get the jobs and the results and check that they are correct
     jobs = worker.jobs
     results = worker.get_results()
-    nt.eq_(len(jobs), 10)
-    nt.eq_(len(jobs), len(results))
+    assert len(jobs) == 10
+    assert len(jobs) == len(results)
 
     # check that the result is correct
-    nt.eq_(sorted(results), list(range(10)))
+    assert sorted(results) == list(range(10))
 
     # check that the job stats are correct
     stats = worker.jobs_stat()
-    nt.eq_(stats[0], 10)  # successful jobs
-    nt.eq_(stats[0], stats[2])  # all successful
-    nt.eq_(stats[1], 0)  # no failures
+    assert stats[0] == 10  # successful jobs
+    assert stats[0] == stats[2]  # all successful
+    assert stats[1] == 0  # no failures
 
     # clear and check it
     worker.clear_jobs()
-    nt.eq_(len(worker.jobs), 0)
+    assert len(worker.jobs) == 0
 
     # close
     worker.close()
@@ -66,13 +66,15 @@ def _execute_fail(worker):
     worker.close()
 
 
-@nt.raises(ValueError)
+@pytest.mark.xfail(raises=ValueError,
+                   reason="Single processor failing")
 def test_single_processes_fail():
     "single process, fail"
     _execute_fail(pr.get_worker(name="sp_f"))
 
 
-@nt.raises(ValueError)
+@pytest.mark.xfail(raises=ValueError,
+                   reason="Multi processor failing")
 def test_multi_processes_fail():
     "multi process, fail"
     _execute_fail(pr.get_worker(name="mp_f", multiprocessing=True))
@@ -86,21 +88,21 @@ def _execute_fail_safe(worker):
     # get the jobs and the results and check that they are correct
     jobs = worker.jobs
     results = worker.get_results(fail_safe=True)
-    nt.eq_(len(jobs), 10)
-    nt.eq_(len(jobs), len(results))
+    assert len(jobs) == 10
+    assert len(jobs) == len(results)
 
     # check that the result is all "ValueError"
-    nt.eq_(sum(isinstance(i, ValueError) for i in results), 10)
+    assert sum(isinstance(i, ValueError) for i in results) == 10
 
     # check that the job stats are correct
     stats = worker.jobs_stat()
-    nt.eq_(stats[0], 10)  # finished
-    nt.eq_(stats[0], stats[1])  # all failures
-    nt.eq_(stats[0], stats[2])  # all finished
+    assert stats[0] == 10  # finished
+    assert stats[0] == stats[1]  # all failures
+    assert stats[0] == stats[2]  # all finished
 
     # clear and check it
     worker.clear_jobs()
-    nt.eq_(len(worker.jobs), 0)
+    assert len(worker.jobs) == 0
 
     # close
     worker.terminate()
@@ -124,7 +126,8 @@ def test_with():
     worker.clear_jobs()
 
 
-@nt.raises(RuntimeError)
+@pytest.mark.xfail(raises=RuntimeError,
+                   reason="error within a with statement")
 def test_with_fail():
     """multiprocessing and with statement with an error raise"""
     with pr.get_worker(name='with_success', multiprocessing=True) as worker:

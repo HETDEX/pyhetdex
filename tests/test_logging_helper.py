@@ -6,7 +6,7 @@ import multiprocessing
 import os
 import re
 
-import nose.tools as nt
+import pytest
 
 import settings
 
@@ -117,25 +117,23 @@ def _compare_exception_log(logfile):
     with open(logfile, mode='r') as f:
         last_lines = f.readlines()[-5:]
 
-    nt.assert_in("CRITICAL", last_lines[0], msg="Not a critical log")
-    nt.assert_in("Traceback (most recent call last):", last_lines[1],
-                 msg="Not a traceback")
-    nt.assert_regexp_matches(last_lines[2],
-                             r"File .*?test_logging_helper\.py.*?, in"
-                             r" test_log_setup_caught_exception")
+    assert "CRITICAL" in last_lines[0], "Not a critical log"
+    assert "Traceback (most recent call last):" in last_lines[1],\
+           "Not a traceback"
+    assert re.search(r"File .*?test_logging_helper\.py.*?, in", last_lines[2])
     for ll in last_lines[-2:]:
-        nt.assert_regexp_matches(ll, r"RuntimeError.*?test how __exit__ deal"
-                                 r" with errors")
+        assert re.search(r"RuntimeError.*?test how __exit__ deal", ll)
 
 
-def teardown_func():
-    """teardown function tests: remove the log file
+@pytest.yield_fixture
+def remove_logfile():
+    """remove the log file
     """
+    yield
     os.remove(logfile)
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_sp():
+def test_log_sp(remove_logfile):
     """QueueHandler and QueueListener in the same process
     """
     q = multiprocessing.Queue()
@@ -151,13 +149,11 @@ def test_log_sp():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_setup():
+def test_log_setup(remove_logfile):
     """Use SetupQueueListener in a separate process
     """
     q = multiprocessing.Queue()
@@ -173,14 +169,13 @@ def test_log_setup():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-@nt.raises(RuntimeError)
-def test_log_setup_exception():
+@pytest.mark.xfail(raises=RuntimeError,
+                   reason="Explicitly raise it")
+def test_log_setup_exception(remove_logfile):
     """SetupQueueListener with exceptions
     """
     q = multiprocessing.Queue()
@@ -196,8 +191,7 @@ def test_log_setup_exception():
         q.close()
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_setup_caught_exception():
+def test_log_setup_caught_exception(remove_logfile):
     """Catch the exception after exiting SetupQueueListener
     """
     q = multiprocessing.Queue()
@@ -216,14 +210,12 @@ def test_log_setup_caught_exception():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs+5, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs+5, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"
     _compare_exception_log(logfile)
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_setup_level_respect():
+def test_log_setup_level_respect(remove_logfile):
     """QueueListener respecting the handler level
     """
     q = multiprocessing.Queue()
@@ -241,13 +233,11 @@ def test_log_setup_level_respect():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs/5*3, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs/5*3, msg="Wrong number of matching"
-                    " log lines")
+    assert len(matched) == n_logs/5*3, "Wrong number of log lines"
+    assert sum(matched) == n_logs/5*3, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_setup_nolevel_respect():
+def test_log_setup_nolevel_respect(remove_logfile):
     """QueueListener not respecting the handler level
     """
     q = multiprocessing.Queue()
@@ -265,13 +255,11 @@ def test_log_setup_nolevel_respect():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_multiprocessing_initmain():
+def test_log_multiprocessing_initmain(remove_logfile):
     """Log from multiple processes to subprocess, handler initialised in main
     """
     q = multiprocessing.Queue()
@@ -293,13 +281,11 @@ def test_log_multiprocessing_initmain():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_multiprocessing():
+def test_log_multiprocessing(remove_logfile):
     """Log from multiple processes to subprocess, handler initialised in worker
     """
     q = multiprocessing.Queue()
@@ -320,13 +306,11 @@ def test_log_multiprocessing():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_multiprocessing_thread_initmain():
+def test_log_multiprocessing_thread_initmain(remove_logfile):
     """Log from multiple processes to a thread, handler initialised main
     """
     q = multiprocessing.Queue()
@@ -348,13 +332,11 @@ def test_log_multiprocessing_thread_initmain():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_multiprocessing_thread():
+def test_log_multiprocessing_thread(remove_logfile):
     """Log from multiple processes to a thread, handler initialised in worker
     """
     q = multiprocessing.Queue()
@@ -375,13 +357,11 @@ def test_log_multiprocessing_thread():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_multiprocessing_and_main():
+def test_log_multiprocessing_and_main(remove_logfile):
     """Log from main and child processes to a subprocess; initialised in main
     """
     q = multiprocessing.Queue()
@@ -406,13 +386,11 @@ def test_log_multiprocessing_and_main():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile)
-    nt.assert_equal(len(matched), 2*n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), 2*n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == 2*n_logs, "Wrong number of log lines"
+    assert sum(matched) == 2*n_logs, "Wrong number of matching log lines"
 
 
-@nt.with_setup(teardown=teardown_func)
-def test_log_adapter():
+def test_log_adapter(remove_logfile):
     """QueueHandler with logger adapter
     """
     q = multiprocessing.Queue()
@@ -430,6 +408,5 @@ def test_log_adapter():
 
     # check that the number of log lines and the messages are correct
     matched = _compare_log_line(logfile, pattern_=adapter_pattern)
-    nt.assert_equal(len(matched), n_logs, msg="Wrong number of log lines")
-    nt.assert_equal(sum(matched), n_logs, msg="Wrong number of matching log"
-                    " lines")
+    assert len(matched) == n_logs, "Wrong number of log lines"
+    assert sum(matched) == n_logs, "Wrong number of matching log lines"

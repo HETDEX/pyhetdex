@@ -4,7 +4,6 @@ tests for pyhetdex.tools.files.fits_tools
 from __future__ import print_function, absolute_import
 
 from astropy.io.fits import Header
-import nose.tools as nt
 
 import pyhetdex.tools.files.fits_tools as ft
 
@@ -29,4 +28,4 @@ def _w2i(h, w, r):
     """Run ``ft.wavelength_to_index(h, w)`` and compare with result ``r``"""
 
     out = ft.wavelength_to_index(h, w)
-    nt.assert_equal(r, out)
+    assert r == out

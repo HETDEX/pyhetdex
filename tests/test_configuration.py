@@ -2,10 +2,10 @@
 
 import re
 
-import nose.tools as nt
 import six
 from six.moves import configparser as confp
 import pyhetdex.tools.configuration as pyhconf
+import pytest
 
 if six.PY2:
     from pyhetdex.tools.configuration import (BasicInterpolation,
@@ -47,30 +47,31 @@ class TestConf(object):
     def test_empty_list(self):
         "empty list"
         emptyl = self.c.get_list('empty', 'empty_list')
-        nt.assert_equal(emptyl, self.empty_list_exp)
+        assert emptyl == self.empty_list_exp
 
     def test_literal_empty_list(self):
         "literal empty list"
         emptyl = self.c.get_list('empty', 'literal_empty_list')
-        nt.assert_equal(emptyl, self.empty_list_exp)
+        assert emptyl == self.empty_list_exp
 
     def test_empty_list_of_list(self):
         "empty list of lists"
         emptyl = self.c.get_list_of_list('empty', 'empty_list')
-        nt.assert_equal(emptyl, self.empty_list_of_list_exp)
+        assert emptyl == self.empty_list_of_list_exp
 
     def test_list_of_list(self):
         "list of lists"
         lols = self.c.get_list_of_list('listolist', 'lists')
-        nt.assert_equal(lols, self.lists_exp)
+        assert lols == self.lists_exp
 
     def test_list_of_list_def(self):
         "list of lists, use default"
         lols = self.c.get_list_of_list('listolist', 'noexist',
                                        use_default=True)
-        nt.assert_equal(lols, [[None, None]])
+        assert lols == [[None, None]]
 
-    @nt.raises(confp.NoOptionError)
+    @pytest.mark.xfail(raises=confp.NoOptionError,
+                       reason='Non existing option')
     def test_list_of_list_fail(self):
         "list of lists, use default"
         self.c.get_list_of_list('listolist', 'noexist')
@@ -78,24 +79,25 @@ class TestConf(object):
     def test_list_float(self):
         "list of numbers"
         l = self.c.get_list('list', 'float_list')
-        nt.assert_equal(l, self.float_list_exp)
+        assert l == self.float_list_exp
 
     def test_list_literals(self):
         "list of literals"
         l = self.c.get_list('list', 'literal_list')
-        nt.assert_equal(l, self.literal_list_exp)
+        assert l == self.literal_list_exp
 
     def test_list_literals2(self):
         "list of literals, as comma separated values"
         l = self.c.get_list('list', 'literal_list2')
-        nt.assert_equal(l, self.literal_list_exp)
+        assert l == self.literal_list_exp
 
     def test_list_def(self):
         "list of numbers, use default"
         l = self.c.get_list('list', 'noexist', use_default=True)
-        nt.assert_equal(l, [])
+        assert l == []
 
-    @nt.raises(confp.NoOptionError)
+    @pytest.mark.xfail(raises=confp.NoOptionError,
+                       reason='Non existing option')
     def test_list_fail(self):
         "list of lists, use default"
         self.c.get_list('list', 'noexist')
@@ -103,12 +105,12 @@ class TestConf(object):
     def test_list_one_element(self):
         """List of one element, without commas"""
         l = self.c.get_list('one', 'list')
-        nt.assert_equal(l, [3500])
+        assert l == [3500]
 
     def test_listolist_one_element(self):
         """List of lists of one element, without commas"""
         l = self.c.get_list_of_list('one', 'listolist')
-        nt.assert_equal(l, [[3500, 4500]])
+        assert l == [[3500, 4500]]
 
 
 class TestExtendedInterpolation(object):
@@ -141,32 +143,32 @@ class TestExtendedInterpolation(object):
     def test_in_section_int(self):
         "Intra-section interpolation"
         file2 = self.c.get("section", "file2")
-        nt.assert_equal(file2, self.exp_file2)
+        assert file2 == self.exp_file2
 
     def test_cross_section_int(self):
         "Cross-section interpolation"
         subdir = self.c.get("section", "subdir")
-        nt.assert_equal(subdir, self.exp_subdir)
+        assert subdir == self.exp_subdir
 
     def test_cross_section_int_rec(self):
         "Cross-section recursive interpolation"
         file1 = self.c.get("section", "file1")
-        nt.assert_equal(file1, self.exp_file1)
+        assert file1 == self.exp_file1
 
     def test_in_section_int_raw(self):
         "Intra-section interpolation, raw"
         file2 = self.c.get("section", "file2", raw=True)
-        nt.assert_equal(file2, self.exp_fileraw2)
+        assert file2 == self.exp_fileraw2
 
     def test_cross_section_int_raw(self):
         "Cross-section interpolation, raw"
         subdir = self.c.get("section", "subdir", raw=True)
-        nt.assert_equal(subdir, self.exp_subdirraw)
+        assert subdir == self.exp_subdirraw
 
     def test_cross_section_int_rec_raw(self):
         "Cross-section recursive interpolation, raw"
         file1 = self.c.get("section", "file1", raw=True)
-        nt.assert_equal(file1, self.exp_fileraw1)
+        assert file1 == self.exp_fileraw1
 
 
 class TestDefInterpolation(TestExtendedInterpolation):
@@ -189,12 +191,14 @@ class TestDefInterpolation(TestExtendedInterpolation):
         cls.exp_subdirraw = r.sub(sub, cls.exp_subdirraw)
         return cls
 
-    @nt.raises(confp.InterpolationMissingOptionError)
+    @pytest.mark.xfail(raises=confp.InterpolationMissingOptionError,
+                       reason='interpolation fails')
     def test_cross_section_int(self):
         "Cross-section interpolation fails"
         super(TestDefInterpolation, self).test_cross_section_int()
 
-    @nt.raises(confp.InterpolationMissingOptionError)
+    @pytest.mark.xfail(raises=confp.InterpolationMissingOptionError,
+                       reason='interpolation fails')
     def test_cross_section_int_rec(self):
         "Cross-section recursive interpolation fails"
         super(TestDefInterpolation, self).test_cross_section_int_rec()
@@ -220,38 +224,40 @@ class TestMapping(object):
 
     def test_in_section(self):
         """Mapping: test 'in' assertion for sections"""
-        nt.assert_in('section1', self.c)
-        nt.assert_in('section2', self.c)
+        assert 'section1' in self.c
+        assert 'section2' in self.c
 
     def test_in_option(self):
         """Mapping: test 'in' assertion for options"""
-        nt.assert_in('key1', self.c['section1'])
+        assert 'key1' in self.c['section1']
 
     def test_get_section(self):
         """Mapping: test that the section is correctly given"""
         section = self.c['section1']
-        nt.assert_is_instance(section, SectionProxy)
+        assert isinstance(section, SectionProxy)
 
     def test_get_option(self):
         """Mapping: test that the option is correctly given"""
         section = self.c['section1']
-        nt.assert_equal(section['key1'], 'value1')
+        assert section['key1'] == 'value1'
 
     def test_n_options(self):
         """Mapping: test that the number of options is correct"""
         section = self.c['section1']
-        nt.assert_equal(len(section), len(self.sections['section1']))
+        assert len(section) == len(self.sections['section1'])
 
     def test_n_sections(self):
         """Mapping: test that the number of sections is correct"""
-        nt.assert_equal(len(self.c), len(self.sections)+1)
+        assert len(self.c) == len(self.sections)+1
 
-    @nt.raises(KeyError)
+    @pytest.mark.xfail(raises=KeyError,
+                       reason='missing section')
     def test_no_section(self):
         """Mapping: ask for the wrong section"""
         self.c['section3']
 
-    @nt.raises(KeyError)
+    @pytest.mark.xfail(raises=KeyError,
+                       reason='missing option')
     def test_no_option(self):
         """Mapping: ask for the wrong option"""
         try:
@@ -263,25 +269,27 @@ class TestMapping(object):
     def test_add_rm_section(self):
         """Mapping: add and remove a new section"""
         self.c['new_section'] = {}
-        nt.assert_true(self.c.has_section('new_section'))
-        nt.assert_equal(len(self.c), len(self.sections)+2)
+        assert self.c.has_section('new_section')
+        assert len(self.c) == len(self.sections)+2
         del self.c['new_section']
-        nt.assert_false(self.c.has_section('new_section'))
+        assert not self.c.has_section('new_section')
 
     def test_add_rm_option(self):
         """Mapping: add and remove a new option"""
         self.c['section1']['key4'] = 'value4'
-        nt.assert_true(self.c.has_option('section1', 'key4'))
-        nt.assert_equal(self.c.get('section1', 'key4'), 'value4')
+        assert self.c.has_option('section1', 'key4')
+        assert self.c.get('section1', 'key4') == 'value4'
         del self.c['section1']['key4']
-        nt.assert_false(self.c.has_option('section1', 'key4'))
+        assert not self.c.has_option('section1', 'key4')
 
-    @nt.raises(KeyError)
+    @pytest.mark.xfail(raises=KeyError,
+                       reason='trying to delete missing section')
     def test_delete_wrong_section(self):
         """Mapping: delete a non existing section"""
         del self.c['no_exists']
 
-    @nt.raises(KeyError)
+    @pytest.mark.xfail(raises=KeyError,
+                       reason='trying to delete missing option')
     def test_delete_wrong_option(self):
         """Mapping: delete a non existing option"""
         try:
@@ -293,14 +301,14 @@ class TestMapping(object):
     def test_get_option_get(self):
         """Get options value with get"""
         section = self.c['section1']
-        nt.assert_equal(section.get('key1'), self.c['section1']['key1'])
+        assert section.get('key1') == self.c['section1']['key1']
 
     def test_get_no_option_fallback(self):
         """Get options value with get and"""
         section = self.c['section1']
-        nt.assert_equal(section.get('key'), None)
+        assert section.get('key') is None
 
     def test_get_no_option_custom_fallback(self):
         """Get options value with get and"""
         section = self.c['section1']
-        nt.assert_equal(section.get('key', 'a value'), 'a value')
+        assert section.get('key', 'a value') == 'a value'

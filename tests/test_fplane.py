@@ -3,7 +3,7 @@
 import os
 import subprocess as sp
 
-import nose.tools as nt
+import pytest
 
 import pyhetdex.het.fplane as fp
 
@@ -14,14 +14,14 @@ def test_ifu():
     "Test IFU object"
     ifu = fp.IFU("001", 1, 1, 0, 3, "001")
 
-    nt.assert_equal(ifu.ihmpid, "003")
+    assert ifu.ihmpid == "003"
 
 
 def test_ifu_str():
     "Test IFU object string output"
     ifu = fp.IFU("001", 1, 1, 0, 3, "001")
 
-    nt.assert_equal(str(ifu), "ifu: '001'; IHMP: '003'; spectrograph: '001'")
+    assert str(ifu) == "ifu: '001'; IHMP: '003'; spectrograph: '001'"
 
 
 class TestFPlane(object):
@@ -41,20 +41,21 @@ class TestFPlane(object):
 
     def test_size_dict(self):
         """Test the size of the ifu dictionary"""
-        nt.assert_equal(len(self.fplane.difus), self.n_lines)
+        assert len(self.fplane.difus) == self.n_lines
 
     def test_size_keys(self):
         """Test the size of the keys of the ifu dictionary"""
-        nt.assert_equal(len(self.fplane.ids), self.n_lines)
+        with pytest.warns(DeprecationWarning):
+            assert len(self.fplane.ids) == self.n_lines
 
     def test_size_values(self):
         """Test the size of the values of the ifu dictionary"""
-        nt.assert_equal(len(self.fplane.ifus), self.n_lines)
+        assert len(self.fplane.ifus) == self.n_lines
 
     def test_ids(self):
         """Test that the ids are correct"""
-        nt.assert_equal(sorted(self.fplane.ids),
-                        ["{0:03d}".format(i+1) for i in range(self.n_lines)])
+        assert (sorted(self.fplane.ids) ==
+                ["{0:03d}".format(i+1) for i in range(self.n_lines)])
 
 
 def test_custom_IFU():
@@ -68,5 +69,5 @@ def test_custom_IFU():
     fplane_file = os.path.join(s.datadir, "fplane.txt")
     fplane = fp.FPlane(fplane_file, ifu_class=_MyIFU)
     mod_ids = [ifu.mod_id for ifu in fplane.ifus]
-    nt.assert_equal(sorted(mod_ids),
-                    ["{0:04d}".format(i+1001) for i in range(len(fplane.ids))])
+    assert (sorted(mod_ids) ==
+            ["{0:04d}".format(i+1001) for i in range(len(fplane.ids))])

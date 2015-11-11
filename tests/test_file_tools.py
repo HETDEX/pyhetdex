@@ -11,8 +11,6 @@ try:  # python 3
 except ImportError:  # python 2
     DEVNULL = open(os.devnull, 'wb')
 
-import nose.tools as nt
-
 import pyhetdex.tools.files.file_tools as ft
 
 
@@ -38,7 +36,7 @@ def _prefix_filename(fname, prefix, expected):
     Run the test of the single files
     """
     fout = ft.prefix_filename(fname, prefix)
-    nt.assert_equal(fout, expected)
+    assert fout == expected
 
 
 def test_wildcards_to_regex():
@@ -55,7 +53,7 @@ def test_wildcards_to_regex():
 def _wildcards_to_regex(wildcards, expected_re, re_compile=True):
     """Actually do the comparison"""
     r = ft.wildcards_to_regex(wildcards, re_compile=re_compile)
-    nt.assert_equal(r, expected_re)
+    assert r == expected_re
 
 
 class Test_scan_files(object):
@@ -90,31 +88,31 @@ class Test_scan_files(object):
         """scan all files"""
         flist = self._scan_files()
         find_list = self._find_files()
-        nt.assert_equal(flist, find_list)
+        assert flist == find_list
 
     def test_scan_files_norecursive(self):
         """scan all files, no recursive"""
         flist = self._scan_files(recursive=False)
         find_list = self._find_files(options=['-maxdepth', '1'])
-        nt.assert_equal(flist, find_list)
+        assert flist == find_list
 
     def test_directory_exclusion(self):
         """exclude directories"""
         flist = self._scan_files(exclude_dirs=['data', '__pycache__'])
         find_list = self._find_files(options=['-maxdepth', '1'])
-        nt.assert_equal(flist, find_list)
+        assert flist == find_list
 
     def test_filter_files(self):
         """Filter only python files"""
         flist = self._scan_files(matches=["*py"])
         find_list = self._find_files(options=['-name', '*py'])
-        nt.assert_equal(flist, find_list)
+        assert flist == find_list
 
     def test_exclude_files(self):
         """Exclude python files"""
         flist = self._scan_files(exclude=["*py"])
         find_list = self._find_files(options=['!', '-name', '*py'])
-        nt.assert_equal(flist, find_list)
+        assert flist == find_list
 
 
 class Test_scan_dir(object):
@@ -156,23 +154,23 @@ class Test_scan_dir(object):
         """scan all directories"""
         dlist = self._scan_dirs()
         find_list = self._find_dirs()
-        nt.assert_equal(dlist, find_list)
+        assert dlist == find_list
 
     def test_scan_dirs_norecursive(self):
         """scan all directories, no recursive"""
         dlist = self._scan_dirs(recursive=False)
         find_list = self._find_dirs(options=['-maxdepth', '1'])
-        nt.assert_equal(dlist, find_list)
+        assert dlist == find_list
 
     def test_filter_dirs(self):
         """Filter only directory 'tools' """
         dlist = self._scan_dirs(matches=["*tool*"])
         find_list = self._find_dirs(options=['-path', '*tool*'])
-        nt.assert_equal(dlist, find_list)
+        assert dlist == find_list
 
     def test_directory_exclusion(self):
         """exclude directory 'tools'"""
         dlist = self._scan_dirs(exclude=['*tool*', '*pycache*'])
         find_list = self._find_dirs(options=['!', '-path', '*tool*', '!',
                                              '-path', '*pycache*'])
-        nt.assert_equal(dlist, find_list)
+        assert dlist == find_list

@@ -1,5 +1,19 @@
 2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/coordinates/transformations.py: import __future__
+    * setup.py: replace nose with pytest and add tox
+    * setup.cfg: same
+    * tests/conftest.py: added
+    * tests/test_*.py: ported to pytest
+    * tests/test_dither.py: same plus adapt tests to the code in r91
+    * tests/data/dither.example.txt: fix it to match source code
+    * tox.ini: add tox
+    * svn:ignore: ignore pytest cache and tox directories
+    * doc/source/contributions.rst: document pytest and tox
+    * doc/source/install.rst: new dependences
+
+2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/reconstruct_ifu.py: fix typo and do some PEP8
 
 2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>

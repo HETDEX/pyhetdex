@@ -6,7 +6,6 @@ from __future__ import absolute_import
 
 import os
 
-import nose.tools as nt
 import numpy as np
 
 from pyhetdex.tools.astro import iq_fit
@@ -28,5 +27,5 @@ def test_iq_fit():
     print(bestfit)
 
     # TODO: check it carefully
-    nt.assert_almost_equal(xy[0], bestfit[1], places=0)
-    nt.assert_almost_equal(xy[1], bestfit[2], places=0)
+    assert round(xy[0] - bestfit[1], 0) == 0
+    assert round(xy[1] - bestfit[2], 0) == 0

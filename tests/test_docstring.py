@@ -1,7 +1,5 @@
 """Test pyhetdex/doc/docstring.py"""
 
-import nose.tools as nt
-
 from pyhetdex.doc.docstring import format_docstring
 
 
@@ -11,4 +9,4 @@ def test_format_docstring():
         "I want to say '{b}' {a} times"
         pass
 
-    nt.assert_equal(foo.__doc__, "I want to say 'hi' 10 times")
+    assert foo.__doc__ == "I want to say 'hi' 10 times"

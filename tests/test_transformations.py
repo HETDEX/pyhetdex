@@ -1,7 +1,7 @@
 """Test the coordinate transformations in
 pyhetdex.coordinates.transformations"""
 
-import nose.tools as nt
+import pytest
 
 import pyhetdex.coordinates.transformations as coo
 
@@ -28,65 +28,62 @@ class TestCoordTransform(object):
         "hms to decimal transformation and back"
         decimal = coo.hms2decimal(self.hms)
         hms = coo.decimal2hms(decimal)
-        nt.assert_equal(hms, self.hms)
+        assert hms == self.hms
 
     def test_dms2decimal2dms(self):
         "dms to decimal transformation and back"
         decimal = coo.dms2decimal(self.dms)
         dms = coo.decimal2dms(decimal)
-        nt.assert_equal(dms, self.dms)
+        assert dms == self.dms
 
     # dms to decimal
     def test_dms2decimal(self):
         "dms to decimal transform"
-        nt.assert_almost_equal(coo.dms2decimal(self.dms), self.decimal)
+        assert round(coo.dms2decimal(self.dms) - self.decimal, 8) == 0
 
     def test_dms2decimal_del(self):
         "dms to decimal transform (space delimiter)"
         dms = self.dms.replace(":", " ")
-        nt.assert_almost_equal(coo.dms2decimal(dms, delimiter=""),
-                               self.decimal)
+        assert round(coo.dms2decimal(dms, delimiter="") -
+                     self.decimal, 8) == 0
 
     def test_dms2decimal_trunc(self):
         "dms to decimal transform (truncate to degrees)"
         dms = self.dms.split(":")[0]
-        nt.assert_almost_equal(coo.dms2decimal(dms),
-                               self.decimal_truncate_dms)
+        assert round(coo.dms2decimal(dms) - self.decimal_truncate_dms, 10) == 0
 
     def test_dms2decimal_neg(self):
         "dms to decimal transform (negative)"
         dms = self.dms.replace("+", "-")
-        nt.assert_almost_equal(coo.dms2decimal(dms), -self.decimal)
+        assert round(coo.dms2decimal(dms) + self.decimal, 8) == 0
 
     # decimal to dms
     def test_decimal2dms(self):
         "decimal to dms transform"
-        nt.assert_almost_equal(coo.decimal2dms(self.decimal), self.dms)
+        assert coo.decimal2dms(self.decimal) == self.dms
 
     def test_decimal2dms_neg(self):
         "decimal to dms transform (negative)"
         dms = self.dms.replace("+", "-")
-        nt.assert_almost_equal(coo.decimal2dms(-self.decimal), dms)
+        assert coo.decimal2dms(-self.decimal) == dms
 
     # hms to decimal
     def test_hms2decimal(self):
         "hms to decimal transform"
-        nt.assert_almost_equal(coo.hms2decimal(self.hms), self.decimal,
-                               delta=1e-5)
+        assert round(coo.hms2decimal(self.hms) - self.decimal, 5) == 0
 
     def test_hms2decimal_del(self):
         "hms to decimal transform (space delimiter)"
         hms = self.hms.replace(":", " ")
-        nt.assert_almost_equal(coo.hms2decimal(hms, delimiter=""),
-                               self.decimal, delta=1e-5)
+        assert round(coo.hms2decimal(hms, delimiter="") - self.decimal, 5) == 0
 
+    @pytest.mark.todo
     def test_hms2decimal_trunc(self):
         "hms to decimal transform (truncate to degrees)"
         hms = self.hms.split(":")[0]
-        nt.assert_almost_equal(coo.hms2decimal(hms),
-                               self.decimal_truncate_hms)
+        assert round(coo.hms2decimal(hms) - self.decimal_truncate_hms, 10) == 0
 
     # decimal to hms
     def test_decimal2hms(self):
         "decimal to hms transform"
-        nt.assert_almost_equal(coo.decimal2hms(self.decimal), self.hms)
+        assert coo.decimal2hms(self.decimal) == self.hms

@@ -4,49 +4,67 @@ Test pyhetdex.tools.analysis.sky
 
 from __future__ import print_function
 
-import itertools as it
 import os
 
 from astropy.io import fits
-import nose.tools as nt
 import numpy as np
+import py
+import pytest
 
 from pyhetdex.tools.astro import sky
 from pyhetdex.tools.files.file_tools import prefix_filename
 
 import settings as s
 
-fname_template = os.path.join(s.datadir, "jpes20120301T000000_046L_sci.fits")
-fname = prefix_filename(fname_template, "Fe")
-skysub_fname = prefix_filename(fname_template, 'SFe')
-sky_fname = prefix_filename(fname_template, 'SkyFe')
-skysub_ref = prefix_filename(fname_template, 'FeS')
-sky_ref = prefix_filename(fname_template, 'FeSky')
+
+wls = [3800, 4500, 5200]
+# wls = [3600, 4000, 4500, 5000, 5400]
 
 
-# fixtures
-def remove_outfiles():
-    "Remove the file after the test"
-    os.remove(skysub_fname)
-    os.remove(sky_fname)
+@pytest.fixture
+def fname_template(tmpdir):
+    """Template for joined file names"""
+    return os.path.join(s.datadir, "jpes20120301T000000_046L_sci.fits")
 
 
-# tests
-def test_sky_substraction():
-    "Test the sky subtraction"
-    wls = [3800, 4500, 5200]
-    for wmin, wmax, w in it.product(wls[:-1], wls[1:], [10, 20, 30]):
-        if wmin < wmax:
-            yield sky_sub, fname, wmin, wmax, w
+@pytest.fixture
+def fname(tmpdir, fname_template):
+    """Copy the Fe file into a temporary directory and return the file name"""
+    fe_name = py.path.local(prefix_filename(fname_template, "Fe"))
+    fe_name.copy(tmpdir)
+
+    fe_name = tmpdir.join(fe_name.basename)
+
+    return str(fe_name)
 
 
-@nt.with_setup(teardown=remove_outfiles)
-def sky_sub(fname, wmin, wmax, width):
+@pytest.fixture
+def outfiles(fname):
+    """Subtracted and sky output file name"""
+    skysub_fname = prefix_filename(fname, 'S')
+    sky_fname = prefix_filename(fname, 'Sky')
+    return skysub_fname, sky_fname
+
+
+@pytest.fixture
+def reffiles(fname_template):
+    """Subtracted and sky reference file name"""
+    skysub_ref = prefix_filename(fname_template, 'FeS')
+    sky_ref = prefix_filename(fname_template, 'FeSky')
+    return skysub_ref, sky_ref
+
+
+@pytest.mark.parametrize('wmin', wls[:-1])
+@pytest.mark.parametrize('wmax', wls[1:])
+@pytest.mark.parametrize('width', [10, 20, 30])
+def test_sky_sub(fname, outfiles, reffiles, wmin, wmax, width):
     "do the actual sky subtraction and test"
+    if wmin == wmax:
+        pytest.skip("wmin == wmax")
     sky.fe_sky_subtraction(fname, wmin=wmin, wmax=wmax, width=width)
     # compare the outputs with the reference
-    diffS = fits_difference(skysub_fname, skysub_ref)
-    diffSky = fits_difference(sky_fname, sky_ref)
+    diffS = fits_difference(outfiles[0], reffiles[0])
+    diffSky = fits_difference(outfiles[1], reffiles[0])
     msg = "wmin: {ws:d}, wmax: {wl:d}, width: {w:d}."
     msg += " Skysub: {ss:> 8.2%}; sky: {s:> 8.2%}"
     print(msg.format(ss=diffS, s=diffSky, ws=wmin, wl=wmax, w=width))
@@ -67,17 +85,11 @@ def fits_difference(fname1, fname2):
     # return np.nanmedian(data1/data2 - 1.)
 
 
-@nt.with_setup(teardown=remove_outfiles)
-def test_sky_bkg():
+@pytest.mark.parametrize('wmin', wls[:-1])
+@pytest.mark.parametrize('wmax', wls[1:])
+def test_sky_bkg(fname, wmin, wmax):
     "Test the sky background estimation"
+    if wmin == wmax:
+        pytest.skip("wmin == wmax")
     # do the sky subtraction
-    sky.fe_sky_subtraction(fname, wmin=3800, wmax=5200)
-    # estimate the sky
-    wls = [3600, 4000, 4500, 5000, 5400]
-    for wmin, wmax in it.product(wls[:-1], wls[1:]):
-        if wmin < wmax:
-            yield sky_est, sky_fname, wmin, wmax
-
-
-def sky_est(fname, wmin, wmax):
     sky.fe_sky_background(fname, wmin=wmin, wmax=wmax)

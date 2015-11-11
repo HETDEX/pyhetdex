@@ -37,9 +37,10 @@ Notes
 
     from pyhetdex.coordinates.transformations import *
 """
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 
-# -----------------------------------------------------------------------------
 def hms2decimal(ra_string, delimiter=":"):
     """Converts a delimited string of ``Hours:Minutes:Seconds`` format into
     decimal degrees.
@@ -83,7 +84,6 @@ def hms2decimal(ra_string, delimiter=":"):
     return ra_deg
 
 
-# -----------------------------------------------------------------------------
 def dms2decimal(dec_string, delimiter=":"):
     """Converts a delimited string of ``Degrees:Minutes:Seconds`` format into
     decimal degrees.
@@ -130,7 +130,6 @@ def dms2decimal(dec_string, delimiter=":"):
     return dec_deg
 
 
-# -----------------------------------------------------------------------------
 def decimal2hms(RADeg, delimiter=":"):
     """Converts decimal degrees to string in ``Hours:Minutes:Seconds`` format
     with user specified delimiter.
@@ -192,7 +191,6 @@ def decimal2hms(RADeg, delimiter=":"):
     return sHours + delimiter + sMins + delimiter + sSecs
 
 
-# -----------------------------------------------------------------------------
 def decimal2dms(decDeg, delimiter=":"):
     """Converts decimal degrees to string in ``Degrees:Minutes:Seconds`` format
     with user specified delimiter.
