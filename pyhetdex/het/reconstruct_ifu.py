@@ -14,7 +14,7 @@ from pyhetdex.tools.files.fits_tools import wavelength_to_index
 from pyhetdex import het
 
 
-class RecontructIndexError(IndexError):
+class ReconstructIndexError(IndexError):
     """Error for miss-matching the number of fibers in the ifu center files and
     the fiber extracted ones"""
 
@@ -32,6 +32,7 @@ class ReconstructValueError(ValueError):
 
 
 # TODO: account for illumination weights and fiber throughput
+
 class ReconstructedIFU(object):
     r"""Reconstructed IFU head image from the fiber extracted frames given the
     ``ifu_center`` and the ``dither``.
@@ -72,7 +73,7 @@ class ReconstructedIFU(object):
     ReconstructIOError
         if the number and/or number of fiber extracted frames is not correct;
         raised by :meth:`~_fedict`
-    RecontructIndexError
+    ReconstructIndexError
         if the number of fibers from the fiber extracted files and from the ifu
         center files do not match; raised by :meth:`~_reconstruct`
     """
@@ -199,11 +200,11 @@ class ReconstructedIFU(object):
                     try:
                         all_keys.remove(k)
                     except ValueError:
-                        msg = "The file '{}' is for an unknown combination of"
-                        msg += " dither ({}) and channel ({}). One of {}"
-                        msg += " expected"
-                        raise ReconstructIOError(msg.format(fe, d, ch,
-                                                        ", ".join(all_keys)))
+                        msg = ("The file '{}' is for an unknown combination of"
+                               " dither ({}) and channel ({}). One of {}"
+                               " expected".format(fe, d, ch,
+                                                  ", ".join(all_keys)))
+                        raise ReconstructIOError(msg)
 
                 dfextract[k] = fe
 
@@ -241,7 +242,7 @@ class ReconstructedIFU(object):
                     msg += " '{2}' ({3:d})"
                     msg = msg.format(hdu.filename(), data.shape[0],
                                      self.ifu_center.filename, len(fib_numbs))
-                    raise RecontructIndexError(msg)
+                    raise ReconstructIndexError(msg)
                 self.flux.append(data[fib_numbs, :])  # order the fibers
                 # get the header keywords needed to get the index at a given
                 # wavelength
@@ -316,8 +317,11 @@ class QuickReconstructedIFU(object):
     ----------
     ifu_center : instance of :class:`~pyhetdex.het.ifu_centers.IFUCenter`
         fiber number to fiber position mapping
-    files : Basefilename of the image to be reconstructed, or a tuple of three images to reconstruct a complete dither.
-    dist : Distortion file for the ifu
+    files : string
+        Basefilename of the image to be reconstructed, or a tuple of three
+        images to reconstruct a complete dither.
+    dist : string
+        Distortion file for the ifu
 
     Attributes
     ----------
@@ -330,18 +334,20 @@ class QuickReconstructedIFU(object):
     ReconstructIOError
         if the number and/or number of fiber extracted frames is not correct;
         raised by :meth:`~_fedict`
-    RecontructIndexError
+    ReconstructIndexError
         if the number of fibers from the fiber extracted files and from the ifu
         center files do not match; raised by :meth:`~_reconstruct`
     """
 
     def __init__(self, ifu_center, files, dist):
         if not ifu_center:
-            raise ReconstructValueError('An IFU center file is needed to quickreconstruct an image')
-            
+            raise ReconstructValueError('An IFU center file is needed to'
+                                        ' quickreconstruct an image')
+
         if not dist:
-            raise ReconstructValueError('A distortion is needed to quickreconstruct an image')
-            
+            raise ReconstructValueError('A distortion is needed to'
+                                        ' quickreconstruct an image')
+
         self.ifu_center = ifu_center
         self.dist = dist
         self.files = files
@@ -384,7 +390,7 @@ class QuickReconstructedIFU(object):
                     msg += " '{2}' ({3:d})"
                     msg = msg.format(hdu.filename(), data.shape[0],
                                      self.ifu_center.filename, len(fib_numbs))
-                    raise RecontructIndexError(msg)
+                    raise ReconstructIndexError(msg)
                 self.flux.append(data[fib_numbs, :])  # order the fibers
                 # get the header keywords needed to get the index at a given
                 # wavelength

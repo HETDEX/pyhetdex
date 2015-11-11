@@ -1,3 +1,16 @@
+2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/reconstruct_ifu.py: fix typo and do some PEP8
+
+2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: add ifu dictionaries indexed by specid and ihmpid
+	  and functions to get ifu for specific ids
+    * pyhetdex/het/dither.py: improve dither creation
+    * pyhetdex/het/telescope.py: PEP8
+    * doc/source/het/telescope.rst: added
+    * doc/source/het/index.rst: add telescope
+
 2015-10-29 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/configuration.py: add fallback to section proxy
