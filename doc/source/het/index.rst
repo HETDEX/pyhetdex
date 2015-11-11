@@ -12,3 +12,4 @@
     reconstruct_ifu
     image_quality
     throughput
+    telescope

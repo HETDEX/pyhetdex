@@ -12,6 +12,18 @@ The focal plane is expected to be::
 Commented lines are ignored.
 """
 
+import six
+
+
+class NoIFUError(KeyError):
+    """Error raised when the required ifu does not exists"""
+    pass
+
+
+class UnknownIDTypeError(ValueError):
+    """Unknown id type"""
+    pass
+
 
 class IFU(object):
     """Contain the information for the IFU from the focal plane file.
@@ -63,31 +75,134 @@ class FPlane(object):
 
     Attributes
     ----------
-    ids
     ifus
     difus
+    ifuids
+    ihmpids
+    specids
     """
     def __init__(self, fplane_file, ifu_class=IFU):
         self._fplane_file = fplane_file
         self._IFU = ifu_class
-        self._ifus = {}
+        self._ifus_by_id = {}
+        self._ifus_by_ihmp = {}
+        self._ifus_by_spec = {}
 
         self._load_fplane(fplane_file)
 
     @property
     def ifus(self):
         """list of :class:`IFU` instances"""
-        return self._ifus.values()
+        return self._ifus_by_id.values()
 
     @property
     def ids(self):
+        """list of ifu ids
+
+        Deprecated
+        """
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("default")
+            warnings.warn("``ids`` is deprecated, please use ``ifuids``"
+                          " instead", DeprecationWarning)
+        return self._ifus_by_id.keys()
+
+    @property
+    def ifuids(self):
         """list of ifu ids"""
-        return self._ifus.keys()
+        return self._ifus_by_id.keys()
+
+    @property
+    def ihmpids(self):
+        """list of ihmp ids"""
+        return self._ifus_by_ihmp.keys()
+
+    @property
+    def specids(self):
+        """list of spec ids"""
+        return self._ifus_by_spec.keys()
 
     @property
     def difus(self):
         """dictionary of ifus; key: ifuid; value: :class:`IFU` instance"""
-        return self._ifus
+        return self._ifus_by_id
+
+    def by_ifuid(self, ifuid):
+        """Returns the ifu with ``ifuid``
+
+        Parameters
+        ----------
+        ifuid : string
+            id of the ifu
+
+        Returns
+        -------
+        :class:`IFU` instance
+        """
+        try:
+            return self._ifus_by_id[ifuid]
+        except KeyError as e:
+            six.raise_from(NoIFUError(e), e)
+
+    def by_ihmpid(self, ihmpid):
+        """Returns the ifu with ``ihmpid``
+
+        Parameters
+        ----------
+        ihmpid : string
+            id of the ihmp seat
+
+        Returns
+        -------
+        :class:`IFU` instance
+        """
+        try:
+            return self._ifus_by_ihmp[ihmpid]
+        except KeyError as e:
+            six.raise_from(NoIFUError(e), e)
+
+    def by_specid(self, specid):
+        """Returns the ifu with ``specid``
+
+        Parameters
+        ----------
+        specid : string
+            id of the spectrograph
+
+        Returns
+        -------
+        :class:`IFU` instance
+        """
+        try:
+            return self._ifus_by_spec[specid]
+        except KeyError as e:
+            six.raise_from(NoIFUError(e), e)
+
+    def by_id(self, id_, idtype):
+        """Returns the ifu with ``id_``
+
+        Parameters
+        ----------
+        id_ : string
+            id of the spectrograph
+        idtype : str
+            type of the id; must be one of 'ifuid', 'ihmpid', 'specid'
+
+        Returns
+        -------
+        :class:`IFU` instance
+        """
+        if idtype == 'ifuid':
+            ifu = self.by_ifuid
+        elif idtype == 'ihmpid':
+            ifu = self.by_ihmpid
+        elif idtype == 'specid':
+            ifu = self.by_specid
+        else:
+            raise UnknownIDTypeError("Id type {} is not known")
+
+        return ifu(id_)
 
     def _load_fplane(self, fname):
         """Load the focal plane file and creates the :class:`IFU` instances
@@ -118,4 +233,7 @@ class FPlane(object):
         ifuid, x, y, xid, yid, specid = [i.strip() for i in line.split()]
         ifuid = "{0:03d}".format(int(ifuid))
         specid = "{0:03d}".format(int(specid))
-        self._ifus[ifuid] = self._IFU(ifuid, x, y, xid, yid, specid)
+        _ifu = self._IFU(ifuid, x, y, xid, yid, specid)
+        self._ifus_by_id[ifuid] = _ifu
+        self._ifus_by_ihmp[_ifu.ihmpid] = _ifu
+        self._ifus_by_spec[specid] = _ifu
