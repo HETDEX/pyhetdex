@@ -1,3 +1,10 @@
+2015-11-12 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/distances.py: round floats to 10th decimal to avoid
+	  test failures due to floating point representation
+    * pyhetdex/coordinates/tangent_projection.py: same
+    * pyhetdex/coordinates/transformations.py: same
+
 2015-11-11 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/*: import the __future__

@@ -62,8 +62,8 @@ def hms2decimal(ra_string, delimiter=":"):
 
     .. doctest::
 
-        >>> hms2decimal("02:41:43.033")
-        40.42930416666667
+        >>> print(round(hms2decimal("02:41:43.033"), 10))
+        40.4293041667
     """
     # is it in HH:MM:SS format?
     if delimiter == "":
@@ -104,8 +104,8 @@ def dms2decimal(dec_string, delimiter=":"):
     --------
     .. doctest::
 
-        >>> dms2decimal("+40:25:45.50")
-        40.42930555555555
+        >>> print(round(dms2decimal("+40:25:45.50"), 10))
+        40.4293055556
     """
     # is it in DD:MM:SS format?
     if delimiter == "":

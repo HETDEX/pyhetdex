@@ -22,16 +22,18 @@ Example of use of this module::
     >>> ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
     >>> ra, dec = ifu.tan_inv(x_in, y_in)
     >>> x_out, y_out = ifu.tan_dir(ra, dec)
-    >>> ra, dec
-    (-0.0081216788349454117, 69.999999814997963)
-    >>> x_out, y_out
-    (9.9999999999999964, 2.2899993733449891e-11)
+    >>> print(round(ra, 10), round(dec, 10))
+    -0.0081216788 69.999999815
+    >>> print(round(x_out, 10), round(y_out, 10))
+    10.0 0.0
+    >>> print(abs(x_out - x_in) < 1e-10, abs(y_out - y_in) < 1e-10)
+    True True
     >>> # Naive calculation
     >>> import numpy as np
-    >>> -1. * (ra - ra0) * 3600. * np.cos(np.deg2rad(dec0))
-    9.9999999330230906
-    >>> (dec - dec0) * 3600.
-    -0.00066600733248378674
+    >>> print(round(-1. * (ra - ra0) * 3600. * np.cos(np.deg2rad(dec0)), 10))
+    9.999999933
+    >>> print(round((dec - dec0) * 3600., 10))
+    -0.0006660073
 
 .. todo::
     check the module and its the documentation
