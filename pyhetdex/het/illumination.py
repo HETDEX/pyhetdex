@@ -8,38 +8,35 @@ plane position and a tracker position
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import numpy as np
-
 
 class IlluminationServer(object):
     """Illumination server.
 
-    At the moment returns a dummy model for how the illumnation
-    varies across the focal plane
+    At the moment returns a dummy model for how the illumination varies across
+    the focal plane
+
+    Parameters
+    ----------
+    tracker_position : list of lists
+        position of the tracker for the different dithers
+    illumination_model : string
+        name of the illumination model to use
     """
-
     def __init__(self, tracker_position, illumination_model="Constant"):
-        """
-        Parameters
-        ----------
-        illumination_model : string
-            name of the illumination model to use
-        self.tracker_position : list of lists ??
-            the position of the tracker for the different 
-            dithers
-        """ 
-
         self.tracker_position = tracker_position
 
         # Specify throughput model
         self.illumination_model = illumination_model
 
-
-
     def illumination(self, x, y):
         """Throughput based on focal plane position.
 
         Now is just a dummy model.
+
+        .. note::
+
+            This is a dummy, should contain some clever model to give at the
+            moment just falls off like a power law
 
         Parameters
         ----------
@@ -55,13 +52,7 @@ class IlluminationServer(object):
         ------
         NotImplementedError
             if the required illumination model is not implemented
-
-        Notes
-        -----
-            This is also a dummy, should contain some clever model to give at
-            the moment just falls off like a power law
         """
-
         if "Constant" in self.illumination_model:
             r = 1.0
         elif "SimplePowerLaw" in self.illumination_model:

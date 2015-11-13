@@ -285,7 +285,8 @@ def argument_parser(argv=None):
     parser.add_argument('fplane', help="The fplane file")
     parser.add_argument('ditherpos', help='''Name of the file containing the
                          dither shifts. The expected format is
-                         ``ihmpid x1 x2 ... xn y1 y2 ... yn``''')
+                         ``id x1 x2 ... xn y1 y2 ... yn``. Normally the ``id``
+                         is ``ihmpid``''')
     parser.add_argument('basename', help="""Basename of the data files. The
                         ``{dither}`` and ``{id}`` placeholders are replaced by
                         the dither number and the provided id. E.g., if the

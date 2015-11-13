@@ -1,5 +1,15 @@
 2015-11-13 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * doc/source/dither_file.rst: update documentation for dither_file
+	  executable
+    * doc/source/het/illumination.rst: added
+    * doc/source/het/index.rst: add
+    * doc/source/het/image_quality.rst: fix underline length
+    * pyhetdex/het/dither.py: add detail
+    * pyhetdex/het/illumination.py: PEP8
+
+2015-11-13 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/doc/sphinxext/todo.py: fix documentation built on python 2
     * pyhetdex/het/image_quality.py: PEP8, solve severe error in the
 	  documentation
