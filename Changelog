@@ -1,3 +1,12 @@
+2015-11-13 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/doc/sphinxext/todo.py: fix documentation built on python 2
+    * pyhetdex/het/image_quality.py: PEP8, solve severe error in the
+	  documentation
+    * tox.ini: build the documentation in one env
+    * doc/source/conf.py: use matplotlib Agg backend to avoid failures when
+	  building the documentation with tox
+
 2015-11-12 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/coordinates/distances.py: round floats to 10th decimal to avoid
@@ -79,7 +88,6 @@
      * doc/source/dither_file.rst: Documentation for the new dither file creator
      * doc/source/index.rst: as above
 
->>>>>>> .r88
 2015-10-07  Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/configuration.py: don't fail with lists composed by one
@@ -190,7 +198,6 @@
     * pyhetdex/tools/files/file_tools.py(scan_files): add "followsymlink" option
     * pyhetdex/tools/six_ext.py: import mock under a common name
 
->>>>>>> .r85
 2015-05-06  Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/tools/six_ext.py: ``ConfigFileError`` and docstrings added

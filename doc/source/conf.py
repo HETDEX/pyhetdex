@@ -15,6 +15,9 @@
 import sys
 import os
 
+import matplotlib
+matplotlib.use('Agg')
+
 import sphinx
 
 # If extensions (or modules to document with autodoc) are in another directory,

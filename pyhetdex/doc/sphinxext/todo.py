@@ -193,8 +193,8 @@ def setup(app):
 
     app.add_directive('todo', Todo)
     app.add_directive('todolist', TodoList)
-    app.connect('doctree-read', process_todos)
-    app.connect('doctree-resolved', process_todo_nodes)
-    app.connect('env-purge-doc', purge_todos)
+    app.connect(str('doctree-read'), process_todos)
+    app.connect(str('doctree-resolved'), process_todo_nodes)
+    app.connect(str('env-purge-doc'), purge_todos)
     # app.connect('env-merge-info', merge_info)
     return {'version': sphinx.__version__, 'parallel_read_safe': True}
