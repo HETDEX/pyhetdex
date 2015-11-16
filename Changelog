@@ -1,3 +1,7 @@
+2015-11-16 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: added forgotten ``tox_requires`` entry point
+
 2015-11-13 Francesco Montesano <montefra@mpe.mpg.de>
 
     * doc/source/dither_file.rst: update documentation for dither_file
