@@ -100,7 +100,8 @@ def extras_require(key=None):
 
 
 entry_points = {'console_scripts':
-                ['dither_file = pyhetdex.het.dither:create_dither_file']}
+                ['dither_file = pyhetdex.het.dither:create_dither_file',
+                 'reconstructIFU = pyhetdex.het.reconstruct_ifu:create_quick_reconstruction']}
 # setuptools customisation
 distutils_ext = {'distutils.setup_keywords': [
                     "tox_requires = setuptools.dist:check_requirements", ]

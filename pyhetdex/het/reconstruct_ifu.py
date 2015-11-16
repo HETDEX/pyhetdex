@@ -8,10 +8,12 @@ import itertools as it
 import os
 
 from astropy.io import fits
+import astropy.stats as stats
 import numpy as np
 
 from pyhetdex.tools.files.fits_tools import wavelength_to_index
-from pyhetdex import het
+from pyhetdex.het import ifu_centers, dither as dith
+import pyhetdex.cure.distortion as distortion
 
 
 class ReconstructIndexError(IndexError):
@@ -80,7 +82,7 @@ class ReconstructedIFU(object):
 
     def __init__(self, ifu_center, dither, fextract=None,
                  fe_prefix=""):
-        if isinstance(dither, het.dither.EmptyDither) and fextract is None:
+        if isinstance(dither, dith.EmptyDither) and fextract is None:
             msg = "With an empty dither file a fiber extract file name must be"
             msg += " provided"
             raise ReconstructValueError(msg)
@@ -138,11 +140,11 @@ class ReconstructedIFU(object):
             msg = "dither_file and/or fextract must be provided"
             raise ReconstructValueError(msg)
 
-        _ifu_center = het.ifu_centers.IFUCenter(ifu_center_file)
+        _ifu_center = ifu_centers.IFUCenter(ifu_center_file)
         if dither_file is None:
-            _dither = het.dither.EmptyDither()
+            _dither = dith.EmptyDither()
         else:
-            _dither = het.dither.ParseDither(dither_file)
+            _dither = dith.ParseDither(dither_file)
 
         return cls(_ifu_center, _dither, fextract=fextract,
                    fe_prefix=fe_prefix)
@@ -320,8 +322,10 @@ class QuickReconstructedIFU(object):
     files : string
         Basefilename of the image to be reconstructed, or a tuple of three
         images to reconstruct a complete dither.
-    dist : string
-        Distortion file for the ifu
+    dist_l : string
+        Distortion file for the left spectrograph
+    dist_r : string
+        Distortion file for the right spectrograph
 
     Attributes
     ----------
@@ -339,119 +343,230 @@ class QuickReconstructedIFU(object):
         center files do not match; raised by :meth:`~_reconstruct`
     """
 
-    def __init__(self, ifu_center, files, dist):
+    def __init__(self, ifu_center, files, dist_r=None,
+                 dist_l=None, pixscale=0.25):
         if not ifu_center:
             raise ReconstructValueError('An IFU center file is needed to'
                                         ' quickreconstruct an image')
 
-        if not dist:
+        self.ifu_center = ifu_centers.IFUCenter(ifu_center)
+        if not dist_r and not dist_l:
             raise ReconstructValueError('A distortion is needed to'
                                         ' quickreconstruct an image')
 
-        self.ifu_center = ifu_center
-        self.dist = dist
+        self.dists = {'L': None, 'R': None}
+        if dist_l:
+            self.dists['L'] = distortion.Distortion(dist_l)
+        if dist_r:
+            self.dists['R'] = distortion.Distortion(dist_r)
+
         self.files = files
 
-        # public attributes, filled in *_reconstruct*
-        self.x, self.y = np.array([[], []], dtype=float)
-        self.flux, self.header = [], []
+        self.dx = (0, -1.27, -1.27)
+        self.dy = (0, 0.73, -0.73)
 
-        self._reconstruct()
+        self.pscale = pixscale
 
-    def _reconstruct(self):
+        self.maxx = max((max(self.ifu_center.xifu['L']), max(self.ifu_center.xifu['R']))) + \
+            max(self.dx) + self.ifu_center.fiber_d/2.
+        self.minx = min((min(self.ifu_center.xifu['L']), min(self.ifu_center.xifu['R']))) + \
+            min(self.dx) - self.ifu_center.fiber_d/2.
+        nx = (self.maxx - self.minx) / self.pscale
+
+        self.maxy = max((max(self.ifu_center.yifu['L']), max(self.ifu_center.yifu['R']))) + \
+            max(self.dy) + self.ifu_center.fiber_d/2.
+        self.miny = min((min(self.ifu_center.yifu['L']), min(self.ifu_center.yifu['R']))) + \
+            min(self.dy) - self.ifu_center.fiber_d/2.
+        ny = (self.maxy - self.miny) / self.pscale
+        self.img = np.zeros((nx, ny))
+        self.weight = np.ones((nx, ny))
+
+        # if self.is_dither:
+        #     _dither = het.dither.ParseDither(dither_file)
+        # else:
+        # if not dist:
+        #     raise ReconstructValueError('A distortion is \
+        #     needed to for image reconstrution')
+        #
+        # if type(self.files) == str:
+        #     self.files = [self.files]
+
+        self.reconstruct(True)
+
+    def reconstruct(self, subtract_overscan=True):
         """
         Read the fiber extracted files and creates a set of three lists for x,
         y and flux.
 
         Parameters
         ----------
-        dfextract : dictionary
-            name of the fiber extracted file
+        subtract_overscan : bool
+            If the overscan region is still present in the image,
+            subtract the bias level, calculated from the overscan
+            region of the image.
         """
-        for ch, d in it.product(self.ifu_center.channels, self.dither.dithers):
-            # get the correct values of x and y
-            self.x = np.concatenate([self.x, self.xpos(ch, d)])
-            self.y = np.concatenate([self.y, self.ypos(ch, d)])
 
-            # read the fiber extracted file, order the fibers and save the
-            # necessary keys into self.h
-            # python starts from 0
-            fib_numbs = [fn - 1 for fn in self.ifu_center.fib_number[ch]]
+        xc = np.array([], dtype=float)
+        yc = np.array([], dtype=float)
+        flx = np.array([], dtype=float)
 
-            k = self._key.format(ch=ch, d=d)
-            with fits.open(dfextract[k]) as hdu:
+        ifuid = None
+
+        for img in self.files:  # Loop over all input file
+
+            dx, dy = 0, 0  # Default offset value
+            f_offset = 0  # Python arrays start at 0, FITS files at 1...
+
+            with fits.open(img) as hdu:
+
+                print('Working on ', img)
+
                 h = hdu[0].header
-                data = hdu[0].data
-                # if the number of fiber from the fiber extracted file is
-                # different from the number of fibers, something wrong
-                if data.shape[0] != len(fib_numbs):
-                    msg = "The number of rows in file '{0}' ({1:d}) does not"
-                    msg += " agree with the number of active fibers from file"
-                    msg += " '{2}' ({3:d})"
-                    msg = msg.format(hdu.filename(), data.shape[0],
-                                     self.ifu_center.filename, len(fib_numbs))
-                    raise ReconstructIndexError(msg)
-                self.flux.append(data[fib_numbs, :])  # order the fibers
-                # get the header keywords needed to get the index at a given
-                # wavelength
-                self.header.append({k: h.get(k) for k in ["CRVAL1", "CDELT1"]})
+                data = hdu[0].data.transpose()
 
-    def xpos(self, channel, dither):
-        """get the position for the x *dither* in *channel*
+                if not ifuid:
+                    ifuid = h['IFUID']
+                elif ifuid != h['IFUID']:
+                    print('WARNING: %s if from a different IFU, skipping it!')
+                    continue
+                ccdpos = h['CCDPOS']
+
+                D = self.dists[ccdpos]
+                if not D:
+                    raise ReconstructValueError('No distortion given for ' +
+                                                ccdpos + ' spectrograph')
+
+                if h['NAXIS2'] < 1500:
+                    if h['CCDHALF'] == 'U':
+                        f_offset = 1032  # FIXME This should come from header
+                        ampstr = 'upper amplifier'
+                    else:
+                        ampstr = 'lower amplifier'
+                else:
+                    ampstr = 'full'
+
+                if h['NAXIS1'] > 1032 and subtract_overscan:
+                    print('Removing bias calculated from overscan region')
+                    bias = self._get_overscan(data, h['BIASSEC'])
+                    data = data-bias
+
+                dither_step = int(h['DITHER'])-1
+
+                print('This is a %s image for the %s spectrograph '
+                      'in dither step %d' % (ampstr, ccdpos, dither_step+1))
+
+                dx = self.dx[dither_step]
+                dy = self.dy[dither_step]
+
+                center_x = np.round(data.shape[0]/2)
+
+                for f in range(0, self.ifu_center.n_fibers[ccdpos]):
+                    # fib = f+1
+                    fy_f = D.map_xf_y(516, D.reference_f_.data[f]) - f_offset
+                    fy = np.floor(fy_f)
+                    fy_d = fy_f - fy
+                    if fy < 0 or fy > data.shape[1]:
+                        continue
+
+                    flx = np.append(flx, np.sum(data[center_x-20:center_x+20,
+                                                     fy-1:fy+2]) +
+                                    np.sum(data[center_x-20:center_x+20,
+                                                fy-2:fy-1]*(1.-fy_d)) +
+                                    np.sum(data[center_x-20:center_x+20,
+                                                fy+2:fy+3]*(fy_d)))
+
+                    # Include the dither offset
+                    xc = np.append(xc, self.ifu_center.xifu[ccdpos][f] + dx)
+                    yc = np.append(yc, self.ifu_center.yifu[ccdpos][f] + dy)
+
+        # Now loop over the output image and add the flux from all fibers
+
+        fr_2 = (self.ifu_center.fiber_d/2.)*(self.ifu_center.fiber_d/2.)
+
+        it = np.nditer(self.img, flags=['multi_index'], op_flags=['writeonly'])
+
+        while not it.finished:
+            px = self.minx + it.multi_index[0] * self.pscale
+            py = self.miny + it.multi_index[1] * self.pscale
+
+            dx = xc - px
+            dy = yc - py
+
+            dd = (dx*dx + dy*dy)
+            it[0] = np.sum(flx[dd < fr_2])
+            it.iternext()
+
+    def write(self, filename):
+        outimg = fits.PrimaryHDU(self.img)
+        outimg.writeto(filename, clobber=True)
+
+    def _section_to_list(self, sec):
+        """
+        Convert a header section string of the form [x1:x2,y1:y2]
+        to a list of integers
 
         Parameters
         ----------
-        channel : string
-            name of the channel [L, R]
-        dither : string
-            name of the dither [D1, D2, ..]
-
-        Returns
-        -------
-        ndarray
-            x position of the fibers for the given channel and dither
+        sec : str
+            The header section string
         """
-        return np.array(self.ifu_center.xifu[channel]) + self.dither.dx[dither]
+        return [int(i) for i in sec.replace('[', '').replace(']', '').
+                replace(':', ',').split(',')]
 
-    def ypos(self, channel, dither):
-        """get the position for the y *dither* in *channel*
+    def _get_overscan(self, img, biassec):
+        r"""Extract the sigma clipped mean of the overscan region
 
         Parameters
         ----------
-        channel : string
-            name of the channel [L, R]
-        dither : string
-            name of the dither [D1, D2, ..]
-
-        Returns
-        -------
-        ndarray
-            y position of the fibers for the given channel and dither
+        img : instance of :class:`numpy.array`
+            Input image data
+        biassec : list
+            List or tuple with the ranges of the bias section.
+            Use :func:_section_to_list to convert the header
+            BIASSEC keyword to a python list
         """
-        return np.array(self.ifu_center.yifu[channel]) + self.dither.dy[dither]
 
-    def reconstruct(self, wmin=None, wmax=None):
-        """
-        Returns the reconstructed IFU with the flux computed between
-        [``wmin``, ``wmax``]
+        biasreg = self._section_to_list(biassec)
+        return np.mean(stats.sigma_clip(img[biasreg[0]:biasreg[1], ]))
 
-        Parameters
-        ----------
-        wmin, wmax : float, optional
-            min and max wavelength to use. If ``None``: use the min and/or max
-            from the file
 
-        Returns
-        -------
-        x, y : 1d arrays
-            x and y position of the fibers
-        flux : 1d array
-            flux of the fibers within ``wmin`` and ``wmax``
-        """
-        _flux = []
-        for f, h in zip(self.flux, self.header):
-            _imin = wavelength_to_index(h, wmin)
-            _imax = wavelength_to_index(h, wmax)
-            _flux.append(f[:, _imin:_imax].sum(axis=1))
+def argument_parser(argv=None):
+    """Parse the command line"""
+    import argparse
 
-        return self.x, self.y, np.concatenate(_flux)
+    # Parse user input
+    description = """Produce a dither file for the give id.
+    """
+
+    parser = argparse.ArgumentParser(description=description,
+                        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('files', nargs='+', help="""The input images""")
+    parser.add_argument('-o', '--outfile', help="""Name of a file to output""",
+                        default='reconstruct.fits')
+    parser.add_argument('-l', '--ldist', help="""Name of the distortion file for the
+                        left spectrograph""")
+    parser.add_argument('-r', '--rdist', help="""Name of the distortion file for the
+                        right spectrograph""")
+    parser.add_argument('-i', '--ifucen', help="""Name of the IFUcen file""",
+                        required=True)
+    parser.add_argument('-s', '--scale', help="""Name of the IFUcen file""",
+                        default=0.3, type=float)
+
+    return parser.parse_args(argv)
+
+
+def create_quick_reconstruction(argv=None):
+    """Function that creates the reconstructed image
+
+    Parameters
+    ----------
+    argv : list of strings
+        if not provided sys.argv is used
+    """
+    args = argument_parser(argv=argv)
+
+    # create the shot object
+    recon = QuickReconstructedIFU(args.ifucen, args.files, dist_r=args.rdist,
+                                  dist_l=args.ldist, pixscale=args.scale)
+
+    recon.write(args.outfile)
