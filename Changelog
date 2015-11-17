@@ -1,3 +1,9 @@
+2015-11-17 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+  * pyhetdex/coordinates/tangent_projection.py: Renamed IFUAstrom to TangentPlane
+  * pyhetdex/coordinates/tangent_projection_astropy.py: Tangent plane projection 
+      with the same interface as above but using astropy.wcs module 
+
 2015-11-16 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: added forgotten ``tox_requires`` entry point

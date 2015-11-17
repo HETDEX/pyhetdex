@@ -2,7 +2,7 @@
 
 .. moduleauthor:: Maximilian Fabricius <>
 
-:meth:`~IFUAstrom.tan_dir` and :meth:`~IFUAstrom.tan_inv` implementations are
+:meth:`~TangentPlane.raDec2xy` and :meth:`~TangentPlane.xy2raDec` implementations are
 taken from sections 3.1.1 and 3.1.2 of [1]_
 
 Examples
@@ -10,7 +10,7 @@ Examples
 
 .. testsetup:: *
 
-    from pyhetdex.coordinates.tangent_projection import IFUAstrom
+    from pyhetdex.coordinates.tangent_projection import TangentPlane 
 
 Example of use of this module::
 
@@ -19,9 +19,9 @@ Example of use of this module::
     >>> rot = 0.
     >>> x_in, y_in = 10., 0.
     >>> # multiply by -1 to make positive x point east for 0 Deg rotation
-    >>> ifu = IFUAstrom(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
-    >>> ra, dec = ifu.tan_inv(x_in, y_in)
-    >>> x_out, y_out = ifu.tan_dir(ra, dec)
+    >>> tp = TangentPlane(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
+    >>> ra, dec = tp.xy2raDec(x_in, y_in)
+    >>> x_out, y_out = tp.raDec2xy(ra, dec)
     >>> print(round(ra, 10), round(dec, 10))
     -0.0081216788 69.999999815
     >>> print(round(x_out, 10), round(y_out, 10))
@@ -37,9 +37,6 @@ Example of use of this module::
 
 .. todo::
     check the module and its the documentation
-
-    Tests for :meth:`~IFUAstrom.tan_dir` and :meth:`~IFUAstrom.tan_inv` need
-    values obtain from external codes as reference
 
 References
 ----------
@@ -61,27 +58,27 @@ import numpy as np
 DEGPERRAD = 57.295779513082323
 
 
-class IFUAstrom(object):
+class TangentPlane(object):
     """Contains the necessary information to translate from on-sky RA and DEC
-    coordinates to the IFUAstrom reference system.
+    coordinates on the tangent plane.
 
     Parameters
     ----------
     ra0, dec0 : float
         ra and dec coordinate that correspond to ``x=0`` and ``y=0`` in the
-        IFUASTROM mapping file
+        tangent plane
     rot : float
-        Rotation of the IFUASTROM, measured East of North such that a
+        Rotation measured East of North such that a
         galaxy with a +10 Deg position angle on sky would be aligned with
-        the y-axis in and IFUASTROM that is rotated by +10 Deg.
+        the y-axis in tangent plane is rotated by +10 Deg.
     x_scale, y_scale  : float, optional
-        IFUASTROM plate scale.
+        plate scale.
 
     Notes
     -----
         All the above parameters are saved into the corresponding attributes
 
-        When ``x_scale=-1`` and ``y_scale=1`` the IFUASTROM mapping file is
+        When ``x_scale=-1`` and ``y_scale=1`` the tangent plane is
         perfect in arcseconds.
     """
 
@@ -92,7 +89,7 @@ class IFUAstrom(object):
         self.x_scale = x_scale
         self.y_scale = y_scale
 
-    def tan_dir(self, ra_in, dec_in):
+    def raDec2xy(self, ra_in, dec_in):
         """Direct tangent transform
 
         Calculate x and y coordinates for positions in the IFUAstrom coordinate
@@ -135,7 +132,7 @@ class IFUAstrom(object):
 
         return x * 3600., y * 3600.
 
-    def tan_inv(self, x_in, y_in):
+    def xy2raDec(self, x_in, y_in):
         """inverse tangent transform
 
         Calculates RA and DEC coordinates for positions in the IFUAstrom
