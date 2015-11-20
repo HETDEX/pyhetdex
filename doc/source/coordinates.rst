@@ -11,6 +11,15 @@
    :members:
    :undoc-members:
    :private-members:
+
+:py:mod:`tangent_projection_astropy` -- Astropy-based Tangent projection
+========================================================================
+
+.. automodule:: pyhetdex.coordinates.tangent_projection_astropy
+   :member-order: groupwise
+   :members:
+   :undoc-members:
+   :private-members:
   
 :py:mod:`transformations` -- Celestial coordinate transformations
 =================================================================
