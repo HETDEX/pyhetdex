@@ -50,7 +50,7 @@ def angular_separation_deg(ra1, dec1, ra2, dec2):
 
     >>> ra1, dec1 = 31.4324, 68.5432
     >>> ra2, dec2 = 45.65, 23.452
-    >>> round(angular_separation_deg(ra1, dec1, ra2, dec2), 10)
+    >>> print(round(angular_separation_deg(ra1, dec1, ra2, dec2), 10))
     59.1594812046
     """
     rad_ra1 = np.radians(ra1)
