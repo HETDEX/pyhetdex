@@ -16,18 +16,23 @@ from pyhetdex.het import ifu_centers, dither as dith
 import pyhetdex.cure.distortion as distortion
 
 
-class ReconstructIndexError(IndexError):
+class ReconstructError(Exception):
+    """Generic reconstruction error"""
+    pass
+
+
+class ReconstructIndexError(ReconstructError, IndexError):
     """Error for miss-matching the number of fibers in the ifu center files and
     the fiber extracted ones"""
 
 
-class ReconstructIOError(IOError):
+class ReconstructIOError(ReconstructError, IOError):
     """Error when the name and/or number fiber extracted file names is not
     correct"""
     pass
 
 
-class ReconstructValueError(ValueError):
+class ReconstructValueError(ReconstructError, ValueError):
     """Errors for wrong combinations of input parameters in
     :class:`~ReconstructedIFU` or :meth:`~ReconstructedIFU.from_files`"""
     pass
@@ -312,8 +317,8 @@ class ReconstructedIFU(object):
 
 
 class QuickReconstructedIFU(object):
-    r"""Reconstructed IFU head image from the fiber extracted frames given the
-    ``ifu_center`` and the ``dither``.
+    """Quick reconstructed IFU head image from a set of frames given the
+    ``ifu_center`` and some reference distortion files.
 
     Parameters
     ----------
@@ -322,14 +327,22 @@ class QuickReconstructedIFU(object):
     files : string
         Basefilename of the image to be reconstructed, or a tuple of three
         images to reconstruct a complete dither.
-    dist_l : string
-        Distortion file for the left spectrograph
-    dist_r : string
-        Distortion file for the right spectrograph
+    dist_l, dist_r : string
+        Distortion file for the left and right spectrograph; at least one of
+        them must be provided
+    pixscale : float, optional
+        pixel scale
 
     Attributes
     ----------
-    ifu_center
+    ifu_center : :class:`~pyhetdex.het.ifu_centers.IFUCenter`
+        parsed ``ifu_center`` file
+    dx, dy : tuples
+        relative shifts of the dithers
+    pscale : float
+        pixel scale
+    img : 2d numpy array
+        reconstructed image
 
     Raises
     ------
@@ -365,33 +378,39 @@ class QuickReconstructedIFU(object):
         self.dx = (0, -1.27, -1.27)
         self.dy = (0, 0.73, -0.73)
 
-        self.pscale = pixscale
+        self._pscale = pixscale
 
-        self.maxx = max((max(self.ifu_center.xifu['L']), max(self.ifu_center.xifu['R']))) + \
-            max(self.dx) + self.ifu_center.fiber_d/2.
-        self.minx = min((min(self.ifu_center.xifu['L']), min(self.ifu_center.xifu['R']))) + \
-            min(self.dx) - self.ifu_center.fiber_d/2.
-        nx = (self.maxx - self.minx) / self.pscale
+        self.maxx = (max((max(self.ifu_center.xifu['L']),
+                          max(self.ifu_center.xifu['R']))) +
+                     max(self.dx) + self.ifu_center.fiber_d/2.)
+        self.minx = (min((min(self.ifu_center.xifu['L']),
+                          min(self.ifu_center.xifu['R']))) +
+                     min(self.dx) - self.ifu_center.fiber_d/2.)
 
-        self.maxy = max((max(self.ifu_center.yifu['L']), max(self.ifu_center.yifu['R']))) + \
-            max(self.dy) + self.ifu_center.fiber_d/2.
-        self.miny = min((min(self.ifu_center.yifu['L']), min(self.ifu_center.yifu['R']))) + \
-            min(self.dy) - self.ifu_center.fiber_d/2.
-        ny = (self.maxy - self.miny) / self.pscale
-        self.img = np.zeros((nx, ny))
-        self.weight = np.ones((nx, ny))
+        self.maxy = (max((max(self.ifu_center.yifu['L']),
+                         max(self.ifu_center.yifu['R']))) +
+                     max(self.dy) + self.ifu_center.fiber_d/2.)
+        self.miny = (min((min(self.ifu_center.yifu['L']),
+                          min(self.ifu_center.yifu['R']))) +
+                     min(self.dy) - self.ifu_center.fiber_d/2.)
 
-        # if self.is_dither:
-        #     _dither = het.dither.ParseDither(dither_file)
-        # else:
-        # if not dist:
-        #     raise ReconstructValueError('A distortion is \
-        #     needed to for image reconstrution')
-        #
-        # if type(self.files) == str:
-        #     self.files = [self.files]
+    @property
+    def pscale(self):
+        """Pixel scale
 
-        self.reconstruct(True)
+        .. warning::
+            changing the pixel scale with invalidate the reconstructed
+            image
+        """
+        return self._pscale
+
+    @pscale.setter
+    def pscale(self, pixscale):
+        self._pscale = pixscale
+        try:
+            del self.img
+        except AttributeError:
+            pass
 
     def reconstruct(self, subtract_overscan=True):
         """
@@ -404,6 +423,12 @@ class QuickReconstructedIFU(object):
             If the overscan region is still present in the image,
             subtract the bias level, calculated from the overscan
             region of the image.
+
+        Returns
+        -------
+        img : nd-array
+            reconstructed image; it is also stored in the :attr:`img`
+            attribute
         """
 
         xc = np.array([], dtype=float)
@@ -460,7 +485,7 @@ class QuickReconstructedIFU(object):
 
                 center_x = np.round(data.shape[0]/2)
 
-                for f in range(0, self.ifu_center.n_fibers[ccdpos]):
+                for f in range(self.ifu_center.n_fibers[ccdpos]):
                     # fib = f+1
                     fy_f = D.map_xf_y(516, D.reference_f_.data[f]) - f_offset
                     fy = np.floor(fy_f)
@@ -481,8 +506,9 @@ class QuickReconstructedIFU(object):
 
         # Now loop over the output image and add the flux from all fibers
 
-        fr_2 = (self.ifu_center.fiber_d/2.)*(self.ifu_center.fiber_d/2.)
+        fr_2 = self.ifu_center.fiber_d ** 2 / 4.
 
+        self._create_empty_image()
         it = np.nditer(self.img, flags=['multi_index'], op_flags=['writeonly'])
 
         while not it.finished:
@@ -497,7 +523,20 @@ class QuickReconstructedIFU(object):
             it.iternext()
 
     def write(self, filename):
-        outimg = fits.PrimaryHDU(self.img)
+        """Write the reconstructed image to file ``filename`` as using the fits
+        format
+
+        Parameters
+        ----------
+        filename : string
+            name of the output fits file
+        """
+        try:
+            outimg = fits.PrimaryHDU(self.img)
+        except AttributeError:
+            raise ReconstructError("Make sure to run the ``reconstruct``"
+                                   " method to create the image before saving"
+                                   " it")
         outimg.writeto(filename, clobber=True)
 
     def _section_to_list(self, sec):
@@ -529,34 +568,43 @@ class QuickReconstructedIFU(object):
         biasreg = self._section_to_list(biassec)
         return np.mean(stats.sigma_clip(img[biasreg[0]:biasreg[1], ]))
 
+    def _create_empty_image(self):
+        """Find the number of pixels x and y and create empty images"""
+        nx = (self.maxx - self.minx) / self.pscale
+        ny = (self.maxy - self.miny) / self.pscale
+        self.img = np.zeros((nx, ny))
+        # self.weight = np.ones((nx, ny))
+
 
 def argument_parser(argv=None):
     """Parse the command line"""
     import argparse
 
     # Parse user input
-    description = """Produce a dither file for the give id.
-    """
+    description = """Reconstruct the IFU image from a list of fits images."""
 
     parser = argparse.ArgumentParser(description=description,
                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument('ifucen', help="""Name of the IFUcen file""")
     parser.add_argument('files', nargs='+', help="""The input images""")
+
     parser.add_argument('-o', '--outfile', help="""Name of a file to output""",
                         default='reconstruct.fits')
     parser.add_argument('-l', '--ldist', help="""Name of the distortion file for the
-                        left spectrograph""")
+                        left spectrograph; at least one of '%(dest)s' or
+                        'rdist' must be provided""")
     parser.add_argument('-r', '--rdist', help="""Name of the distortion file for the
                         right spectrograph""")
-    parser.add_argument('-i', '--ifucen', help="""Name of the IFUcen file""",
-                        required=True)
-    parser.add_argument('-s', '--scale', help="""Name of the IFUcen file""",
-                        default=0.3, type=float)
+    parser.add_argument('-s', '--scale', help="""Scale of the pixels in the
+                        reconstructed image""", default=0.3, type=float)
 
     return parser.parse_args(argv)
 
 
 def create_quick_reconstruction(argv=None):
-    """Function that creates the reconstructed image
+    """Entry point for the executable running the quick reconstruction of the
+    IFU reconstruction image
 
     Parameters
     ----------
@@ -569,4 +617,5 @@ def create_quick_reconstruction(argv=None):
     recon = QuickReconstructedIFU(args.ifucen, args.files, dist_r=args.rdist,
                                   dist_l=args.ldist, pixscale=args.scale)
 
+    recon.reconstruct(subtract_overscan=True)
     recon.write(args.outfile)

@@ -29,6 +29,7 @@ Command Line Tools
     :maxdepth: 2
 
     dither_file
+    quick_ifu_recon
 
 Code documentation
 ------------------

@@ -1,16 +1,23 @@
+2015-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/reconstruct_ifu.py: add and fix some documentation,
+	  reconstruction method not called in __init__, 
+    * doc/source/quick_ifu_recon.rst: added
+    * doc/source/index.rst: add the above
+    * doc/source/conf.py: add astropy to intersphinx
+
 2015-11-20 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/coordinates/tangent_projection_astropy.py: PEP8, plus fix
 	  constructor signature and dont' pack/unpack arguments for the
 	  transformations
     * doc/source/coordinates.rst: add astropy based projection
-    * doc/source/conf.py: add link to astropy *inv 
 
 2015-11-17 Daniel Farrow <dfarrow@mpe.mpg.de>
 
   * pyhetdex/coordinates/tangent_projection.py: Renamed IFUAstrom to TangentPlane
   * pyhetdex/coordinates/tangent_projection_astropy.py: Tangent plane projection 
-      with the same interface as above but using astropy.wcs module 
+	with the same interface as above but using astropy.wcs module 
 
 2015-11-16 Francesco Montesano <montefra@mpe.mpg.de>
 

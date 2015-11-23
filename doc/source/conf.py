@@ -305,4 +305,5 @@ intersphinx_mapping = {'python2': ('http://docs.python.org/2', None),
                        'numpy': ('http://docs.scipy.org/doc/numpy/', None),
                        'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
                        'matplotlib': ('http://matplotlib.sourceforge.net/', None),
+                       'astropy': ('http://astropy.readthedocs.org/en/stable/', None),
                        }
