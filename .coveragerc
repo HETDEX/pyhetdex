@@ -1,0 +1,9 @@
+[run]
+branch = true
+
+omit = setup.py scripts/*py
+
+[html]
+
+directory = cover
+
