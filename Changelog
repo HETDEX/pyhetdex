@@ -1,5 +1,9 @@
 2015-11-24 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/het/dither.py: add dither/id_ completion also to output file
+
+2015-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* setup.cfg: ignore script directory
     * scripts/deploy.py: script to copy the content of a given directory to an
 	  other one given by a configuration file

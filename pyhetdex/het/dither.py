@@ -280,7 +280,8 @@ def argument_parser(argv=None):
 
     parser = argparse.ArgumentParser(description=description,
                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('outfile', help="Name of a file to output")
+    parser.add_argument('outfile', help="""Name of a file to output. It accepts
+                        the same placeholders as ``basename``""")
     parser.add_argument('id', help="id of the chosen IFU")
     parser.add_argument('fplane', help="The fplane file")
     parser.add_argument('ditherpos', help='''Name of the file containing the
@@ -331,5 +332,6 @@ def create_dither_file(argv=None):
         modelbases.append(args.modelbase.format(id=args.id, dither=dither + 1))
         basenames.append(args.basename.format(id=args.id, dither=dither + 1))
 
-    dithers.create_dither(args.id, basenames, modelbases, args.outfile,
+    dithers.create_dither(args.id, basenames, modelbases,
+                          args.outfile.format(id=args.id, dither=dither + 1),
                           idtype=args.id_type)
