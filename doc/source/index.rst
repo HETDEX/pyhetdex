@@ -54,6 +54,7 @@ About
     licence
     changelog
     todos
+    Coverage <http://www.mpe.mpg.de/~montefra/documentation/pyhetdex_cover/>
 
 Indices and tables
 ==================

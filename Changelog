@@ -1,5 +1,16 @@
 2015-11-24 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* setup.cfg: ignore script directory
+    * scripts/deploy.py: script to copy the content of a given directory to an
+	  other one given by a configuration file
+    * tox.ini: add deployment of the documentation and coverage report; coverage
+	  report fails for coverage < 85%
+    * doc/source/index.rst: add link to coverage report
+    * doc/source/contributions.rst: add info about documentation and coverage
+	  from tox and how to enable deployment
+
+2015-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
     * svn:ignore: fix coverage file ignores
     * .coveragerc: settings moved here from setup.cfg
     * setup.cfg: same

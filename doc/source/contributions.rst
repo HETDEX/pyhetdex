@@ -79,6 +79,27 @@ running ``py.test``::
     --cov-report term
     --cov-report term-missing
     
+Besides running the tests, the ``tox`` command also build the documentation and
+collate the coverage tests from the various python interpreters. Upon request
+the documentation and the coverage html report can be deployed to a target
+directory. To do it create, if necessary, the configuration file
+``~/.config/tox_deploy.cfg`` and add to it a section called ``pyhetdex`` and
+either one or both of the following options:
+
+.. code-block:: ini
+
+    [pyhetdex]
+    # if given the deploys the documentation to the given dir
+    doc = /path/to/dir
+    # if given the deploys the coverage report to the given dir
+    cover = /path/to/other/dir
+
+    # it's also possible to insert the project name and the type of the document
+    # to deploy using the {project} and {type_} placeholders. E.g
+    # cover = /path/to/dir/{project}_{type_}
+    # will be expanded to /path/to/dir/pyhetdex_cover
+
+
 For other command line arguments type::
 
     py.test -h
