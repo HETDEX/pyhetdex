@@ -1,10 +1,15 @@
+2015-11-25 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tox.ini: use ``github.com/montefra/little_deploy`` instead of deploy.py
+    * scripts/deploy.py: removed
+
 2015-11-25  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* tests/conftest.py: Added datadir fixture
 	* pyhetdex/ltl/marray.py: Reworked classes
 	* pyhetdex/tests/test_marray.py: Added tests
 
-2015-11-5  Jan Snigula  <snigula@mpe.mpg.de>
+2015-11-25  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* tests/conftest.py: Added datadir fixture returning py.path.local object
 
