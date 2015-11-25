@@ -1,3 +1,13 @@
+2015-11-25  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* tests/conftest.py: Added datadir fixture
+	* pyhetdex/ltl/marray.py: Reworked classes
+	* pyhetdex/tests/test_marray.py: Added tests
+
+2015-11-5  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* tests/conftest.py: Added datadir fixture returning py.path.local object
+
 2015-11-24 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/dither.py: add dither/id_ completion also to output file
@@ -32,7 +42,7 @@
 2015-11-23 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/reconstruct_ifu.py: add and fix some documentation,
-	  reconstruction method not called in __init__, 
+	  reconstruction method not called in __init__,
     * doc/source/quick_ifu_recon.rst: added
     * doc/source/index.rst: add the above
     * doc/source/conf.py: add astropy to intersphinx
@@ -47,8 +57,8 @@
 2015-11-17 Daniel Farrow <dfarrow@mpe.mpg.de>
 
   * pyhetdex/coordinates/tangent_projection.py: Renamed IFUAstrom to TangentPlane
-  * pyhetdex/coordinates/tangent_projection_astropy.py: Tangent plane projection 
-	with the same interface as above but using astropy.wcs module 
+  * pyhetdex/coordinates/tangent_projection_astropy.py: Tangent plane projection
+	with the same interface as above but using astropy.wcs module
 
 2015-11-16 Francesco Montesano <montefra@mpe.mpg.de>
 
