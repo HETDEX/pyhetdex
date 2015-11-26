@@ -26,16 +26,16 @@ class Distortion(object):
         self.maxx = float(0)
         self.miny = float(0)
         self.maxy = float(0)
-        self.wave_par_ = ma.FVector(dtype='double')
-        self.wave_errors_ = ma.FVector(dtype='double')
-        self.fiber_par_ = ma.FVector(dtype='double')
-        self.fiber_errors_ = ma.FVector(dtype='double')
-        self.x_par_ = ma.FVector(dtype='double')
-        self.x_errors_ = ma.FVector(dtype='double')
-        self.y_par_ = ma.FVector(dtype='double')
-        self.y_errors_ = ma.FVector(dtype='double')
-        self.fy_par_ = ma.FVector(dtype='double')
-        self.fy_errors_ = ma.FVector(dtype='double')
+        self.wave_par_ = ma.FVector()
+        self.wave_errors_ = ma.FVector()
+        self.fiber_par_ = ma.FVector()
+        self.fiber_errors_ = ma.FVector()
+        self.x_par_ = ma.FVector()
+        self.x_errors_ = ma.FVector()
+        self.y_par_ = ma.FVector()
+        self.y_errors_ = ma.FVector()
+        self.fy_par_ = ma.FVector()
+        self.fy_errors_ = ma.FVector()
         self.reference_wavelength_ = float(0)
         self.reference_w_ = ma.MArray()
         self.reference_f_ = ma.MArray()
@@ -51,6 +51,7 @@ class Distortion(object):
         fileversion = locale.atoi(io_helpers.skip_commentlines(in_))
         if(fileversion < self.version_min or fileversion > self.version_max):
             raise IOError('Unsupported version of Distortion file!')
+        self.version = fileversion
         self.minw = locale.atof(io_helpers.skip_commentlines(in_))
         self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
         self.minf = locale.atof(io_helpers.skip_commentlines(in_))
@@ -95,4 +96,5 @@ class Distortion(object):
         if isinstance(f, (tuple, list)):
             f = np.asarray(f)
 
-        return ma.interpCheby2D_7(self._scal_x(x), self._scal_f(f), self.fy_par_.data)
+        return ma.interpCheby2D_7(self._scal_x(x), self._scal_f(f),
+                                  self.fy_par_.data)

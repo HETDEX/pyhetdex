@@ -26,12 +26,12 @@ class FiberModel(object):
         self.miny = float(0)
         self.maxy = float(0)
         self.fiducial_fib_ = 0
-        self.sigma_par_ = FVector(dtype='double')
-        self.sigma_errors_ = FVector(dtype='double')
-        self.h2_par_ = FVector(dtype='double')
-        self.h2_errors_ = FVector(dtype='double')
-        self.h3_par_ = FVector(dtype='double')
-        self.h3_errors_ = FVector(dtype='double')
+        self.sigma_par_ = FVector()
+        self.sigma_errors_ = FVector()
+        self.h2_par_ = FVector()
+        self.h2_errors_ = FVector()
+        self.h3_par_ = FVector()
+        self.h3_errors_ = FVector()
         self.amplitudes = []
 
         self.read(filename)
@@ -44,6 +44,7 @@ class FiberModel(object):
         fileversion = locale.atoi(io_helpers.skip_commentlines(in_))
         if(fileversion < self.version_min or fileversion > self.version_max):
             raise IOError('Unsupported version of FiberModel file!')
+        self.version = fileversion
         self.minw = locale.atof(io_helpers.skip_commentlines(in_))
         self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
         self.minf = locale.atof(io_helpers.skip_commentlines(in_))
@@ -61,10 +62,10 @@ class FiberModel(object):
         self.h3_par_.read(in_)
         self.h3_errors_.read(in_)
         size = locale.atof(io_helpers.skip_commentlines(in_))
-        print('Reading %d amplitudes' % size)
+        # print('Reading %d amplitudes' % size)
         i = 0
         while i < size:
-            amp = FVector(dtype='double')
+            amp = FVector()
             amp.read(in_)
             self.amplitudes.append(amp)
             i += 1

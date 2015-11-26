@@ -1,3 +1,11 @@
+2015-11-26  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* tests/test_fibermodel.py: Added test
+	* tests/test_marray.py: Added another test
+	* pyhetdex/ltl/marray.py: Cleaned up code
+	* pyhetdex/cure/distortion.py: Updated for new MArray constructor
+	* tests/test_distortion.py: Added test
+
 2015-11-26 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/files/file_tools.py: add is_*_regex options

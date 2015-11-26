@@ -12,6 +12,11 @@ class FVector(object):
     def __init__(self, fname=None):
         self._data = None
 
+        if fname:
+            infile = open(fname, 'r')
+            self.read(infile)
+            infile.close()
+
     @property
     def data(self):
         """The internal numpy array holding the data"""
@@ -25,6 +30,9 @@ class FVector(object):
             raise TypeError('Data type for FVector must be a numpy array')
         if dat.ndim != 1:
             raise TypeError('Array must be one dimensional for FVector')
+        if 'float' not in dat.dtype.name:
+            if 'int' not in dat.dtype.name:
+                raise TypeError('Only int, float and double are supported!')
         self._data = dat
 
     def read(self, ios):
@@ -34,11 +42,13 @@ class FVector(object):
 
         dtype = io_helpers.read_to_char(ios, '<').strip()
         if (dtype != 'FVector'):
-            raise Exception('Expected FVector, got %s' % dtype)
+            raise TypeError('Expected FVector, got %s' % dtype)
 
         ftype = io_helpers.read_to_char(ios, ',')  # Forward through  < T,
         ftype = ftype.strip()
-        if ftype == 'T':
+        if ftype not in ('float', 'double', 'int', 'T'):
+            raise TypeError('Unsupported datatype!')
+        elif ftype == 'T':
             print('Warning the datatype is unknown, assuming float!')
             ftype = 'float'
         elif ftype == 'float':
@@ -82,8 +92,7 @@ class FVector(object):
             ios.write('int,')
             frmt = ' %d'
         else:
-            ios.write('T,')
-            frmt = ' %s'
+            raise TypeError('Unexpected data type!')
 
         ios.write("%d,0 >\n " % self.data.size)
         ios.write("[")
@@ -107,16 +116,6 @@ class MArray(object):
             self.read(infile)
             infile.close()
 
-    def _nptype_to_ctype(self, tstr):
-        if 'int' in tstr:
-            return 'int'
-        if tstr == 'float64':
-            return 'double'
-        if 'float' in tstr:
-            return 'float'
-        else:
-            raise TypeError
-
     @property
     def data(self):
         """The internal numpy array holding the data"""
@@ -127,6 +126,10 @@ class MArray(object):
     def data(self, dat):
         if type(dat) != np.ndarray:
             raise TypeError('Data type for MArray must be a numpy array')
+
+        if 'float' not in dat.dtype.name:
+            if 'int' not in dat.dtype.name:
+                raise TypeError('Only int, float and double are supported!')
 
         self._data = dat
         self.shapes = []
@@ -140,11 +143,13 @@ class MArray(object):
 
         dtype = io_helpers.read_to_char(ios, '<').strip()
         if (dtype != 'MArray'):
-            raise Exception('Expected MArray, got %s' % dtype)
+            raise TypeError('Expected MArray, got %s' % dtype)
 
         ftype = io_helpers.read_to_char(ios, ',')  # Forward through  < T,
         ftype = ftype.strip()
-        if ftype == 'T':
+        if ftype not in ('float', 'double', 'int', 'T'):
+            raise TypeError('Unsupported datatype!')
+        elif ftype == 'T':
             print('Warning the datatype is unknown, assuming float!')
             ftype = 'float'
         elif ftype == 'float':
@@ -215,8 +220,7 @@ class MArray(object):
             ios.write('int,')
             frmt = ' %d'
         else:
-            ios.write('T,')
-            frmt = ' %s'
+            raise TypeError('Unexpected data type!')
 
         ios.write('%d> ( %d' % (self._data.ndim, self._data.shape[0]))
 
