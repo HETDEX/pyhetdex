@@ -67,8 +67,8 @@ def prefix_filename(path, prefix):
     return os.path.join(path, prefix + fname)
 
 
-def wildcards_to_regex(wildcards, re_compile=True):
-    """Convert shell wildcard to regex
+def wildcards_to_regex(wildcards, re_compile=True, is_regex=False):
+    """Convert shell wildcard to regex, if ``is_regex`` is ``False``
 
     If ``wildcards`` is None, a match-nothing regex is used
     If ``wildcards`` is a list, the resulting regex are concatenated with ``|``
@@ -77,8 +77,8 @@ def wildcards_to_regex(wildcards, re_compile=True):
     Examples
     --------
 
-    >>> wildcards_to_regex("[0-9]*fits")   # doctest: +SKIP
-    "re.compile('[0-9].*fits\\\\Z(?ms)', re.MULTILINE|re.DOTALL)"
+    >>> print(type(wildcards_to_regex("[0-9]*fits")))  # doctest: +ELLIPSIS
+    <... '_sre.SRE_Pattern'>
     >>> print(wildcards_to_regex("[0-9]*fits", re_compile=False))
     [0-9].*fits\Z(?ms)
     >>> print(wildcards_to_regex(None, re_compile=False))
@@ -93,6 +93,8 @@ def wildcards_to_regex(wildcards, re_compile=True):
         shell wildcards
     re_compile : bool, optional
         if true compile the regex before returning
+    is_regex : bool, optional
+        interpret the input as a regex
 
     Returns
     -------
@@ -102,9 +104,15 @@ def wildcards_to_regex(wildcards, re_compile=True):
     if wildcards is None:
         regex = r'a^'
     elif isinstance(wildcards, six.string_types):
-        regex = fnmatch.translate(wildcards)
+        if is_regex:
+            regex = wildcards
+        else:
+            regex = fnmatch.translate(wildcards)
     else:
-        regex = r'|'.join(fnmatch.translate(wc) for wc in wildcards)
+        if is_regex:
+            regex = r'|'.join(wildcards)
+        else:
+            regex = r'|'.join(fnmatch.translate(wc) for wc in wildcards)
 
     if re_compile:
         return re.compile(regex)
@@ -113,7 +121,8 @@ def wildcards_to_regex(wildcards, re_compile=True):
 
 
 def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
-               recursive=True, followlinks=True):
+               recursive=True, followlinks=True, is_matches_regex=False,
+               is_exclude_regex=False, is_exclude_dirs_regex=False):
     """Generator that search and serves files.
 
     Parameters
@@ -131,6 +140,9 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
         search files recursively into ``path``
     followlinks : bool, optional
         follow symlinks
+    is_matches_regex, is_exclude_regex, is_exclude_dirs_regex : bool, optional
+        mark the corresponding options as a regex pattern instead of unix shell
+        pattern with possible wildcards
 
     Returns
     -------
@@ -145,12 +157,12 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
     ------
     fn : string
         name of the file
-
     """
     # convert ``matches``, ``exclude`` and ``exclude_dirs`` into compiled regex
-    matches = wildcards_to_regex(matches)
-    exclude = wildcards_to_regex(exclude)
-    exclude_dirs = wildcards_to_regex(exclude_dirs)
+    matches = wildcards_to_regex(matches, is_regex=is_matches_regex)
+    exclude = wildcards_to_regex(exclude, is_regex=is_exclude_regex)
+    exclude_dirs = wildcards_to_regex(exclude_dirs,
+                                      is_regex=is_exclude_dirs_regex)
 
     for pathname, dirnames, filenames in os.walk(path, topdown=True,
                                                  followlinks=followlinks):
@@ -172,7 +184,8 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
 
 
 def scan_dirs(path, matches='*', exclude=None, recursive=True,
-              followlinks=True):
+              followlinks=True, is_matches_regex=False,
+              is_exclude_regex=False):
     """Generator that searches for and serves directories
 
     Parameters
@@ -187,6 +200,9 @@ def scan_dirs(path, matches='*', exclude=None, recursive=True,
         search files recursively into ``path``
     followlinks : bool, optional
         follow symlinks
+    is_matches_regex, is_exclude_regex : bool, optional
+        mark the corresponding options as a regex pattern instead of unix shell
+        pattern with possible wildcards
 
     Returns
     -------
@@ -202,8 +218,8 @@ def scan_dirs(path, matches='*', exclude=None, recursive=True,
         remove returns when the numpydoc 0.6 update will be available
     """
     # convert ``matches``, ``exclude`` into compiled regex
-    matches = wildcards_to_regex(matches)
-    exclude = wildcards_to_regex(exclude)
+    matches = wildcards_to_regex(matches, is_regex=is_matches_regex)
+    exclude = wildcards_to_regex(exclude, is_regex=is_exclude_regex)
 
     for pathname, dirnames, _ in os.walk(path, topdown=True,
                                          followlinks=followlinks):

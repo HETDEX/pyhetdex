@@ -1,5 +1,10 @@
 2015-11-26 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/tools/files/file_tools.py: add is_*_regex options
+    * tests/test_file_tools.py: test it
+
+2015-11-26 Francesco Montesano <montefra@mpe.mpg.de>
+
     * doc/source/contributions.rst: fix deployment documentation
     * tox.ini: remove py32 and py33 environments
 

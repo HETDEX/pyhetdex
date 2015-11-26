@@ -12,48 +12,50 @@ try:  # python 3
 except ImportError:  # python 2
     DEVNULL = open(os.devnull, 'wb')
 
+import pytest
+
 import pyhetdex.tools.files.file_tools as ft
 
 
-def test_prefix_filename():
-    """
-    test the insertion of a prefix in front of the file name
-    """
-    fnames = ["/abs/path/to/file.txt",
-              "../../rel/path/file.dat",
-              "nopath.file"
-              ]
-    prefix = "test_"
-    expected_fnames = ["/abs/path/to/test_file.txt",
-                       "../../rel/path/test_file.dat",
-                       "test_nopath.file"
-                       ]
-    for ifn, ofn in zip(fnames, expected_fnames):
-        yield _prefix_filename, ifn, prefix, ofn
+@pytest.mark.parametrize('infname, prefix, outfname',
+                         (["/abs/path/to/file.txt", "test_",
+                          "/abs/path/to/test_file.txt"],
+                          ["../../rel/path/file.dat", "test_",
+                           "../../rel/path/test_file.dat"],
+                          ["nopath.file", "test_", "test_nopath.file"]
+                          ))
+def test_prefix_filename(infname, prefix, outfname):
+    "test the insertion of a prefix in front of the file name"
+    fout = ft.prefix_filename(infname, prefix)
+    assert fout == outfname
 
 
-def _prefix_filename(fname, prefix, expected):
-    """
-    Run the test of the single files
-    """
-    fout = ft.prefix_filename(fname, prefix)
-    assert fout == expected
-
-
-def test_wildcards_to_regex():
+@pytest.mark.parametrize('re_compile', [False, True])
+@pytest.mark.parametrize('wildcard, regex, is_regex',
+                         (["[0-9]*fits", r'[0-9].*fits\Z(?ms)', False],
+                          [None, r'a^', False],
+                          [None, r'a^', True],
+                          [["[0-3]*fits", "[5-9]*fits"],
+                           r'[0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)', False],
+                          [r'(?:e\.)?jpes[0-9].*fits',
+                           r'(?:e\.)?jpes[0-9].*fits', True],
+                          [[r'.*some\d{2}.?', r'thing\d{2}.?'],
+                           r'.*some\d{2}.?|thing\d{2}.?', True],
+                          pytest.mark.xfail(reason="Wrong regex",
+                                            exception=re.error)
+                          (["*wrong", "*wrong", True])
+                          ))
+def test_wildcards_to_regex(wildcard, regex, is_regex, re_compile):
     """Convert shell wildcards to regex"""
-    wildcards = ["[0-9]*fits", None, ["[0-3]*fits", "[5-9]*fits"]]
-    expected = [r'[0-9].*fits\Z(?ms)', r'a^',
-                r'[0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)']
-
-    for wc, ex in zip(wildcards, expected):
-        yield _wildcards_to_regex, wc, ex, False
-
-
-def _wildcards_to_regex(wildcards, expected_re, re_compile=True):
-    """Actually do the comparison"""
-    r = ft.wildcards_to_regex(wildcards, re_compile=re_compile)
-    assert r == expected_re
+    if wildcard and "wrong" in wildcard and not re_compile:
+        pytest.skip("Check only wrong regex compilation")
+    r = ft.wildcards_to_regex(wildcard, re_compile=re_compile,
+                              is_regex=is_regex)
+    if re_compile:
+        assert r.pattern == regex
+        assert type(r), type(re.compile(".*"))
+    else:
+        assert r == regex
 
 
 class Test_scan_files(object):
