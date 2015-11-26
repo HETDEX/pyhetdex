@@ -79,12 +79,12 @@ running ``py.test``::
     --cov-report term
     --cov-report term-missing
     
-Besides running the tests, the ``tox`` command also build the documentation and
-collate the coverage tests from the various python interpreters. Upon request
-the documentation and the coverage html report can be deployed to a target
-directory. To do it create, if necessary, the configuration file
-``~/.config/tox_deploy.cfg`` and add to it a section called ``pyhetdex`` and
-either one or both of the following options:
+
+Besides running the tests, the ``tox`` command also builds, by default, the
+documentation and collate the coverage tests from the various python
+interpreters and can copy then to some directory. To do the latter create, if
+necessary, the configuration file ``~/.config/little_deploy.cfg`` and add to it
+a section called ``pyhetdex`` and either one or both of the following options:
 
 .. code-block:: ini
 
@@ -99,6 +99,8 @@ either one or both of the following options:
     # cover = /path/to/dir/{project}_{type_}
     # will be expanded to /path/to/dir/pyhetdex_cover
 
+For more information about the configuration file check `little_deploy
+<https://github.com/montefra/little_deploy>`_. 
 
 For other command line arguments type::
 

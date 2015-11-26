@@ -1,3 +1,8 @@
+2015-11-26 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/contributions.rst: fix deployment documentation
+    * tox.ini: remove py32 and py33 environments
+
 2015-11-25 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tox.ini: use ``github.com/montefra/little_deploy`` instead of deploy.py
