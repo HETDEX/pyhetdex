@@ -12,6 +12,7 @@ import pytest
 from pyhetdex.het import dither, ifu_centers
 import pyhetdex.het.reconstruct_ifu as rifu
 
+import conftest
 import settings as s
 
 dither_fast = os.path.join(s.datadir, "dither_fast_SIMDEX-4000-obs-1_046.txt")
@@ -147,6 +148,155 @@ class TestReconstruction(object):
         "Fails for number of fiber mismatch"
         rifu.ReconstructedIFU.from_files(ifucenter_missf, dither_fast,
                                          fe_prefix='')
+
+
+dist_l = 'masterflat_001L.dist'
+dist_r = 'masterflat_001R.dist'
+
+inputfilenames = ['20151025T122555_103LL_sci.fits',
+                  '20151025T122555_103LU_sci.fits',
+                  '20151025T122555_103RL_sci.fits',
+                  '20151025T122555_103RU_sci.fits']
+
+inputfilenames_l = ['20151025T122555_103LL_sci.fits',
+                    '20151025T122555_103LU_sci.fits']
+
+inputfilenames_r = ['20151025T122555_103RL_sci.fits',
+                    '20151025T122555_103RU_sci.fits']
+
+
+class TestQuickReconstruction(object):
+    "Test various ways to do the reconstruction"
+
+    def test_init(self, datadir, tmpdir):
+        "Quick Reconstruction from existing ifu center and dither objects"
+
+        infiles = [datadir.join(i).strpath for i in inputfilenames]
+        dl = datadir.join(dist_l).strpath
+        dr = datadir.join(dist_r).strpath
+
+        rimg = rifu.QuickReconstructedIFU(ifucenter_file, infiles,
+                                          dist_r=dr, dist_l=dl)
+
+        actual = tmpdir.join('qrecon.fits').strpath
+
+        rimg.reconstruct()
+        rimg.write(actual)
+
+        expected = datadir.join('reconstructed.fits').strpath
+
+        assert conftest.compare_fits(expected, actual)
+
+    def test_pscale_setter(self, datadir, tmpdir):
+        infiles = [datadir.join(i).strpath for i in inputfilenames_l]
+        dl = datadir.join(dist_l).strpath
+        dr = datadir.join(dist_r).strpath
+
+        rimg = rifu.QuickReconstructedIFU(ifucenter_file, infiles,
+                                          dist_r=dr, dist_l=dl)
+        rimg.pscale = 0.25
+
+    def test_write_error(self, datadir, tmpdir):
+        infiles = [datadir.join(i).strpath for i in inputfilenames_l]
+        dl = datadir.join(dist_l).strpath
+        dr = datadir.join(dist_r).strpath
+
+        rimg = rifu.QuickReconstructedIFU(ifucenter_file, infiles,
+                                          dist_r=dr, dist_l=dl)
+
+        actual = tmpdir.join('qrecon.fits').strpath
+
+        # Test for exception on write without reconstruct
+        with pytest.raises(rifu.ReconstructError):
+            rimg.write(actual)
+
+    def test_missing_ifucen(self, datadir, tmpdir):
+        infiles = [datadir.join(i).strpath for i in inputfilenames_l]
+        dl = datadir.join(dist_l).strpath
+        dr = datadir.join(dist_r).strpath
+
+        with pytest.raises(rifu.ReconstructValueError):
+            rifu.QuickReconstructedIFU(None, infiles,
+                                       dist_r=dr, dist_l=dl)
+
+    def test_no_dist(self, datadir, tmpdir):
+        infiles = [datadir.join(i).strpath for i in inputfilenames_l]
+
+        with pytest.raises(rifu.ReconstructValueError):
+            rifu.QuickReconstructedIFU(ifucenter_file, infiles)
+
+    def test_left_dist(self, datadir, tmpdir):
+        infiles = [datadir.join(i).strpath for i in inputfilenames_l]
+
+        dl = datadir.join(dist_l).strpath
+
+        rifu.QuickReconstructedIFU(ifucenter_file, infiles,
+                                   dist_l=dl)
+
+    def test_right_dist(self, datadir, tmpdir):
+        infiles = [datadir.join(i).strpath for i in inputfilenames_r]
+
+        dr = datadir.join(dist_r).strpath
+
+        rifu.QuickReconstructedIFU(ifucenter_file, infiles,
+                                   dist_r=dr)
+
+    def test_missing_dist(self, datadir, tmpdir):
+        ''' Test combination of left spectrograph images
+        with right spectrograph distortion
+
+        '''
+        infiles = [datadir.join(i).strpath for i in inputfilenames_l]
+
+        dr = datadir.join(dist_r).strpath
+
+        rimg = rifu.QuickReconstructedIFU(ifucenter_file, infiles,
+                                          dist_r=dr)
+
+        with pytest.raises(rifu.ReconstructValueError):
+            rimg.reconstruct()
+
+    def test_wrong_ifu(self, datadir, tmpdir):
+        ''' Test combination of left spectrograph images
+        with right spectrograph distortion
+
+        '''
+        filenames = ['20151025T122555_104LL_sci.fits',
+                     '20151025T122555_103LU_sci.fits']
+        infiles = [datadir.join(i).strpath for i in filenames]
+
+        dl = datadir.join(dist_l).strpath
+
+        rimg = rifu.QuickReconstructedIFU(ifucenter_file, infiles,
+                                          dist_l=dl)
+
+        rimg.reconstruct()
+
+    def test_no_overscan(self, datadir, tmpdir):
+        ''' Test reconstruction without overscan subtraction
+
+        '''
+        infiles = [datadir.join(i).strpath for i in inputfilenames_r]
+
+        dr = datadir.join(dist_r).strpath
+
+        rimg = rifu.QuickReconstructedIFU(ifucenter_file, infiles,
+                                          dist_r=dr)
+
+        rimg.reconstruct(False)
+
+    def test_combined_img(self, datadir, tmpdir):
+        ''' Test reconstruction without overscan subtraction
+
+        '''
+        infile = [datadir.join('masterarc_080R.fits').strpath]
+
+        dr = datadir.join(dist_r).strpath
+
+        rimg = rifu.QuickReconstructedIFU(ifucenter_file, infile,
+                                          dist_r=dr)
+
+        rimg.reconstruct(False)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,11 @@
 2015-11-26  Jan Snigula  <snigula@mpe.mpg.de>
 
+	* tests/conftest.py: Added fits comparion test
+	* tests/test_reconstructions.py: Added tests for quick
+	reconstruction, test for argparser still missing.
+
+2015-11-26  Jan Snigula  <snigula@mpe.mpg.de>
+
 	* tests/test_fibermodel.py: Added test
 	* tests/test_marray.py: Added another test
 	* pyhetdex/ltl/marray.py: Cleaned up code
