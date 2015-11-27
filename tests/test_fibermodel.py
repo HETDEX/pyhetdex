@@ -6,15 +6,21 @@ import pyhetdex.cure.fibermodel as fib
 import pytest
 
 
-def test_distortion(datadir):
+@pytest.fixture(scope='module')
+def fmod(datadir):
+    return fib.FiberModel(datadir.join('masterflat_081_L.fmod').strpath)
 
-    F = fib.FiberModel(datadir.join('masterflat_081_L.fmod').strpath)
 
-    assert F.version == 16
+class TestDistortion(object):
+    def test_version(self, fmod):
+        assert fmod.version == 16
 
-    assert F.fiducial_fib_ == 110
+    def test_fiducial(self, fmod):
+        assert fmod.fiducial_fib_ == 110
 
-    assert len(F.amplitudes) == 224
+    def test_ampsize(self, fmod):
+        assert len(fmod.amplitudes) == 224
 
-    with pytest.raises(Exception):
-        F = fib.FiberModel(datadir.join('masterflat_081_L_old.fmod').strpath)
+    def test_wrong_version(self, datadir):
+        with pytest.raises(Exception):
+            fib.FiberModel(datadir.join('masterflat_081_L_old.fmod').strpath)

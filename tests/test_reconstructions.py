@@ -298,6 +298,81 @@ class TestQuickReconstruction(object):
 
         rimg.reconstruct(False)
 
+    def test_arg_missing_ifucen(self):
+        with pytest.raises(SystemExit):
+            rifu.argument_parser([])
+
+    def test_arg_missing_files(self):
+        with pytest.raises(SystemExit):
+            rifu.argument_parser(['ifufile'])
+
+    def test_arg_required(self):
+        a = rifu.argument_parser(['ifufile', 'file1', 'file2'])
+        assert a.ifucen == 'ifufile'
+        assert a.files == ['file1', 'file2']
+
+    def test_arg_outfile(self):
+        a = rifu.argument_parser(['-o', 'out', 'ifufile', 'file1'])
+        assert a.outfile == 'out'
+
+    def test_arg_outfile_long(self):
+        a = rifu.argument_parser(['--outfile', 'out', 'ifufile', 'file1'])
+        assert a.outfile == 'out'
+
+    def test_arg_ldist(self):
+        a = rifu.argument_parser(['-l', 'ldist', 'ifufile', 'file1'])
+        assert a.ldist == 'ldist'
+
+    def test_arg_ldist_long(self):
+        a = rifu.argument_parser(['--ldist', 'ldist', 'ifufile', 'file1'])
+        assert a.ldist == 'ldist'
+
+    def test_arg_rdist(self):
+        a = rifu.argument_parser(['-r', 'rdist', 'ifufile', 'file1'])
+        assert a.rdist == 'rdist'
+
+    def test_arg_rdistlong(self):
+        a = rifu.argument_parser(['--rdist', 'rdist', 'ifufile', 'file1'])
+        assert a.rdist == 'rdist'
+
+    def test_arg_scale(self):
+        a = rifu.argument_parser(['-s', '1.2', 'ifufile', 'file1'])
+        assert a.scale == 1.2
+
+    def test_arg_scale_long(self):
+        a = rifu.argument_parser(['--scale', '1.2', 'ifufile', 'file1'])
+        assert a.scale == 1.2
+
+    def test_arg_full(self):
+        argv = ['-o', 'out',
+                '--ldist', 'distl',
+                '--rdist', 'distr',
+                '--s', '1.2', 'ifufile', 'file1', 'file3']
+        a = rifu.argument_parser(argv)
+        assert a.outfile == 'out'
+        assert a.ldist == 'distl'
+        assert a.rdist == 'distr'
+        assert a.scale == 1.2
+        assert a.ifucen == 'ifufile'
+        assert a.files == ['file1', 'file3']
+
+    def test_entry_point(self, datadir, tmpdir):
+        "Quick Reconstruction from existing ifu center and dither objects"
+
+        infiles = [datadir.join(i).strpath for i in inputfilenames]
+        dl = datadir.join(dist_l).strpath
+        dr = datadir.join(dist_r).strpath
+        actual = tmpdir.join('qrecon.fits').strpath
+
+        argv = ['-s', '0.25', '-l', dl, '-r', dr, '-o', actual, ifucenter_file]
+        argv.extend(infiles)
+
+        rifu.create_quick_reconstruction(argv)
+
+        expected = datadir.join('reconstructed.fits').strpath
+
+        assert conftest.compare_fits(expected, actual)
+
 
 if __name__ == "__main__":
     tr = TestReconstruction()

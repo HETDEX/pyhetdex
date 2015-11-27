@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function,
 
 __version__ = '$Id$'
 
+
 def count_lines(ios):
     """
     count the lines in a open file. After counting resets the file position to
@@ -58,6 +59,8 @@ def skip_commentlines(ios):
     if len(line):
         if line[0] == '#':
             return skip_commentlines(ios)
+    else:  # Skip empty lines
+        return skip_commentlines(ios)
     return line
 
 

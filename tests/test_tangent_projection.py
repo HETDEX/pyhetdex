@@ -4,6 +4,7 @@ Test pyhetdex/astrometry/astrometry.py
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import numpy as np
 import pytest
 
 import pyhetdex.coordinates.tangent_projection as tp
@@ -72,5 +73,5 @@ def test_tan_invdir(ifuastrom, x_y_in):
     x_in, y_in = x_y_in
     ra, dec = ifuastrom.xy2raDec(x_in, y_in)
     x, y = ifuastrom.raDec2xy(ra, dec)
-    assert round(x_in - x, 10) == 0
-    assert round(y_in - y, 10) == 0
+    assert np.isclose(x_in, x)
+    assert np.isclose(y_in, y)

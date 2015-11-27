@@ -1,3 +1,15 @@
+2015-11-27  Jan Snigula  <snigula@vpn131103.mpe.mpg.de>
+
+	* tests/conftest.py: Made datadir a session scope fixture
+	* tests/test_reconstructions.py: Added missing tests
+	* pyhetdex/tools/io_helpers.py: Fixed minor bug
+	* tests/test_io_helpers.py: Added tests
+	* tests/test_fibermodel.py: Cleaned up and restructured tests
+	* pyhetdex/cure/distortion.py: Added more transformations
+	* tests/test_tangent_projection.py: Fixed test failing on mac
+	* tests/test_marray.py: De-obfuscated tests
+	* tests/test_distortion.py: Cleaned up and restructured tests
+
 2015-11-26  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* tests/conftest.py: Added fits comparion test

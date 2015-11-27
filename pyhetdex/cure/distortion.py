@@ -98,3 +98,23 @@ class Distortion(object):
 
         return ma.interpCheby2D_7(self._scal_x(x), self._scal_f(f),
                                   self.fy_par_.data)
+
+    def map_wf_y(self, w, f):
+
+        if isinstance(w, (tuple, list)):
+            w = np.asarray(w)
+        if isinstance(f, (tuple, list)):
+            f = np.asarray(f)
+
+        return ma.interpCheby2D_7(self._scal_w(w), self._scal_f(f),
+                                  self.y_par_.data)
+
+    def map_xy_fiber(self, x, y):
+
+        if isinstance(x, (tuple, list)):
+            x = np.asarray(x)
+        if isinstance(y, (tuple, list)):
+            y = np.asarray(y)
+
+        return ma.interpCheby2D_7(self._scal_x(x), self._scal_y(y),
+                                  self.fiber_par_.data)
