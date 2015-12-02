@@ -72,7 +72,7 @@ class TangentPlane(object):
         galaxy with a +10 Deg position angle on sky would be aligned with
         the y-axis in tangent plane is rotated by +10 Deg.
     x_scale, y_scale  : float, optional
-        plate scale.
+        plate scale (arcsec per pixel).
 
     Notes
     -----
@@ -107,12 +107,12 @@ class TangentPlane(object):
         """
         ra0, dec0 = self.ra0, self.dec0
         rot = self.rot
-        x_scale = self.x_scale * DEGPERRAD
-        y_scale = self.y_scale * DEGPERRAD
+        x_scale = self.x_scale / 3600. / DEGPERRAD # RAD per Pixel
+        y_scale = self.y_scale / 3600. / DEGPERRAD # RAD per Pixel
 
         rra0 = np.deg2rad(ra0)
         rdec0 = np.deg2rad(dec0)
-        rrot = np.deg2rad(rot)
+        rrot = np.deg2rad(rot);
 
         rra_in = np.deg2rad(ra_in)
         rdec_in = np.deg2rad(dec_in)
@@ -125,12 +125,18 @@ class TangentPlane(object):
         yhat -= np.cos(rdec_in) * np.sin(rdec0) * np.cos(rra_in - rra0)
         yhat /= (np.sin(rdec_in) * np.sin(rdec0) +
                  np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
+        
+        if x_scale < 0.:
+            xhat = -1 * xhat
+        # counter-clockwise rotation
+        xrot =  xhat * np.cos(rrot) - yhat * np.sin(rrot) 
+        yrot =  xhat * np.sin(rrot) + yhat * np.cos(rrot)
+        
+        # scaling
+        x    = xrot / np.abs(x_scale)
+        y    = yrot / y_scale
 
-        # rotation and scaling
-        x = xhat * np.cos(rrot) * x_scale + yhat * np.sin(rrot) * y_scale
-        y = -xhat * np.sin(rrot) * x_scale + yhat * np.cos(rrot) * y_scale
-
-        return x * 3600., y * 3600.
+        return x , y 
 
     def xy2raDec(self, x_in, y_in):
         """inverse tangent transform
@@ -150,19 +156,23 @@ class TangentPlane(object):
         """
         ra0, dec0 = self.ra0, self.dec0
         rot = self.rot
-        x_scale = self.x_scale * DEGPERRAD
-        y_scale = self.y_scale * DEGPERRAD
-
+        x_scale = self.x_scale / 3600. / DEGPERRAD # RAD per pixel
+        y_scale = self.y_scale / 3600. / DEGPERRAD # RAD per pixel
+        
         rra0 = np.deg2rad(ra0)
         rdec0 = np.deg2rad(dec0)
         rrot = np.deg2rad(rot)
+        
+        # scaling
+        xrot = x_in * np.abs(x_scale)
+        yrot = y_in * y_scale
 
-        # rotation and scaling
-        xhat = (x_in/3600.) * np.cos(rrot)/x_scale
-        xhat -= (y_in/3600.) * np.sin(rrot)/y_scale
-        yhat = (x_in/3600.) * np.sin(rrot)/x_scale
-        yhat += (y_in/3600.) * np.cos(rrot)/y_scale
-
+        # clock-wise rotation 
+        xhat =  xrot * np.cos(rrot) + yrot * np.sin(rrot)
+        yhat = -xrot * np.sin(rrot) + yrot * np.cos(rrot)
+        if x_scale<0.:
+            xhat = -1*xhat  
+            
         # AIPS Memo 27, 3.1.2
         rra_out = rra0 + np.arctan(xhat/(np.cos(rdec0) - yhat * np.sin(rdec0)))
         rdec_out = np.arctan(np.cos(rra_out - rra0) * (yhat * np.cos(rdec0) +
