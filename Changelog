@@ -1,3 +1,7 @@
+2015-12-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tests/test_file_tools.py: ignore .svn directory
+
 2015-12-02  Greg Zeimann <gregz@astro.as.utexas.edu>
 	* pyhetdex/coordinates/tangent_projection.py: Made adjustments to 
 	the tangent projection algorithm.  It agrees with the astropy implementation

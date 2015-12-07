@@ -71,7 +71,8 @@ class Test_scan_files(object):
         """Returns the sorted elements found by scan_files with the give
         args and kwargs
         """
-        return sorted(list(ft.scan_files(self.test_dir, *args, **kwargs)))
+        return sorted(o for o in ft.scan_files(self.test_dir, *args, **kwargs)
+                      if '.svn' not in o)
 
     def _find_files(self, options=[]):
         """Use shell ``find path -type f`` command to get a list of files to
@@ -83,7 +84,7 @@ class Test_scan_files(object):
         command.extend(options)
         output = subprocess.check_output(command, stderr=DEVNULL,
                                          universal_newlines=True)
-        output = output.splitlines()
+        output = [o for o in output.splitlines() if '.svn' not in o]
         return sorted(output)
 
     def test_scan_files(self):
