@@ -13,7 +13,6 @@ class FiberModel(object):
     def __init__(self, filename):
 
         self.filename = ''
-
         self.version = 0
         self.version_min = 16
         self.version_max = 16

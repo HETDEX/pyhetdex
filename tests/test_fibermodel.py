@@ -11,7 +11,7 @@ def fmod(datadir):
     return fib.FiberModel(datadir.join('masterflat_081_L.fmod').strpath)
 
 
-class TestDistortion(object):
+class TestFibermdoel(object):
     def test_version(self, fmod):
         assert fmod.version == 16
 

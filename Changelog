@@ -1,12 +1,18 @@
+2015-12-09  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/cure/psfmodel.py: Added
+	* tests/test_psfmodel.py: Added
+	* tests/test_fibermodel.py: Fixed class name
+
 2015-12-07 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tests/test_file_tools.py: ignore .svn directory
 
 2015-12-02  Greg Zeimann <gregz@astro.as.utexas.edu>
-	* pyhetdex/coordinates/tangent_projection.py: Made adjustments to 
+	* pyhetdex/coordinates/tangent_projection.py: Made adjustments to
 	the tangent projection algorithm.  It agrees with the astropy implementation
 	with exception of when x_scale != y_scale.
-	
+
 2015-11-27  Jan Snigula  <snigula@vpn131103.mpe.mpg.de>
 
 	* tests/conftest.py: Made datadir a session scope fixture
