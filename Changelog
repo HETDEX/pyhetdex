@@ -1,3 +1,8 @@
+2016-01-08  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/tools/astro/zscale.py: Added
+
+
 2015-12-09  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/cure/psfmodel.py: Added
@@ -13,7 +18,7 @@
 	the tangent projection algorithm.  It agrees with the astropy implementation
 	with exception of when x_scale != y_scale.
 
-2015-11-27  Jan Snigula  <snigula@vpn131103.mpe.mpg.de>
+2015-11-27  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* tests/conftest.py: Made datadir a session scope fixture
 	* tests/test_reconstructions.py: Added missing tests
