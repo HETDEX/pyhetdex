@@ -1,3 +1,9 @@
+2016-01-12 Daniel Farrow <dfarrow@mpe.mpg.de>
+   
+    * pyhetdex/tools/datacube2rgb.py: command line too to create colour
+      images from datacubes
+    * setup.py: added entry point for command line tool
+
 2016-01-08  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/tools/astro/zscale.py: Added
