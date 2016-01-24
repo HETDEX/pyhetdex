@@ -1,3 +1,14 @@
+2016-01-24 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/het/flux_conversions.py: Functions copied from Cure to
+      convert between flux and counts on CCD.
+    * pyhetdex/randoms: package to hold modules for random
+      catalogue generation.
+    * pyhetdex/randoms/generate_randoms.py: code to generate random
+      catalogues for galaxy clustering (unfinished).
+    * pyhetdex/randoms/__init__.py
+    * pyhetdex/tools/datacube2rgb.py: Fixed typo in axes labels
+
 2016-01-12 Daniel Farrow <dfarrow@mpe.mpg.de>
    
     * pyhetdex/tools/datacube2rgb.py: command line too to create colour

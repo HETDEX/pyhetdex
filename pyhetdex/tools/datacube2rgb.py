@@ -250,8 +250,8 @@ def main(args=None):
         # show the image
         plt.imshow(image, origin='lower left', extent=(0, 49, 0, 49))
 
-        plt.xlabel("x (arcminutes)", fontsize=18.0)
-        plt.ylabel("y (arcminutes)", fontsize=18.0)
+        plt.xlabel("x (arcseconds)", fontsize=18.0)
+        plt.ylabel("y (arcseconds)", fontsize=18.0)
     
         ax = plt.gca()
         ax.tick_params(axis='x', labelsize=18.0) 
