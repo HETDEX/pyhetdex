@@ -1,5 +1,11 @@
 import sys
 
+try:
+    import setuptools
+except ImportError:
+    from ez_setup import use_setuptools
+    use_setuptools()
+
 from setuptools import setup, find_packages
 from setuptools.command.test import test
 
@@ -113,7 +119,7 @@ entry_points.update(distutils_ext)
 setup(
     # package description and version
     name="pyhetdex",
-    version="0.2.1",
+    version="0.2.2",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",
@@ -133,8 +139,9 @@ setup(
     entry_points=entry_points,
 
     # dependences
-    install_requires=['numpy', 'scipy', 'astropy>=1', 'Pillow', 'matplotlib',
-                      'six'],
+    install_requires=['six', 'numpy', 'matplotlib', 'scipy', 'astropy>=1',
+                      'Pillow', ],
+                      # 'six'],
     extras_require=extras_require(),
 
     # tests

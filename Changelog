@@ -1,5 +1,10 @@
 2016-01-27 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * ez_setup.py: added to allow setuptools bootstrap
+    * setup.py: bootstrap the above if necessary; v0.2.2
+
+2016-01-27 Francesco Montesano <montefra@mpe.mpg.de>
+
     * setup.py: define the version number here, bump to v0.2.1; classifiers added
     * pyhetdex/__init__.py: use pkg_resources to get the version number from the
 	  egg
