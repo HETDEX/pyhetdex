@@ -1,3 +1,10 @@
+2016-01-27 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: define the version number here, bump to v0.2.1; classifiers added
+    * pyhetdex/__init__.py: use pkg_resources to get the version number from the
+	  egg
+    * pyhetdex/tools/processes.py: cosmetic fixes
+
 2016-01-24 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/het/flux_conversions.py: Functions copied from Cure to

@@ -26,12 +26,14 @@ import six
 # =============================================================================
 # local variables
 # =============================================================================
+
 _workers_dict = {}
 
 
 # =============================================================================
 # Public interface
 # =============================================================================
+
 def get_worker(name='default', multiprocessing=False, always_wait=False,
                poolclass=mp.Pool, **kwargs):
     """Returns a worker with the specified name.
@@ -83,6 +85,7 @@ def ignore_keyboard_interrupt():
 # =============================================================================
 # Class to hide the details of the single or multiprocessor execution
 # =============================================================================
+
 class _Worker(object):
     """Class to hide the details of the single or multiprocessor execution. The
     class declaration should be considered as private and should be created and
@@ -272,6 +275,7 @@ class _Worker(object):
 # =============================================================================
 # Result object to mimic async result and postpone error handling
 # =============================================================================
+
 class Result(object):
     """Implements the same interface as
     :class:`multiprocessing.pool.AsyncResult` and execute the function at

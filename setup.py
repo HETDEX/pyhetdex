@@ -110,11 +110,10 @@ distutils_ext = {'distutils.setup_keywords': [
                  }
 entry_points.update(distutils_ext)
 
- 
 setup(
     # package description and version
     name="pyhetdex",
-    version=extract_version(),
+    version="0.2.1",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",
@@ -140,5 +139,18 @@ setup(
 
     # tests
     tests_require=extras_require('test'),
-    tox_requires=extras_require('tox')
+    tox_requires=extras_require('tox'),
+
+    classifiers=["Development Status :: 3 - Alpha",
+                 "Environment :: Console",
+                 "Intended Audience :: Developers",
+                 "Intended Audience :: Science/Research",
+                 "License :: OSI Approved :: GNU General Public License (GPL)",
+                 "Operating System :: Unix",
+                 "Programming Language :: Python :: 2.7",
+                 "Programming Language :: Python :: 3.4",
+                 "Programming Language :: Python :: 3.5",
+                 "Topic :: Scientific/Engineering :: Astronomy",
+                 "Topic :: Utilities",
+                 ]
 )
