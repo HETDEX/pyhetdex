@@ -108,7 +108,8 @@ def extras_require(key=None):
 entry_points = {'console_scripts':
                 ['dither_file = pyhetdex.het.dither:create_dither_file',
                  'reconstructIFU = pyhetdex.het.reconstruct_ifu:create_quick_reconstruction',
-                 'datacube2rgb = pyhetdex.tools.datacube2rgb:main']}
+                 'datacube2rgb = pyhetdex.tools.datacube2rgb:main',
+                 'generate_randoms = pyhetdex.randoms.generate_randoms:generate_randoms_cmd']}
 
 # setuptools customisation
 distutils_ext = {'distutils.setup_keywords': [

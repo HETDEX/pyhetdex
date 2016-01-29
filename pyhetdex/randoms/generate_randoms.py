@@ -6,11 +6,9 @@ each by assigning them fluxes from a luminosity function.
 AUTHOR(S): Daniel Farrow 2016 (MPE)
 
 """
-from pyhetdex.het.flux_conversions import virus_eff, extinction, flambda_to_electrons
-
 from datetime import datetime
 from numpy.random import poisson, random
-from astropy.table import Table
+from astropy.table import Table, hstack
 from astropy.wcs import WCS
 
 import numpy as np
@@ -18,6 +16,9 @@ import logging
 import sys
 import matplotlib.pyplot as plt
 import astropy.io.fits as fits
+
+from pyhetdex.het.flux_conversions import virus_eff, extinction, flambda_to_electrons
+from pyhetdex.randoms.luminosity_functions import FlatLuminosityFunction
 
 
 def random_emission_line_locations(nrands, lmbda_rest=1215.17):
@@ -67,7 +68,7 @@ def random_emission_line_locations(nrands, lmbda_rest=1215.17):
 
 
 
-def generate_randoms(fn_noise_map, fn_out, nrands): 
+def generate_randoms(fn_variance_map, fn_detaper_fluxfrac, fn_out, nrands): 
     """
     Generate random emission lines over the IFU
     and output them, and the noise/fluxfrac at
@@ -75,8 +76,11 @@ def generate_randoms(fn_noise_map, fn_out, nrands):
 
     Parameters
     ----------
-    fn_noise_map : str 
-        the name of a noise map produced by detect
+    fn_variance_map : str 
+        the name of a variance map produced by detect
+    fn_detaper_fluxfrac :
+        the name of a fraction of flux in detection aperture
+        map from detect
     fn_out : str
         the name of output file. The format is specified
         by the names extension (.fits, .csv and HDF5 supported)
@@ -86,27 +90,28 @@ def generate_randoms(fn_noise_map, fn_out, nrands):
 
     log = logging.getLogger()
 
-    log.info("Generating {:d} randoms!".format(nrands))
+    log.info("Generating {:d} randoms from files {:s} and {:s} !".format(nrands, fn_variance_map, fn_detaper_fluxfrac))
 
     x, y, z, lmbda = random_emission_line_locations(nrands)
 
-    noise = return_noise(x, y, lmbda, fn_noise_map) 
+    variance = return_cube_value(x, y, lmbda, fn_variance_map) 
+    detaper_fluxfrac = return_cube_value(x, y, lmbda, fn_detaper_fluxfrac)
 
-    if  len(noise) < 1:
+    if  len(variance) < 1:
         sys.exit(1)
  
     log.info("Saving to file {:s}".format(fn_out))
 
-    data = Table([x, y, z, lmbda, noise], names=('x', 'y', 'z', 'lambda', 'noise_over_fluxfrac'), 
-                 meta={'NAME' : 'Randoms for {:s}'.format(fn_noise_map),
+    data = Table([x, y, z, lmbda, variance, detaper_fluxfrac], names=('x', 'y', 'z', 'lambda', 'variance', 'detaper_fluxfrac'), 
+                 meta={'NAME' : 'Randoms for {:s}'.format(fn_variance_map),
                        'DATECRTD' : datetime.now().strftime("%Y-%m-%d %H:%M:%S")})    
 
     data.write(fn_out)
 
 
-def return_noise(x, y, lmbda, fn_noise_map):
+def return_cube_value(x, y, lmbda, fn_cube):
     """
-    Return noise from fn_noise_map and
+    Return value from fn_cube at
     x, y, lambda
     
     Parameters
@@ -115,18 +120,18 @@ def return_noise(x, y, lmbda, fn_noise_map):
         position wrt to IFU center (arcseconds)
     lmbda : float
         observed wavelength
-    fn_noise_map : str
-        the file name of the noise datacube
+    fn_cube : str
+        the file name of the datacube
     """
 
     log = logging.getLogger()
 
     try:
-        with fits.open(fn_noise_map) as hdus:
+        with fits.open(fn_cube) as hdus:
             datacube = hdus[0].data
             header = hdus[0].header
     except IOError as e:
-        log.error("Problem reading file {:e}".format(e))
+        log.error("Problem reading file {:s}".format(e))
         return []
 
     wcs = WCS(header)
@@ -134,68 +139,128 @@ def return_noise(x, y, lmbda, fn_noise_map):
     # find the noise at each pixel of the noise map where
     # there's a source
     pixels = np.array(wcs.all_world2pix(x, y, lmbda, 0), dtype=int)
-    noise = datacube[pixels[2], pixels[1], pixels[0]]
+    value = datacube[pixels[2], pixels[1], pixels[0]]
 
-    return noise
+    return value
 
 
-def flux2snr(flux, lmbda, noise, texp=360.0, airmass=1.23):
+def lum2snr(lum, lmbda, variance, detaper_fluxfrac, texp=360.0, airmass=1.23):
+   """
+   Return the SNR predicted for a particular
+   luminosity. Applies the atmospheric extinction, VIRUS, 
+   HET efficiency and aperture effects to fluxes. 
+
+   Parameters
+   ----------
+   lum : float 
+       the luminosity
+   lmbda : float
+       the wavelength in Angstroms
+   variance : float
+       the variance in CCD counts
+   detaper_fluxfrac : float
+       the fraction of total flux within the
+       detection aperture
+   """
     
-   signal = flambda_to_electrons(flux, lmbda, 360.0) 
-   ext_signal = signal*extinction(lmbda, airmass)
+   signal = flambda_to_electrons(lum, lmbda, 360.0) 
+   ext_signal = detaper_fluxfrac*extinction(lmbda, airmass)*virus_eff(lmbda)*signal
  
-   return signal/noise
+   # remember to count source noise
+   return ext_signal/np.sqrt(variance + ext_signal)
 
 
-#generate_randoms(sys.argv[1], sys.argv[2], int(sys.argv[3]))
+def generate_randoms_cmd(args=None):
+    """ Command line interface to generate_randoms """  
+    import argparse    
+    
+    logging.basicConfig(level=logging.INFO)
 
-#
-# TODO: Move these tests to pytest
-#
+    if not args:
+        import sys
+        args = sys.argv[1:] 
 
+    parser = argparse.ArgumentParser(description='Generate a catalogue of randoms')
+    parser.add_argument('fn_variance_map', type=str, help='Filename of a detect variance cube')
+    parser.add_argument('fn_detaper_fluxfrac', type=str, help="""Filename of a datcube cube containing the
+                                                               fraction of flux in detection aperture from detect.""")
 
-x, y  = 5.155615014444944, 3.0050500294416693 
-rlbda = 1215.7
-flbda = 3.14172e-17
-z = 3.34149
+    parser.add_argument('fn_out', type=str, help='Output filename (extension sets filetype)')
+    parser.add_argument('nrands', type=int, help='Number of randoms to generate')
 
-noise = return_noise(x, y, rlbda*(1.0 + z), 'Noise_detect.fits')
-snr = flux2snr(flbda, rlbda*(1.0 + z), noise)
+    o = parser.parse_args(args)
 
-flux_raw = flambda_to_electrons(flbda, rlbda*(1.0 + z), 360.0) # this should be 2360.2 
-atm_ext = extinction(rlbda*(1.0 + z), 1.23) # should be 0.835741 
-flux_final = atm_ext*flux_raw
-
-
-
-print "========== TEST SOURCE 1 ==============="
-print z
-print flbda
-print flux_raw
-print atm_ext 
-print flux_final
-print noise
-print snr
-
-rlbda = 1215.7
-flbda = 1.21521e-16
-z = 2.56898
-
-flux_raw = flambda_to_electrons(flbda, rlbda*(1.0 + z), 360.0) # this should be 2360.2 
-atm_ext = extinction(rlbda*(1.0 + z), 1.23) # should be 0.729536
-flux_final = atm_ext*flux_raw
+    generate_randoms(o.fn_variance_map, o.fn_detaper_fluxfrac, o.fn_out, o.nrands)
 
 
-print "========== TEST SOURCE 2 ==============="
-print flux_raw
-print atm_ext
-print flux_final
+def add_fluxes_and_snr_to_randoms(fn_randoms, fn_out):
+    """
+    Read in a set of randoms from generate_randoms, and
+    assign fluxes and SNR values to the randoms based
+    on some luminosity function
+
+    Parameters
+    ----------
+    fn_randoms, fnout : str
+        filename of randoms and output file
+
+    """
+
+    log = logging.getLogger()
+
+    # parameters for Dustin's simulation
+    lf = FlatLuminosityFunction(3.0e-17, 12.5e-17) 
+
+    try:
+        table = Table.read(fn_randoms)
+
+    except IOError as e:
+
+        log.error("Problem reading file {:s}".format(fn_randoms))
+        log.error(e)
 
 
-fluxes = []
-zs =  np.linspace(2.5, 3.5, num=20)
-for z in zs:
-    fluxes.append(flambda_to_electrons(flbda, rlbda*(1.0 + z), 360.0))
+    lum = []
+    snr = []
 
-plt.plot(zs, fluxes)
-plt.show()    
+    for source in table:
+        
+        # Generate a random flux from the LF
+        tlum = lf.inverse_normed_cumulative(random())
+        tsnr = lum2snr(tlum, source['lambda'], source['variance'], source['detaper_fluxfrac'])
+        lum.append(tlum)
+        snr.append(tsnr)
+
+
+    table_snr = Table([lum, snr], names=('Luminosity', 'SNR'))
+    table_out = hstack([table, table_snr])
+    table_out.write(fn_out)
+ 
+
+#logging.basicConfig()
+#add_fluxes_and_snr_to_randoms('test.fits', 'fluxes_test.fits')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

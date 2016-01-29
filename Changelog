@@ -1,3 +1,11 @@
+2016-01-27 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * setup.py: Added entry point for generate_randoms command line tool
+    * pyhetdex/randoms/generate_randoms.py: Added tools to generate randoms and
+                                            compute their SNR from variance maps 
+    * pyhetdex/randoms/luminosity_functions.py: Class to handle luminosity and 
+                                                cumulative luminosity functions 
+
 2016-01-27 Francesco Montesano <montefra@mpe.mpg.de>
 
     * ez_setup.py: added to allow setuptools bootstrap
