@@ -134,6 +134,7 @@ setup(
 
     # list of packages and data
     packages=find_packages(),
+    include_package_data=True,
     # don't zip when installing
     zip_safe=False,
 
@@ -142,12 +143,11 @@ setup(
     # dependences
     install_requires=['six', 'numpy', 'matplotlib', 'scipy', 'astropy>=1',
                       'Pillow', ],
-                      # 'six'],
     extras_require=extras_require(),
 
     # tests
     tests_require=extras_require('test'),
-    tox_requires=extras_require('tox'),
+    # tox_requires=extras_require('tox'),
 
     classifiers=["Development Status :: 3 - Alpha",
                  "Environment :: Console",
