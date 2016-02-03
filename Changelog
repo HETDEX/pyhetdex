@@ -1,3 +1,26 @@
+2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* *: branches/queue_generic reintegrated into trunk
+
+2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* svn:mergeinfo: merge with trunk before reintegrating
+	* setup.py: bump version to 0.3.0
+
+2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/queue.py: rename some variable in classes
+    * pyhetdex/tools/logging_helper.py: rewrite using the queue module; solves
+	  issue #1279
+    * doc/source/tools/logging.rst: adapt documentation
+
+2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/queue.py: queue functionalities and base classes go here
+    * doc/source/tools/queue.rst: documentation the above
+    * doc/source/tools/index.rst: add the above
+    * tests/test_queue.py: test the queue module
+
 2016-02-01 Francesco Montesano <montefra@mpe.mpg.de>
 
     * MANIFEST.in: added

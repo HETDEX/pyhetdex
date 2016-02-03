@@ -116,6 +116,7 @@ move/rename/remove the same log file at the same time.
     :members:
     :undoc-members:
     :private-members:
+    :show-inheritance:
 
 :py:class:`SetupQueueListener` -- Setup the :class:`QueueListener`
 ==================================================================
@@ -123,5 +124,5 @@ move/rename/remove the same log file at the same time.
 .. autoclass:: pyhetdex.tools.logging_helper.SetupQueueListener
     :member-order: groupwise
     :members:
-    :undoc-members:
-    :private-members:
+    :special-members: __enter__, __exit__
+    :show-inheritance:

@@ -26,6 +26,7 @@ Others
     :maxdepth: 2
 
     processes
+    queue
     logging
     config
     six_ext
