@@ -1,3 +1,10 @@
+2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/queue.py: queue functionalities and base classes go here
+    * doc/source/tools/queue.rst: documentation the above
+    * doc/source/tools/index.rst: add the above
+    * tests/test_queue.py: test the queue module
+
 2016-02-01 Francesco Montesano <montefra@mpe.mpg.de>
 
     * MANIFEST.in: added
