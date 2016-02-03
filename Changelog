@@ -1,5 +1,10 @@
 2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* svn:mergeinfo: merge with trunk before reintegrating
+	* setup.py: bump version to 0.3.0
+
+2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/tools/queue.py: rename some variable in classes
     * pyhetdex/tools/logging_helper.py: rewrite using the queue module; solves
 	  issue #1279

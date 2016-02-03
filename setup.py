@@ -120,7 +120,7 @@ entry_points.update(distutils_ext)
 setup(
     # package description and version
     name="pyhetdex",
-    version="0.2.2",
+    version="0.3.0",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",
