@@ -67,12 +67,12 @@ if threading:
 
         Parameters
         ----------
-        queue : queue-like instance
+        queue_ : queue-like instance
         """
         _sentinel = None
 
-        def __init__(self, queue):
-            self.queue = queue
+        def __init__(self, queue_):
+            self.queue = queue_
             self._stop = threading.Event()
             self._thread = None
 
@@ -209,7 +209,8 @@ class SetupQueueListener(object):
 
     Attributes
     ----------
-    queue : as above
+    qlc, queue, qlc_args, qlc_kwargs :
+        as above
     stop_event : :class:`multiprocessing.Event` instance
         event used to signal to stop the listener
     lp : :class `multiprocessing.Process` instance
@@ -218,9 +219,9 @@ class SetupQueueListener(object):
     """
     def __init__(self, qlc, queue_, use_process=True, qlc_args=(),
                  qlc_kwargs={}):
-        self._qlc = qlc
-        self._qlc_args = qlc_args
-        self._qlc_kwargs = qlc_kwargs
+        self.qlc = qlc
+        self.qlc_args = qlc_args
+        self.qlc_kwargs = qlc_kwargs
         self.queue = queue_
         self.stop_event = multiprocessing.Event()
         if use_process:
@@ -254,7 +255,7 @@ class SetupQueueListener(object):
 
     def _start_listener(self):
         """Create, start and return the listener"""
-        listener = self._qlc(self.queue, *self._qlc_args, **self._qlc_kwargs)
+        listener = self.qlc(self.queue, *self.qlc_args, **self.qlc_kwargs)
         listener.start()
 
         return listener

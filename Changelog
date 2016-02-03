@@ -1,5 +1,12 @@
 2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/tools/queue.py: rename some variable in classes
+    * pyhetdex/tools/logging_helper.py: rewrite using the queue module; solves
+	  issue #1279
+    * doc/source/tools/logging.rst: adapt documentation
+
+2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/tools/queue.py: queue functionalities and base classes go here
     * doc/source/tools/queue.rst: documentation the above
     * doc/source/tools/index.rst: add the above
