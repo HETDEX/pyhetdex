@@ -33,7 +33,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import logging
-import multiprocessing
 try:
     import threading
 except ImportError:  # pragma: no cover
@@ -152,6 +151,7 @@ if threading:
 
 
 # Setup and stop a QueueListener in as separate process
+
 class SetupQueueListener(phqueue.SetupQueueListener):
     """Start the :class:`QueueListener`, in a separate process if required.
 

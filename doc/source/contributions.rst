@@ -14,7 +14,7 @@ Testing
 =======
 
 *Every part of the code should be tested and should run at least under python
-2.7 and 3.4.*
+2.7, 3.4 and possibly 3.5*
 
 The tests are written using the `pytest
 <http://pytest.org/latest/contents.html#>`_ framework.
@@ -30,15 +30,6 @@ It will take care of creating virtual environments for every supported version
 of python, if it exists on the system, install ``pyhetdex``, its dependences and the
 packages necessary to run the tests and runs ``py.test``
 
-We also provide a ``setuptools`` command to run ``tox``. If you run::
-
-    python setup.py tox
-
-all the needed dependences, among others ``tox`` itself, will be fetched
-and installed in a ``.eggs`` directory. Then it will run ``tox``. This command
-might fail when running in a virtual environment. If you get ``ImportError:
-No module named 'numpy'`` while installing ``scipy``, install numpy by hand
-``pip install [--user] numpy`` and rerun it again.
 
 You can run the tests for a specific python version using::
 
@@ -47,6 +38,13 @@ You can run the tests for a specific python version using::
 or::
 
     python setup.py test
+
+The latter command fetches all the needed dependences, among others ``pytest``
+itself, will be fetched and installed in a ``.eggs`` directory. Then it will
+run ``py.test``. This command might fail when running in a virtual environment.
+If you get ``ImportError: No module named 'numpy'`` while installing ``scipy``,
+install numpy by hand ``pip install [--user] numpy`` and rerun it again. Use
+the option ``--addopts`` to pass additional options to ``py.test``.
 
 You can run specific tests providing the file name(s) and, optionally the name
 of a test. E.g.::

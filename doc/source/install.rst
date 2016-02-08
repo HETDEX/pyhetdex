@@ -67,7 +67,7 @@ code also using the good old ::
     python setup.py build
     python setup.py install
 
-We do not recommend this method, as you have to deal with dependences yourself.
+We do not recommend this method.
 
 .. note::
     

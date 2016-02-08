@@ -1,3 +1,15 @@
+2016-02-08 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/logging_helper.py: remove unneeded import
+    * setup.py: remove tox and pytest custom commands and use pytest-runner
+    * setup.cfg: move pytest section to pytest.ini and add alias for test
+    * pytest.ini: added
+    * tox.ini: remove explicit dependency to numpy
+	* test/test_queue.py: explicitly join the queue at the end of the test to
+	  avoid random failures
+    * doc/source/contributions.rst: remove info about setup.py tox
+    * doc/source/install.rst: fix a sentence
+
 2016-02-03 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* *: branches/queue_generic reintegrated into trunk

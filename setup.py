@@ -1,5 +1,3 @@
-import sys
-
 try:
     import setuptools
 except ImportError:
@@ -7,7 +5,6 @@ except ImportError:
     use_setuptools()
 
 from setuptools import setup, find_packages
-from setuptools.command.test import test
 
 
 def extract_version():
@@ -22,58 +19,6 @@ def extract_version():
                 version = line.split('=')[1].strip().strip('"')
                 break
     return version
-
-
-# custom test command using py.test
-
-class PyTest(test):
-    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
-
-    def initialize_options(self):
-        test.initialize_options(self)
-        self.pytest_args = []
-
-    def finalize_options(self):
-        test.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
-
-
-class Tox(test):
-    description = "run unit tests in virtual environments using tox"
-    user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
-
-    def initialize_options(self):
-        test.initialize_options(self)
-        self.tox_args = None
-
-    def finalize_options(self):
-        test.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        if self.distribution.install_requires:
-            self.distribution.fetch_build_eggs(
-                self.distribution.install_requires)
-        if self.distribution.tox_requires:
-            self.distribution.fetch_build_eggs(self.distribution.tox_requires)
-        # import here, cause outside the eggs aren't loaded
-        import tox
-        import shlex
-        args = self.tox_args
-        if args:
-            args = shlex.split(self.tox_args)
-        else:
-            args = ""
-        errno = tox.cmdline(args=args)
-        sys.exit(errno)
 
 
 def extras_require(key=None):
@@ -94,7 +39,7 @@ def extras_require(key=None):
 
     req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild>=0.5.2', ]
 
-    req_dic['test'] = ['pytest-cov', 'pytest']
+    req_dic['test'] = ['pytest-cov', 'pytest-xdist', 'pytest']
     req_dic['tox'] = ['tox', ]
 
     req_dic['all'] = set(sum((v for v in req_dic.values()), []))
@@ -107,7 +52,7 @@ def extras_require(key=None):
 
 entry_points = {'console_scripts':
                 ['dither_file = pyhetdex.het.dither:create_dither_file',
-                 'reconstructIFU = pyhetdex.het.reconstruct_ifu:create_quick_reconstruction',
+                 'reconstructIFU =' ' pyhetdex.het.reconstruct_ifu:create_quick_reconstruction',
                  'datacube2rgb = pyhetdex.tools.datacube2rgb:main',
                  'generate_randoms = pyhetdex.randoms.generate_randoms:generate_randoms_cmd']}
 
@@ -126,12 +71,6 @@ setup(
     description="Heterogeneous collection of HETDEX-related functionalities",
     long_description=open("README.md").read(),
 
-    # custom test class
-    cmdclass={
-        'test': PyTest,
-        'tox': Tox,
-    },
-
     # list of packages and data
     packages=find_packages(),
     include_package_data=True,
@@ -141,13 +80,12 @@ setup(
     entry_points=entry_points,
 
     # dependences
+    setup_requires=['pytest-runner', ],
     install_requires=['six', 'numpy', 'matplotlib', 'scipy', 'astropy>=1',
                       'Pillow', ],
     extras_require=extras_require(),
-
     # tests
     tests_require=extras_require('test'),
-    # tox_requires=extras_require('tox'),
 
     classifiers=["Development Status :: 3 - Alpha",
                  "Environment :: Console",

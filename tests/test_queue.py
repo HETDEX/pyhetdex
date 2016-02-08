@@ -73,15 +73,16 @@ def test_override(q):
         q_.put(i)
 
     listener.stop()
+
+    assert len(listener.list_) == n_elements
+    assert listener.list_ == list(range(n_elements))
+
     try:  # mark that the task has been done to avoid locking the test
         q_.task_done()
         q_.join()
     except AttributeError:
         q_.close()
         q_.join_thread()
-
-    assert len(listener.list_) == n_elements
-    assert listener.list_ == list(range(n_elements))
 
 
 @pytest.mark.parametrize('use_process', [True, False])
