@@ -30,3 +30,4 @@ Others
     logging
     config
     six_ext
+    io_helpers

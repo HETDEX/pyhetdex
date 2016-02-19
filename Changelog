@@ -1,3 +1,13 @@
+2016-02-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: remove unused code and bump the version to 0.3.0-post
+    * tox.ini: use hetdex pypi server to get software
+    * pyhetdex/tools/files/file_tools.py: fix the documentation to use
+	  numpydoc==0.6
+    * pyhetdex/tools/io_helpers.py: add function documentation
+    * doc/source/tools/io_helpers.rst: added
+    * doc/source/tools/index.rst: add the above to the index
+
 2016-02-08 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/logging_helper.py: remove unneeded import

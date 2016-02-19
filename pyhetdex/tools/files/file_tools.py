@@ -144,15 +144,6 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
         mark the corresponding options as a regex pattern instead of unix shell
         pattern with possible wildcards
 
-    Returns
-    -------
-    fn : string
-        name of the file (it's an iterator, not a return)
-
-    .. todo::
-        use ``Yields`` instead of ``Returns`` when the numpydoc 0.6 update will
-        be available
-
     Yields
     ------
     fn : string
@@ -204,18 +195,10 @@ def scan_dirs(path, matches='*', exclude=None, recursive=True,
         mark the corresponding options as a regex pattern instead of unix shell
         pattern with possible wildcards
 
-    Returns
-    -------
-    dirname : string
-        name of the directory (it's an iterator, not a return)
-
     Yields
     ------
     dirname : string
         name of the directory
-
-    .. todo::
-        remove returns when the numpydoc 0.6 update will be available
     """
     # convert ``matches``, ``exclude`` into compiled regex
     matches = wildcards_to_regex(matches, is_regex=is_matches_regex)
