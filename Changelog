@@ -1,3 +1,10 @@
+2016-02-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/conf.py: use again sphinx.ext.todo
+    * pyhetdex/doc/sphinxext/__init__.py: deprecate it
+    * setup.py: use new sphinx version
+    * tox.ini: same
+
 2016-02-08 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/logging_helper.py: remove unneeded import

@@ -34,7 +34,7 @@ def extras_require(key=None):
     dictionary of requirements
     if key is not None: list of requirements
     """
-    req_dic = {'doc': ['sphinx', 'numpydoc', 'alabaster'],
+    req_dic = {'doc': ['sphinx=>1.4', 'numpydoc', 'alabaster'],
                }
 
     req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild>=0.5.2', ]
@@ -65,7 +65,7 @@ entry_points.update(distutils_ext)
 setup(
     # package description and version
     name="pyhetdex",
-    version="0.3.0",
+    version="0.4.0-dev",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",
