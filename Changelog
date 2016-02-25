@@ -1,5 +1,13 @@
 2016-02-25 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * setup.py: set version to 0.4.0, ready for release
+    * doc/source/_templates/version.html: add template to have the version
+	  number
+    * doc/source/conf.py: use the template in the sidebar
+    * doc/source/index.rst: add version number
+
+2016-02-25 Francesco Montesano <montefra@mpe.mpg.de>
+
      * pyhetdex/tools/configuration.py: add get{boolean,int,float} with fallback
 	   values to the mapping protocol
      * pyhetdex/tools/files/file_tools.py: better error message when the
