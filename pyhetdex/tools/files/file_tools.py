@@ -17,6 +17,11 @@ import re
 import six
 
 
+class RegexCompileFail(re.error):
+    """Error raised when the compilation fails"""
+    pass
+
+
 def skip_comments(f):
     """Skip commented lines and returns the file at the start of the first line
     without any
@@ -100,6 +105,10 @@ def wildcards_to_regex(wildcards, re_compile=True, is_regex=False):
     -------
     regex : string or :class:`re.RegexObject`
         resulting regex
+
+    Raises
+    ------
+
     """
     if wildcards is None:
         regex = r'a^'
@@ -115,7 +124,12 @@ def wildcards_to_regex(wildcards, re_compile=True, is_regex=False):
             regex = r'|'.join(fnmatch.translate(wc) for wc in wildcards)
 
     if re_compile:
-        return re.compile(regex)
+        try:
+            return re.compile(regex)
+        except re.error as e:
+            msg = ("Compiling the regex expression '{}' deriving from '{}'"
+                   " failed because of {}".format(regex, wildcards, e))
+            six.raise_from(RegexCompileFail(msg), e)
     else:
         return regex
 

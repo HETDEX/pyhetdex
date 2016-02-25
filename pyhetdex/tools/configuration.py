@@ -343,8 +343,8 @@ class ConfigParser(confp.ConfigParser):
 class SectionProxy():
     """A proxy for a single section from a parser.
 
-    Adapted for the use with python 2.7 from `the python 3.5 implementation
-    <https://hg.python.org/cpython/file/3.5/Lib/configparser.py#l1213>`_
+    Adapted for the use with python 2.7 from `the python 3.4 implementation
+    <https://hg.python.org/cpython/file/3.4/Lib/configparser.py#l1189>`_
     """
 
     def __init__(self, parser, name):
@@ -393,18 +393,29 @@ class SectionProxy():
         # The name of the section on a proxy is read-only.
         return self._name
 
-    def get(self, option, fallback=None, raw=False, vars=None):
-        """Get an option value.
-
-        Unless `fallback` is provided, `None` will be returned if the option
-        is not found.
-
-        """
-        _impl = self._parser.get
+    def _get(self, method, option, fallback=None, **kwargs):
+        """Use the ``method`` to get the option"""
         try:
-            return _impl(self._name, option, raw=raw, vars=vars)
+            return method(self._name, option, **kwargs)
         except confp.NoOptionError:
             return fallback
+
+    def get(self, option, fallback=None, raw=False, vars=None):
+        """Get an option value."""
+        return self._get(self._parser.get, option, fallback=fallback, raw=raw,
+                         vars=vars)
+
+    def getboolean(self, option, fallback=None, raw=False, vars=None):
+        """Get an option value as a boolean."""
+        return self._get(self._parser.getboolean, option, fallback=fallback)
+
+    def getint(self, option, fallback=None, raw=False, vars=None):
+        """Get an option value as a boolean."""
+        return self._get(self._parser.getint, option, fallback=fallback)
+
+    def getfloat(self, option, fallback=None, raw=False, vars=None):
+        """Get an option value as a boolean."""
+        return self._get(self._parser.getfloat, option, fallback=fallback)
 
 
 # =============================================================================

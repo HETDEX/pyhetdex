@@ -1,3 +1,13 @@
+2016-02-25 Francesco Montesano <montefra@mpe.mpg.de>
+
+     * pyhetdex/tools/configuration.py: add get{boolean,int,float} with fallback
+	   values to the mapping protocol
+     * pyhetdex/tools/files/file_tools.py: better error message when the
+	   compilation of the regex fails
+     * setup.py: set version to 0.4.0-pre
+     * tests/test_configuration.py: test the new mapping
+     * tests/test_file_tools.py: adjust test
+
 2016-02-19 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: remove unused code and bump the version to 0.3.0-post

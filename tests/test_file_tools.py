@@ -42,7 +42,7 @@ def test_prefix_filename(infname, prefix, outfname):
                           [[r'.*some\d{2}.?', r'thing\d{2}.?'],
                            r'.*some\d{2}.?|thing\d{2}.?', True],
                           pytest.mark.xfail(reason="Wrong regex",
-                                            exception=re.error)
+                                            raises=ft.RegexCompileFail)
                           (["*wrong", "*wrong", True])
                           ))
 def test_wildcards_to_regex(wildcard, regex, is_regex, re_compile):

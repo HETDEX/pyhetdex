@@ -217,6 +217,9 @@ class TestMapping(object):
                         'section2': {'keyA': 'valueA',
                                      'keyB': 'valueB',
                                      'keyC': 'valueC'},
+                        'section3': {'bool': 'on',
+                                     'int': '42',
+                                     'float': '3.14'},
                         }
         # configuration defaults
         c = pyhconf.ConfigParser()
@@ -256,7 +259,7 @@ class TestMapping(object):
                        reason='missing section')
     def test_no_section(self):
         """Mapping: ask for the wrong section"""
-        self.c['section3']
+        self.c['nosection']
 
     @pytest.mark.xfail(raises=KeyError,
                        reason='missing option')
@@ -314,3 +317,27 @@ class TestMapping(object):
         """Get options value with get and"""
         section = self.c['section1']
         assert section.get('key', 'a value') == 'a value'
+
+    def test_getboolean(self):
+        section = self.c['section3']
+        assert section.getboolean('bool')
+
+    def test_getboolean_fallback(self):
+        section = self.c['section3']
+        assert not section.getboolean('boo', False)
+
+    def test_getint(self):
+        section = self.c['section3']
+        assert section.getint('int') == 42
+
+    def test_getint_fallback(self):
+        section = self.c['section3']
+        assert section.getint('in', 43) == 43
+
+    def test_getfloat(self):
+        section = self.c['section3']
+        assert section.getfloat('float') == 3.14
+
+    def test_getfloat_fallback(self):
+        section = self.c['section3']
+        assert section.getfloat('floa', 2.71) == 2.71
