@@ -41,13 +41,15 @@ entry_points = {'console_scripts':
                  'reconstructIFU ='
                  ' pyhetdex.het.reconstruct_ifu:create_quick_reconstruction',
                  'datacube2rgb = pyhetdex.tools.datacube2rgb:main',
+                 'add_fluxes_to_randoms ='
+                 'pyhetdex.randoms.generate_randoms:add_fluxes_and_snr_to_randoms_cmd',
                  'generate_randoms ='
                  ' pyhetdex.randoms.generate_randoms:generate_randoms_cmd']}
 
 setup(
     # package description and version
     name="pyhetdex",
-    version="0.4.0",
+    version="0.4.0.devel",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",

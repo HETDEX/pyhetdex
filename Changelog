@@ -1,3 +1,11 @@
+2016-03-11 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+   * setup.py: added entry point for new command
+   * pyhetdex/het/flux_conversions.py: minor style changes
+   * pyhetdex/randoms/generate_randoms.py: added new command to
+     assign fluxes and SNRs to random points
+   * pyhetdex/randoms/luminosity_functions.py: added python3 support
+
 2016-02-25 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: set version to 0.4.0, ready for release

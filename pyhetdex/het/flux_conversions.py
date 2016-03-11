@@ -78,6 +78,6 @@ def flambda_to_electrons(flbda, lbda, tint):
     A = np.pi*(10.0/2.*100.)*(10.0/2.*100.); #10m clear aperture in cm^2
 
     #number of detected electrons for an object of spectrum flambda
-    return tint*flbda/h/nu*A
+    return A*tint*flbda/(h*nu)
 
 

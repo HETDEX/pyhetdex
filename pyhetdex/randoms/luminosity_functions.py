@@ -5,6 +5,8 @@ fluxes to random points.
 AUTHOR(S): Daniel Farrow 2016
 
 """
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from abc import ABCMeta, abstractmethod
 from numpy import cumsum, interp, arange, ones
