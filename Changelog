@@ -1,3 +1,8 @@
+2016-03-14 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+   * setup.py: corrected wrong version number 
+     from last commit (fixes problem with VDAT installation)
+
 2016-03-11 Daniel Farrow <dfarrow@mpe.mpg.de>
 
    * setup.py: added entry point for new command
