@@ -239,6 +239,8 @@ def detection_efficiency(snr):
     # Cut to avoid extrapolating polynomial fit to detected fraction too far
     if snr < 2.5:
         return 0.0
+    elif snr > 7.0:
+        return 1.0
     else:
         return poly.polyval(snr - 3.0, coeffs)
 
@@ -291,10 +293,10 @@ def add_fluxes_and_snr_to_randoms(fn_randoms, fn_out, apply_detection_eff=True):
             lum.append(tlum)
             snr.append(tsnr)
             de.append(deff)       
-            rs.append(r)
+            rs.append(random())
 
     table.remove_rows(to_remove)
-    table_snr = Table([lum, snr, de, rs], names=('Luminosity', 'SNR', 'det_eff', "random"))
+    table_snr = Table([lum, snr, de, rs], names=('flambda', 'SNR', 'det_eff', "random"))
     table_out = hstack([table, table_snr])
     table_out.write(fn_out)
 
