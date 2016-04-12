@@ -1,3 +1,11 @@
+2016-04-12 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * doc/source/add_fluxes_to_randoms.rst: Added documentation
+    * doc/source/datacube2rgb.rst: as above
+    * doc/source/generate_randoms.rst: as above
+    * doc/source/index.rst: as above 
+    * pyhetdex/tools/datacube2rgb.py: Changed wavelength increment in hard-coded WCS
+ 
 2016-03-16 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* setup.py: mark the version as 0.5.0-dev

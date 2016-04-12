@@ -26,7 +26,7 @@ class WavelengthConversion(object):
 
         # XXX read in wavelength solution from header here
         self.start = 3500
-        self.step = 0.968992233276367
+        self.step = 1.968992233276367
 
     def pix2lmbda(self, pix):
         """

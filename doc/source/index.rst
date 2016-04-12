@@ -32,6 +32,9 @@ Command Line Tools
 
     dither_file
     quick_ifu_recon
+    datacube2rgb
+    generate_randoms
+    add_fluxes_to_randoms
 
 Code documentation
 ------------------
