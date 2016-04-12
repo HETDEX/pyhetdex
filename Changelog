@@ -1,3 +1,11 @@
+2016-04-12 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/processes.py: add remove_worker function, improve
+	  worker.wait method
+    * tests/test_processes.py: reorganize the tests and test everything
+    * doc/source/tools/processes.rst: add remove_worker to the documentation
+    * tox.ini: make sure to deploy the coverage report
+
 2016-04-12 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * doc/source/add_fluxes_to_randoms.rst: Added documentation
