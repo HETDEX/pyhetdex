@@ -18,9 +18,13 @@ from __future__ import (absolute_import, division, print_function,
 
 import itertools as it
 import re
+import operator
 import os
+import sys
 
+from astropy.io import fits
 from numpy import array
+from six.moves import zip
 
 from pyhetdex.het.fplane import FPlane
 from pyhetdex.het.telescope import Shot
@@ -34,6 +38,11 @@ class DitherParseError(ValueError):
 
 class DitherCreationError(ValueError):
     "Raised when something fails while creating the dither file"
+    pass
+
+
+class DitherPositionError(RuntimeError):
+    """Fail to parse the ditherpos file"""
     pass
 
 
@@ -85,112 +94,6 @@ class _BaseDither(object):
     def filename(self):
         """ Absolute file path """
         return os.path.split(self.absfname)[1]
-
-
-class DitherCreator(object):
-    """Class to create dither files
-
-    Initialize the dither file creator for this shot
-
-    Read in the locations of the dithers for each IFU from
-    dither_positions.
-
-    Parameters
-    ----------
-    dither_positions : str
-        path to file containing the positions of the dithers for each
-        IHMPID; the file must have the following format::
-
-            ihmpid x1 x2 ... xn y1 y2 ... yn
-
-    fplane_file : str
-        path the focal plane file; it is parsed using
-        :class:`~pyhetdex.het.fplane.FPlane`
-    shot : :class:`pyhetdex.het.telescope.Shot` instance
-        a ``shot`` instance that contains info on the image quality and
-        normalization
-
-    Attributes
-    ----------
-    ifu_dxs, ifu_dys : numpy arrays
-        arrays of x and y shifts for the dithers
-    shot
-    fplane : :class:`~pyhetdex.het.fplane.FPlane` instance
-    """
-    def __init__(self, dither_positions, fplane_file, shot):
-        self.ifu_dxs = {}
-        self.ifu_dys = {}
-        self.shot = shot
-        self.fplane = FPlane(fplane_file)
-        self._parse_dither_posistions(dither_positions)
-
-    def _parse_dither_posistions(self, dither_positions):
-        """Parse the file containing the dither positions"""
-        # read in the file of dither positions
-        with open(dither_positions, 'r') as f:
-            for line in f:
-                els = line.strip().split()
-                if '#' in els[0]:
-                    continue
-
-                if len(els[1:]) % 2 == 1:
-                    msg = ("The line '{}' in file '{} has a miss-matching"
-                           " number of x and y entries")
-                    raise DitherCreationError(msg.format(line,
-                                                         dither_positions))
-                else:
-                    n_x = len(els[1:]) // 2
-                # save dither positions in dictionary of IFUs
-                #                      dither1 dither2  dither3
-                self.ifu_dxs[els[0]] = array(els[1:n_x + 1], dtype=float)
-                self.ifu_dys[els[0]] = array(els[n_x + 1:], dtype=float)
-
-    def create_dither(self, id_, basenames, modelbases, outfile,
-                      idtype='ifuid'):
-        """ Create a dither file
-
-        Parameters
-        ----------
-        id_ : str
-            the id of the IFU
-        basenames, modelnames : list of strings
-            the root of the file and model (distortion, fiber etc);
-            their lengths must be the same as :attr:`ifu_dxs`
-        outfile : str
-            the output filename
-        idtype : str
-            type of the id; must be one of ``'ifuid'``, ``'ihmpid'``,
-            ``'specid'``
-        """
-        ifu = self.fplane.by_id(id_, idtype=idtype)
-        dxs = self.ifu_dxs[ifu.ihmpid]
-        dys = self.ifu_dys[ifu.ihmpid]
-
-        if len(basenames) != len(dxs):
-            msg = ("The number of elements in 'basenames' ({}) doesn't agree"
-                   " with the expected number of dithers"
-                   " ({})".format(len(basenames), len(dxs)))
-            raise DitherCreationError(msg)
-        if len(modelbases) != len(dxs):
-            msg = ("The number of elements in 'modelbases' ({}) doesn't agree"
-                   " with the expected number of dithers"
-                   " ({})".format(len(modelbases), len(dxs)))
-            raise DitherCreationError(msg)
-
-        s = "# basename          modelbase           ditherx dithery\
-                seeing norm airmass\n"
-        line = "{:s} {:s} {:f} {:f} {:4.3f} {:5.4f} {:5.4f}\n"
-        for dither, bn, mb, dx, dy in zip(it.count(), basenames, modelbases,
-                                          dxs, dys):
-            seeing = self.shot.fwhm(ifu.x, ifu.y, dither)
-            norm = self.shot.normalisation(ifu.x, ifu.y, dither)
-            # TODO replace with something
-            airmass = 1.22
-
-            s += line.format(bn, mb, dx, dy, seeing, norm, airmass)
-
-        with open(outfile, 'w') as f:
-            f.write(s)
 
 
 class EmptyDither(_BaseDither):
@@ -270,6 +173,150 @@ class ParseDither(_BaseDither):
                 self.airmass[_d] = float(_airmass)
 
 
+class DitherCreator(object):
+    """Class to create dither files
+
+    Initialize the dither file creator for this shot
+
+    Read in the locations of the dithers for each IFU from
+    dither_positions.
+
+    Parameters
+    ----------
+    dither_positions : str
+        path to file containing the positions of the dithers for each
+        IHMPID; the file must have the following format::
+
+            ihmpid x1 x2 ... xn y1 y2 ... yn
+
+    fplane_file : str
+        path the focal plane file; it is parsed using
+        :class:`~pyhetdex.het.fplane.FPlane`
+    shot : :class:`pyhetdex.het.telescope.Shot` instance
+        a ``shot`` instance that contains info on the image quality and
+        normalization
+
+    Attributes
+    ----------
+    ifu_dxs, ifu_dys : dictionaries
+        key: ihmpid; key: x and y shifts for the dithers
+    shot : :class:`pyhetdex.het.telescope.Shot` instance
+    fplane : :class:`~pyhetdex.het.fplane.FPlane` instance
+    """
+    def __init__(self, dither_positions, fplane_file, shot):
+        self.ifu_dxs = {}
+        self.ifu_dys = {}
+        self.shot = shot
+        self.fplane = FPlane(fplane_file)
+        self._parse_dither_posistions(dither_positions)
+
+    def _parse_dither_posistions(self, dither_positions):
+        """Parse the file containing the dither positions"""
+        # read in the file of dither positions
+        with open(dither_positions, 'r') as f:
+            for line in f:
+                els = line.strip().split()
+                if '#' in els[0]:
+                    continue
+
+                if len(els[1:]) % 2 == 1:
+                    msg = ("The line '{}' in file '{} has a miss-matching"
+                           " number of x and y entries")
+                    raise DitherPositionError(msg.format(line,
+                                                         dither_positions))
+                else:
+                    n_x = len(els[1:]) // 2
+                # save dither positions in dictionary of IFUs
+                #                      dither1 dither2  dither3
+                self.ifu_dxs[els[0]] = array(els[1:n_x + 1], dtype=float)
+                self.ifu_dys[els[0]] = array(els[n_x + 1:], dtype=float)
+
+    def dxs(self, id_, idtype='ihmpid'):
+        """Returns the x shifts for the given ``id_``
+
+        Parameters
+        ----------
+        id_ : str
+            the id of the IFU
+        idtype : str, optional
+            type of the id; must be one of ``'ifuid'``, ``'ihmpid'``,
+            ``'specid'``
+
+        Returns
+        -------
+        ndarray
+            x shifts
+        """
+        ifu = self.fplane.by_id(id_, idtype=idtype)
+        return self.ifu_dxs[ifu.ihmpid]
+
+    def dys(self, id_, idtype='ihmpid'):
+        """Returns the y shifts for the given ``id_``
+
+        Parameters
+        ----------
+        id_ : str
+            the id of the IFU
+        idtype : str, optional
+            type of the id; must be one of ``'ifuid'``, ``'ihmpid'``,
+            ``'specid'``
+
+        Returns
+        -------
+        ndarray
+            y shifts
+        """
+        ifu = self.fplane.by_id(id_, idtype=idtype)
+        return self.ifu_dys[ifu.ihmpid]
+
+    def create_dither(self, id_, basenames, modelbases, outfile,
+                      idtype='ifuid'):
+        """ Create a dither file
+
+        Parameters
+        ----------
+        id_ : str
+            the id of the IFU
+        basenames, modelnames : list of strings
+            the root of the file and model (distortion, fiber etc);
+            their lengths must be the same as :attr:`ifu_dxs`
+        outfile : str
+            the output filename
+        idtype : str, optional
+            type of the id; must be one of ``'ifuid'``, ``'ihmpid'``,
+            ``'specid'``
+        """
+        ifu = self.fplane.by_id(id_, idtype=idtype)
+        dxs = self.dxs(id_, idtype=idtype)
+        dys = self.dys(id_, idtype=idtype)
+
+        if len(basenames) != len(dxs):
+            msg = ("The number of elements in 'basenames' ({}) doesn't agree"
+                   " with the expected number of dithers"
+                   " ({})".format(len(basenames), len(dxs)))
+            raise DitherCreationError(msg)
+        if len(modelbases) != len(dxs):
+            msg = ("The number of elements in 'modelbases' ({}) doesn't agree"
+                   " with the expected number of dithers"
+                   " ({})".format(len(modelbases), len(dxs)))
+            raise DitherCreationError(msg)
+
+        s = "# basename          modelbase           ditherx dithery\
+                seeing norm airmass\n"
+        line = "{:s} {:s} {:f} {:f} {:4.3f} {:5.4f} {:5.4f}\n"
+        for dither, bn, mb, dx, dy in zip(it.count(), basenames, modelbases,
+                                          dxs, dys):
+            seeing = self.shot.fwhm(ifu.x, ifu.y, dither)
+            norm = self.shot.normalisation(ifu.x, ifu.y, dither)
+            # TODO replace with something
+            airmass = 1.22
+
+            s += line.format(bn, mb, dx, dy, seeing, norm, airmass)
+
+        with open(outfile, 'w') as f:
+            f.write(s)
+
+
 def argument_parser(argv=None):
     """Parse the command line"""
     import argparse
@@ -280,31 +327,44 @@ def argument_parser(argv=None):
 
     parser = argparse.ArgumentParser(description=description,
                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('outfile', help="""Name of a file to output. It accepts
-                        the same placeholders as ``basename``""")
     parser.add_argument('id', help="id of the chosen IFU")
     parser.add_argument('fplane', help="The fplane file")
     parser.add_argument('ditherpos', help='''Name of the file containing the
                          dither shifts. The expected format is
                          ``id x1 x2 ... xn y1 y2 ... yn``. Normally the ``id``
                          is ``ihmpid``''')
-    parser.add_argument('basename', help="""Basename of the data files. The
+    parser.add_argument('basenames', help="""Basename(s) of the data files. The
                         ``{dither}`` and ``{id}`` placeholders are replaced by
                         the dither number and the provided id. E.g., if the
                         ``id`` argument is ``001``, the string
                         ``file_D{dither}_{id}`` is replaced, for the first
                         dither, by file_D1_001. The placeholders don't have to
-                        be present.""")
+                        be present. The number of files must be either one or
+                        as many as the number of dithers in the ``ditherpos``
+                        file.""", nargs='+')
 
-    parser.add_argument('-m', '--modelbase', help="""Basename of the model
+    parser.add_argument('-o', '--outfile', help="""Name of a file to output. It
+                        accepts the same placeholders as ``basename``, but
+                        ``{dither}`` is the number of dithers""",
+                        default='dither_{id}.txt')
+    parser.add_argument('-m', '--modelbases', help="""Basename(s) of the model
                         files. It accepts that same place holders as
-                        ``basename``""", default='masterflat_{id}')
+                        ``basename``. The number of files must be either one or
+                        as many as the number of dithers in the ``ditherpos``
+                        file.""", default=['masterflat_{id}', ], nargs='+')
     parser.add_argument('-t', '--id-type', help='Type of the id',
                         choices=['ifuid', 'ihmpid', 'specid'],
                         default='ihmpid')
     parser.add_argument('-s', '--shotdir', help="""Directory of the shot. If
                         not provided use some sensible default value for image
-                        quality and normalisation""")
+                        quality and normalisation. WARNING: at the moment not
+                        used""")
+    parser.add_argument('-O', '--order-by', help="""If given, order the
+                        ``basenames`` files by the value of the header keyword
+                        '%(dest)s'""")
+    parser.add_argument('-e', '--extension', help="""If 'order_by' is given,
+                        add '%(dest)s' to the basenames to create valid file
+                        names""", default='_L.fits')
 
     return parser.parse_args(argv)
 
@@ -324,14 +384,95 @@ def create_dither_file(argv=None):
 
     # create the dither
     dithers = DitherCreator(args.ditherpos, args.fplane, shot)
+    n_dithers = len(dithers.dxs(args.id, idtype=args.id_type))
 
-    # generate modelbase and basenames for different dithers
-    modelbases = []
-    basenames = []
-    for dither in range(len(dithers.ifu_dxs[args.id])):
-        modelbases.append(args.modelbase.format(id=args.id, dither=dither + 1))
-        basenames.append(args.basename.format(id=args.id, dither=dither + 1))
+    if not check_dithers(n_dithers, args.basenames, args.modelbases):
+        print("The number of basenames and modelbases must be either one or"
+              " the number of dithers in the ditherpos file", file=sys.stderr)
+        exit(1)
+
+    basenames = format_names(args.basenames, n_dithers, args.id)
+    modelbases = format_names(args.modelbases, n_dithers, args.id)
+
+    if args.order_by:
+        basenames = sort_basenames(basenames, args.extension, args.order_by)
 
     dithers.create_dither(args.id, basenames, modelbases,
-                          args.outfile.format(id=args.id, dither=dither + 1),
+                          args.outfile.format(id=args.id, dither=n_dithers),
                           idtype=args.id_type)
+
+
+def check_dithers(n_dithers, basenames, modelbases):
+    """Check that the number of base names and model base names are either one
+    or the number of dithers
+
+    Parameters
+    ----------
+    n_dithers : int
+        number of dithers
+    basenames, modelbases : list of strings
+        list of bases for the file names
+
+    Returns
+    -------
+    bool
+        ``True`` is the check passed, ``False`` otherwise
+    """
+    ok_basenames = len(basenames) in [1, n_dithers]
+    ok_modelbases = len(modelbases) in [1, n_dithers]
+
+    return ok_basenames and ok_modelbases
+
+
+def format_names(names, n_dithers, id_):
+    """Expand and format the names. If there is only one name, replicate it
+    len(dxs) times, then format the names using the dither number and the
+    ``id_``.
+
+    Parameters
+    ----------
+    names : list of strings
+        name to format
+    n_dithers : integer
+        number of dithers
+
+    Returns
+    -------
+    out_names : list of strings
+        list of length ``n_dithers`` containing formatted names
+    """
+    if len(names) == 1:
+        names = [names[0] for _ in range(n_dithers)]
+
+    out_names = []
+    for i, name in enumerate(names):
+        out_names.append(name.format(id=id_, dither=i+1))
+
+    return out_names
+
+
+def sort_basenames(basenames, extension, headerkey):
+    """For each ``basenames[i]+extension`` extract the ``headerkey`` and sort
+    basenames according to the key value
+
+    Parameters
+    ----------
+    basenames : list of string
+        list of basenames
+    extension : list
+        add to each basename to build a file name
+    headerkey : string
+        name of the header key containing the values to use for sorting
+
+    Returns
+    -------
+    sorted_basenames : list of strings
+        basenames sorted according to the value of ``headerkey``
+    """
+    values = [fits.getval(bn + extension, headerkey, memmap=False)
+              for bn in basenames]
+
+    sorted_basenames = next(zip(*sorted(zip(basenames, values),
+                                        key=operator.itemgetter(1))))
+
+    return sorted_basenames

@@ -1,3 +1,10 @@
+2016-04-14 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: bump version to 0.5.0
+    * pyhetdex/het/dither.py: improve the dither_file executable
+    * tests/test_dither.py: test the dither module to 100%
+    * doc/source/dither_file.rst: improve the documentation of dither_file
+
 2016-04-12 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/processes.py: add remove_worker function, improve
