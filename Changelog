@@ -1,9 +1,102 @@
+2016-04-14 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* trunk merged
+	* pyhetdex/doc/sphinxext/__init__.py: deprecation warning moved to the
+	  todo.py
+	* pyhetdex/doc/sphinxext/todo.py: add deprecation warning and info in the
+	  documentation
+	* setup.py: fix dependency
+	* tox.py: same
+
 2016-02-19 Francesco Montesano <montefra@mpe.mpg.de>
 
     * doc/source/conf.py: use again sphinx.ext.todo
     * pyhetdex/doc/sphinxext/__init__.py: deprecate it
     * setup.py: use new sphinx version
     * tox.ini: same
+
+2016-04-14 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: bump version to 0.5.0
+    * pyhetdex/het/dither.py: improve the dither_file executable
+    * tests/test_dither.py: test the dither module to 100%
+    * doc/source/dither_file.rst: improve the documentation of dither_file
+
+2016-04-12 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/processes.py: add remove_worker function, improve
+	  worker.wait method
+    * tests/test_processes.py: reorganize the tests and test everything
+    * doc/source/tools/processes.rst: add remove_worker to the documentation
+    * tox.ini: make sure to deploy the coverage report
+
+2016-04-12 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * doc/source/add_fluxes_to_randoms.rst: Added documentation
+    * doc/source/datacube2rgb.rst: as above
+    * doc/source/generate_randoms.rst: as above
+    * doc/source/index.rst: as above 
+    * pyhetdex/tools/datacube2rgb.py: Changed wavelength increment in hard-coded WCS
+ 
+2016-03-16 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* setup.py: mark the version as 0.5.0-dev
+    * tox.ini: ignore little_deploy return code and run it after collecting and
+	  showing the coverage result
+
+2016-03-15 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/randoms/generate_randoms.py: added cut to stop
+      extrapolating the polynomial fit to the detected fraction
+    * pyhetdex/tools/datacube2rgb.py: explicit cast to str
+      in output to fix some problems in certain python versions
+    Added tests and test data:
+    * tests/data/DetAperFluxFrac_test_data.fits
+    * tests/data/Randoms_test_data.fits
+    * tests/data/Sigma_test_data.fits
+    * tests/test_datacube2rgb.py
+    * tests/test_generate_randoms.py
+
+2016-03-14 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+   * setup.py: corrected wrong version number 
+     from last commit (fixes problem with VDAT installation)
+
+2016-03-11 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+   * setup.py: added entry point for new command
+   * pyhetdex/het/flux_conversions.py: minor style changes
+   * pyhetdex/randoms/generate_randoms.py: added new command to
+     assign fluxes and SNRs to random points
+   * pyhetdex/randoms/luminosity_functions.py: added python3 support
+
+2016-02-25 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: set version to 0.4.0, ready for release
+    * doc/source/_templates/version.html: add template to have the version
+	  number
+    * doc/source/conf.py: use the template in the sidebar
+    * doc/source/index.rst: add version number
+
+2016-02-25 Francesco Montesano <montefra@mpe.mpg.de>
+
+     * pyhetdex/tools/configuration.py: add get{boolean,int,float} with fallback
+	   values to the mapping protocol
+     * pyhetdex/tools/files/file_tools.py: better error message when the
+	   compilation of the regex fails
+     * setup.py: set version to 0.4.0-pre
+     * tests/test_configuration.py: test the new mapping
+     * tests/test_file_tools.py: adjust test
+
+2016-02-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: remove unused code and bump the version to 0.3.0-post
+    * tox.ini: use hetdex pypi server to get software
+    * pyhetdex/tools/files/file_tools.py: fix the documentation to use
+	  numpydoc==0.6
+    * pyhetdex/tools/io_helpers.py: add function documentation
+    * doc/source/tools/io_helpers.rst: added
+    * doc/source/tools/index.rst: add the above to the index
 
 2016-02-08 Francesco Montesano <montefra@mpe.mpg.de>
 
@@ -47,7 +140,7 @@
 
 2016-01-27 Daniel Farrow <dfarrow@mpe.mpg.de>
 
-    * setup.py: Added entry point for generate_randoms command line tool
+    * setup..py: Adde entry point for generate_randoms command line tool
     * pyhetdex/randoms/generate_randoms.py: Added tools to generate randoms and
                                             compute their SNR from variance maps 
     * pyhetdex/randoms/luminosity_functions.py: Class to handle luminosity and 

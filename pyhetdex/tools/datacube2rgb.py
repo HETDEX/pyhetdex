@@ -26,7 +26,7 @@ class WavelengthConversion(object):
 
         # XXX read in wavelength solution from header here
         self.start = 3500
-        self.step = 0.968992233276367
+        self.step = 1.968992233276367
 
     def pix2lmbda(self, pix):
         """
@@ -229,10 +229,10 @@ def main(args=None):
     parser.add_argument('--green-filter', type=float, default=(4166, 4832), help="Range for green filter (A)", nargs=2)
     parser.add_argument('--blue-filter', type=float, default=(3500, 4166), help="Range for blue filter (A)", nargs=2)
     inputs = parser.parse_args(args)
- 
-    print("RED filter: {:s} A".format(inputs.red_filter)) 
-    print("GREEN filter: {:s} A".format(inputs.green_filter))
-    print("BLUE filter: {:s} A".format(inputs.blue_filter))
+
+    print("RED filter: {:s} A".format(str(inputs.red_filter))) 
+    print("GREEN filter: {:s} A".format(str(inputs.green_filter)))
+    print("BLUE filter: {:s} A".format(str(inputs.blue_filter)))
  
     image = create_rgb_image_from_cube(inputs.fin,
                                        red_filter=TophatFilter(inputs.red_filter[0], inputs.red_filter[1]),

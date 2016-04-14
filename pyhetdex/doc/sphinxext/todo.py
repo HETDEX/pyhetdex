@@ -12,6 +12,14 @@ Copyright 2007-2015 by the Sphinx team, see `AUTHORS
 <https://github.com/sphinx-doc/sphinx/blob/master/AUTHORS>`_.
 
 BSD, see LICENSE for details.
+
+.. note:: Deprecated in pyhetdex 0.5.1
+
+    The modifications to the ``todo`` have been integrated into
+    `sphinx.ext.todo <http://www.sphinx-doc.org/en/stable/ext/todo.html>`_ and
+    released as part of sphinx 1.4.
+
+    ``pyhetdex.doc.sphinxext.todo`` will be removed in future releases.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -180,6 +188,18 @@ def depart_todo_node(self, node):
 
 
 def setup(app):
+
+    import warnings
+
+    msg = ("The module '{name}' have been deprecated and"
+           " will be removed in future releases. The modifications to the"
+           " ``todo`` have been integrated into sphinx.ext.todo and have"
+           " been released as part of sphinx 1.4.").format(name=__name__)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("always")
+        warnings.warn(msg, DeprecationWarning)
+
     app.add_config_value('todo_include_todos', False, 'html')
     app.add_config_value('todo_link_only', False, 'html')
 

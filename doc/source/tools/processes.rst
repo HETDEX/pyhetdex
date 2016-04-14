@@ -70,7 +70,17 @@ Public inteface
 ===============
 
 .. autofunction:: pyhetdex.tools.processes.get_worker
+.. autofunction:: pyhetdex.tools.processes.remove_worker
 .. autofunction:: pyhetdex.tools.processes.ignore_keyboard_interrupt
+
+Exceptions
+==========
+
+.. autoexception:: pyhetdex.tools.processes.WorkerException
+   :show-inheritance:
+
+.. autoexception:: pyhetdex.tools.processes.WorkerNameException
+   :show-inheritance:
 
 Implementation
 ==============
@@ -83,7 +93,7 @@ method listed below are public
 
 .. autoclass:: pyhetdex.tools.processes._Worker
    :members:
-   :special-members: __call__
+   :special-members: __call__, __enter__
 
 Result class
 ------------

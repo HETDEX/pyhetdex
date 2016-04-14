@@ -5,14 +5,15 @@ __version__ = '$Id$'
 
 
 def count_lines(ios):
-    """
-    count the lines in a open file. After counting resets the file position to
-    the original one
+    """Count the lines in a open file. After counting resets the file position
+    to the original one
+
     Parameters
     ----------
     ios: file object
-    output
-    ------
+
+    Returns
+    -------
     lines: int
         number of lines
     """
@@ -28,6 +29,20 @@ def count_lines(ios):
 
 
 def eat_to_char(ios, c):
+    """Advance the file position one character at a time until the desired one
+    is found.
+
+    Parameters
+    ----------
+    ios: file object
+    c : character
+        single character to find
+
+    Returns
+    -------
+    ch : character
+        character found or last character if not found
+    """
     ch = ios.read(1)
     while (ch != c and ch != ''):
         ch = ios.read(1)
@@ -35,6 +50,17 @@ def eat_to_char(ios, c):
 
 
 def eat_to_blockstart(ios):
+    """Advance the file position to the first non empty character after a ``[``
+
+    Parameters
+    ----------
+    ios: file object
+
+    Returns
+    -------
+    ch : character
+        first non empty character
+    """
     # First find next '['
     ch = eat_to_char(ios, '[')
     # Then find end of [[[ block
@@ -44,6 +70,21 @@ def eat_to_blockstart(ios):
 
 
 def read_to_char(ios, c, skipnewline=True):
+    """Read the file until the desired character is found.
+
+    Parameters
+    ----------
+    ios: file object
+    c : character
+        single character to find
+    skipnewline : bool, optional
+        if ``True`` converts new lines to empty spaces
+
+    Returns
+    -------
+    result : string
+        all the read content until ``c`` excluded
+    """
     result = ''
     ch = ios.read(1)
     while (ch != c and ch != ''):
@@ -55,6 +96,16 @@ def read_to_char(ios, c, skipnewline=True):
 
 
 def skip_commentlines(ios):
+    """Reads one line at a time and returns the first non-empty or non-comment
+
+    Parameters
+    ----------
+    ios: file object
+
+    Returns
+    -------
+    line : string
+    """
     line = ios.readline().lstrip()
     if len(line):
         if line[0] == '#':
@@ -65,6 +116,18 @@ def skip_commentlines(ios):
 
 
 def duplicates(l):
+    """Search for duplicates
+
+    Parameters
+    ----------
+    l : iterable
+        iterable and sortable object in which search for duplicates
+
+    Returns
+    -------
+    list
+        sorted list of duplicate items in ``l``
+    """
     return list(_duplicates(l))
 
 
@@ -77,6 +140,24 @@ def _duplicates(l):
 
 
 def unique(seq, idfun=None):
+    """Order preserving unique algorithm
+
+    .. todo::
+
+        see if it makes sense to use :func:`numpy.unique`
+
+    Parameters
+    ----------
+    seq : iterable
+        sequence to order
+    idfun : callable
+        function to call for the ordering (??)
+
+    Returns
+    -------
+    result : list
+        unique elements
+    """
     # order preserving
     if idfun is None:
         def idfun(x):
@@ -90,4 +171,3 @@ def unique(seq, idfun=None):
         seen[marker] = 1
         result.append(item)
     return result
-

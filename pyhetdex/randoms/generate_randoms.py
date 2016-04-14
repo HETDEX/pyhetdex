@@ -6,8 +6,12 @@ each by assigning them fluxes from a luminosity function.
 AUTHOR(S): Daniel Farrow 2016 (MPE)
 
 """
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 from datetime import datetime
 from numpy.random import poisson, random
+from numpy.polynomial import polynomial as poly
 from astropy.table import Table, hstack
 from astropy.wcs import WCS
 
@@ -16,6 +20,7 @@ import logging
 import sys
 import matplotlib.pyplot as plt
 import astropy.io.fits as fits
+from scipy.stats import lognorm
 
 from pyhetdex.het.flux_conversions import virus_eff, extinction, flambda_to_electrons
 from pyhetdex.randoms.luminosity_functions import FlatLuminosityFunction
@@ -131,7 +136,7 @@ def return_cube_value(x, y, lmbda, fn_cube):
             datacube = hdus[0].data
             header = hdus[0].header
     except IOError as e:
-        log.error("Problem reading file {:s}".format(e))
+        log.error("Problem reading file %s", e)
         return []
 
     wcs = WCS(header)
@@ -192,8 +197,55 @@ def generate_randoms_cmd(args=None):
 
     generate_randoms(o.fn_variance_map, o.fn_detaper_fluxfrac, o.fn_out, o.nrands)
 
+def add_fluxes_and_snr_to_randoms_cmd(args=None):
+    """ Command line interface to add_fluxes_and_snr_to_randoms """  
+    import argparse    
+    
+    logging.basicConfig(level=logging.INFO)
 
-def add_fluxes_and_snr_to_randoms(fn_randoms, fn_out):
+    if not args:
+        import sys
+        args = sys.argv[1:] 
+
+    parser = argparse.ArgumentParser(description='Add fluxes and SNR to a random catalogue.')
+    parser.add_argument('fn_in', type=str, help='Output filename (extension sets filetype)')
+    parser.add_argument('fn_out', type=str, help='Output filename (extension sets filetype)')
+    parser.add_argument('--det-eff', action='store_true', help="Apply detection efficiency effects")
+
+    o = parser.parse_args(args)
+
+    add_fluxes_and_snr_to_randoms(o.fn_in, o.fn_out, apply_detection_eff=o.det_eff)
+
+def detection_efficiency(snr):
+    """ 
+    Return probablity of detection given
+    an input SNR
+
+    Parameters
+    ----------
+    snr : float
+        Signal to noise ratio of LAE
+
+    Returns
+    -------
+    p : float
+        probability of detection of an LAE
+    """
+
+    coeffs = [1.23654837e-01,   3.18302562e-01, 1.58954868e-01, -1.16370722e-01,
+              2.66873455e-02,  -2.71750060e-03, 1.04901142e-04]
+
+    
+    # Cut to avoid extrapolating polynomial fit to detected fraction too far
+    if snr < 2.5:
+        return 0.0
+    elif snr > 7.0:
+        return 1.0
+    else:
+        return poly.polyval(snr - 3.0, coeffs)
+
+
+def add_fluxes_and_snr_to_randoms(fn_randoms, fn_out, apply_detection_eff=True):
     """
     Read in a set of randoms from generate_randoms, and
     assign fluxes and SNR values to the randoms based
@@ -209,7 +261,7 @@ def add_fluxes_and_snr_to_randoms(fn_randoms, fn_out):
     log = logging.getLogger()
 
     # parameters for Dustin's simulation
-    lf = FlatLuminosityFunction(3.0e-17, 12.5e-17) 
+    lf = FlatLuminosityFunction(3.0e-17, 2.5e-16) 
 
     try:
         table = Table.read(fn_randoms)
@@ -222,23 +274,34 @@ def add_fluxes_and_snr_to_randoms(fn_randoms, fn_out):
 
     lum = []
     snr = []
+    de = []
+    rs = []
+    to_remove = []
 
-    for source in table:
+    for i, source in enumerate(table):
         
         # Generate a random flux from the LF
         tlum = lf.inverse_normed_cumulative(random())
         tsnr = lum2snr(tlum, source['lambda'], source['variance'], source['detaper_fluxfrac'])
-        lum.append(tlum)
-        snr.append(tsnr)
+      
+        # apply detection efficiency
+        r = random()
+        deff = detection_efficiency(tsnr)
+        if r > deff and apply_detection_eff:
+            to_remove.append(i)
+        else:
+            lum.append(tlum)
+            snr.append(tsnr)
+            de.append(deff)       
+            rs.append(random())
 
-
-    table_snr = Table([lum, snr], names=('Luminosity', 'SNR'))
+    table.remove_rows(to_remove)
+    table_snr = Table([lum, snr, de, rs], names=('flambda', 'SNR', 'det_eff', "random"))
     table_out = hstack([table, table_snr])
     table_out.write(fn_out)
+
  
 
-#logging.basicConfig()
-#add_fluxes_and_snr_to_randoms('test.fits', 'fluxes_test.fits')
 
 
 

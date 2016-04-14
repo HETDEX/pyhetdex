@@ -4,13 +4,13 @@ Execute functions hiding the information whether are executed in parallel,
 using :class:`multiprocessing.pool.Pool` or serially.
 
 The module provides a high level factory function to create and retrieve worker
-instances :func:`get_worker`.
+instances :func:`get_worker`. The first call with a given name creates the
+worker, while subsequent calls returns it, ignoring all arguments besides the
+name are ignored.
 
-.. todo::
-    Warn the user when getting an existing name with the other options not set
-    to the defaults
-
-    Add context manager?
+If you need or want to reuse a name after closing the worker, e.g. when using
+the worker in a :keyword:`with` statement, you can remove it with
+:func:`remove_worker`
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -34,6 +34,17 @@ _workers_dict = {}
 # Public interface
 # =============================================================================
 
+
+class WorkerException(Exception):
+    """Generic exception"""
+    pass
+
+
+class WorkerNameException(KeyError, WorkerException):
+    """The required name does not exist"""
+    pass
+
+
 def get_worker(name='default', multiprocessing=False, always_wait=False,
                poolclass=mp.Pool, **kwargs):
     """Returns a worker with the specified name.
@@ -48,8 +59,8 @@ def get_worker(name='default', multiprocessing=False, always_wait=False,
     Parameters
     ----------
     name : string, optional
-        name to associate to the pool object. If does not exist an error is
-        raised
+        name to associate to the :class:`_Worker` object. If does not exist a
+        new object is created, stored and returned
     multiprocessing : bool, optional
         use multi processing
     always_wait : bool, optional
@@ -73,6 +84,26 @@ def get_worker(name='default', multiprocessing=False, always_wait=False,
                          always_wait=always_wait, **kwargs)
         _workers_dict[name] = worker
         return worker
+
+
+def remove_worker(name='default'):
+    """Remove the worker called ``default``
+
+    Parameters
+    ----------
+    name : string, optional
+        name to associate to the pool object.
+
+    Raises
+    ------
+    WorkerNameException
+        if the name does not exist
+    """
+    try:
+        _workers_dict.pop(name)
+    except KeyError:
+        msg = 'The worker called "{}" does not exist'.format(name)
+        raise WorkerNameException(msg)
 
 
 def ignore_keyboard_interrupt():
@@ -233,15 +264,18 @@ class _Worker(object):
         """
         if timeout is not None:
             now = time.time()
+        new_timeout = timeout
 
         for j in self._jobs:
-            j.wait(timeout=timeout)
+            j.wait(timeout=new_timeout)
 
             # if the timeout is already expired, set it to zero
             if timeout is not None:
-                remain_timeout = timeout - (time.time() - now)
-                timeout = remain_timeout if remain_timeout > 0. else 0.
-                now = time.time()
+                new_now = time.time()
+                if new_now - now < timeout:
+                    new_timeout = timeout - (new_now - now)
+                else:
+                    return
 
     def close(self):
         """Close and join the pool: normal termination"""

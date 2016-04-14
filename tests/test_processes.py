@@ -2,14 +2,21 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import multiprocessing.pool as mp
 import time
 
 import pytest
 
 import pyhetdex.tools.processes as pr
 
+parametrize = pytest.mark.parametrize
+xfail_value_error = pytest.mark.xfail(raises=ValueError,
+                                      reason="Single processor failing")
+xfail_timeout = pytest.mark.xfail(raises=mp.TimeoutError,
+                                  reason='Hit timeout')
 
-def _sleep(i):
+
+def sleep(i):
     "function to execute"
     print("sleeping for", i)
     time.sleep(i/10.)
@@ -17,10 +24,15 @@ def _sleep(i):
     return i
 
 
-def _execute_sleep(worker):
+def fail(i):
+    """Raise a ValueError"""
+    raise ValueError(i)
+
+
+def execute_sleep(worker):
     """run ``_foo`` 10 times"""
     for i in range(10):
-        worker(_sleep, i)
+        worker(sleep, i)
 
     # get the jobs and the results and check that they are correct
     jobs = worker.jobs
@@ -45,47 +57,20 @@ def _execute_sleep(worker):
     worker.close()
 
 
-def test_single_processes():
-    "single process, all success"
-    _execute_sleep(pr.get_worker(name='sp'))
+def execute_fail(worker):
+    """run a function raising a value error 1 times, without catching the
+    error"""
 
-
-def test_multi_processes():
-    "multi process, all success"
-    _execute_sleep(pr.get_worker(name='mp', multiprocessing=True))
-
-
-def _fail(i):
-    """Raise a ValueError"""
-    raise ValueError(i)
-
-
-def _execute_fail(worker):
-    """run ``_fail`` 1 times, without catching the error"""
-    worker(_fail, 1)
+    worker(fail, 1)
     worker.get_results()
     worker.clear_jobs()
     worker.close()
 
 
-@pytest.mark.xfail(raises=ValueError,
-                   reason="Single processor failing")
-def test_single_processes_fail():
-    "single process, fail"
-    _execute_fail(pr.get_worker(name="sp_f"))
-
-
-@pytest.mark.xfail(raises=ValueError,
-                   reason="Multi processor failing")
-def test_multi_processes_fail():
-    "multi process, fail"
-    _execute_fail(pr.get_worker(name="mp_f", multiprocessing=True))
-
-
-def _execute_fail_safe(worker):
-    """run ``_fail`` 10 times"""
+def execute_fail_safe(worker):
+    """run ``fail`` 10 times"""
     for i in range(10):
-        worker(_fail, i)
+        worker(fail, i)
 
     # get the jobs and the results and check that they are correct
     jobs = worker.jobs
@@ -110,29 +95,71 @@ def _execute_fail_safe(worker):
     worker.terminate()
 
 
-def test_single_processes_failsafe():
-    "single process, catch failures"
-    _execute_fail_safe(pr.get_worker(name="sp_fs"))
+params = parametrize('execute, name, multiprocessing',
+                     [(execute_sleep, 'sp', False),
+                      (execute_sleep, 'mp', True),
+                      xfail_value_error((execute_fail, 'sp_f', False)),
+                      xfail_value_error((execute_fail, 'mp_f', True)),
+                      (execute_fail_safe, 'sp_fs', False),
+                      (execute_fail_safe, 'mp_fs', True)])
 
 
-def test_multi_processes_failsafe():
-    "multi process, catch failures"
-    _execute_fail_safe(pr.get_worker(name="mp_fs", multiprocessing=True))
+@params
+def test_processes(execute, name, multiprocessing):
+    "Run the processes"
+    try:
+        execute(pr.get_worker(name=name, multiprocessing=multiprocessing))
+    finally:
+        pr.remove_worker(name=name)
 
 
-def test_with():
-    """multiprocessing and with statement"""
-    with pr.get_worker(name='with_success') as worker:
-        for i in range(10):
-            worker(_sleep, i)
-    worker.clear_jobs()
+@params
+def test_with(execute, name, multiprocessing):
+    """with statement"""
+    try:
+        with pr.get_worker(name=name,
+                           multiprocessing=multiprocessing) as worker:
+            execute(worker)
+    finally:
+        pr.remove_worker(name=name)
 
 
-@pytest.mark.xfail(raises=RuntimeError,
-                   reason="error within a with statement")
-def test_with_fail():
-    """multiprocessing and with statement with an error raise"""
-    with pr.get_worker(name='with_success', multiprocessing=True) as worker:
-        for i in range(10):
-            worker(_sleep, i)
-        raise RuntimeError("block computation")
+@pytest.mark.xfail(raises=pr.WorkerNameException,
+                   reason='No worker with the given name created')
+def test_remove_empty():
+    """Try to remove a non existing worker"""
+    pr.remove_worker(name='this_does_not_exist')
+
+
+@parametrize('name, multiprocessing, pool',
+             [('sa', False, type(None)), ('ma', True, mp.Pool)])
+def test_worker_attributes(name, multiprocessing, pool):
+    """Test the attributes"""
+    try:
+        with pr.get_worker(name=name,
+                           multiprocessing=multiprocessing) as worker:
+            assert worker.multiprocessing == multiprocessing
+            assert isinstance(worker.pool, pool)
+    finally:
+        pr.remove_worker(name=name)
+
+
+@parametrize('name, multiprocessing, timeout',
+             [('nwm', True, None), ('wm', True, 5),
+              xfail_timeout(('fwm', True, 0.5)),
+              ('ws', False, None), ('ws', True, 5),
+              ('ws', False, 0.5),
+              ])
+def test_wait(name, multiprocessing, timeout):
+    """Wait for a while"""
+    try:
+        with pr.get_worker(name=name,
+                           multiprocessing=multiprocessing) as worker:
+            for i in range(10):
+                worker(sleep, i)
+
+            worker.wait(timeout)
+            results = [j.get(0) for j in worker.jobs]
+            assert len(results) == 10
+    finally:
+        pr.remove_worker(name=name)

@@ -7,20 +7,6 @@ except ImportError:
 from setuptools import setup, find_packages
 
 
-def extract_version():
-    """
-    Extracts version values from the main pyhetdex __init__.py and
-    returns it.
-    Taken from matplotlib/setupext.py
-    """
-    with open('pyhetdex/__init__.py') as fd:
-        for line in fd:
-            if (line.startswith('__version__')):
-                version = line.split('=')[1].strip().strip('"')
-                break
-    return version
-
-
 def extras_require(key=None):
     """Deal with extra requirements
 
@@ -34,7 +20,7 @@ def extras_require(key=None):
     dictionary of requirements
     if key is not None: list of requirements
     """
-    req_dic = {'doc': ['sphinx=>1.4', 'numpydoc', 'alabaster'],
+    req_dic = {'doc': ['sphinx>=1.4', 'numpydoc', 'alabaster'],
                }
 
     req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild>=0.5.2', ]
@@ -52,20 +38,18 @@ def extras_require(key=None):
 
 entry_points = {'console_scripts':
                 ['dither_file = pyhetdex.het.dither:create_dither_file',
-                 'reconstructIFU =' ' pyhetdex.het.reconstruct_ifu:create_quick_reconstruction',
+                 'reconstructIFU ='
+                 ' pyhetdex.het.reconstruct_ifu:create_quick_reconstruction',
                  'datacube2rgb = pyhetdex.tools.datacube2rgb:main',
-                 'generate_randoms = pyhetdex.randoms.generate_randoms:generate_randoms_cmd']}
-
-# setuptools customisation
-distutils_ext = {'distutils.setup_keywords': [
-                    "tox_requires = setuptools.dist:check_requirements", ]
-                 }
-entry_points.update(distutils_ext)
+                 'add_fluxes_to_randoms ='
+                 'pyhetdex.randoms.generate_randoms:add_fluxes_and_snr_to_randoms_cmd',
+                 'generate_randoms ='
+                 ' pyhetdex.randoms.generate_randoms:generate_randoms_cmd']}
 
 setup(
     # package description and version
     name="pyhetdex",
-    version="0.4.0-dev",
+    version="0.5.0-post",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",

@@ -17,6 +17,11 @@ import re
 import six
 
 
+class RegexCompileFail(re.error):
+    """Error raised when the compilation fails"""
+    pass
+
+
 def skip_comments(f):
     """Skip commented lines and returns the file at the start of the first line
     without any
@@ -100,6 +105,10 @@ def wildcards_to_regex(wildcards, re_compile=True, is_regex=False):
     -------
     regex : string or :class:`re.RegexObject`
         resulting regex
+
+    Raises
+    ------
+
     """
     if wildcards is None:
         regex = r'a^'
@@ -115,7 +124,12 @@ def wildcards_to_regex(wildcards, re_compile=True, is_regex=False):
             regex = r'|'.join(fnmatch.translate(wc) for wc in wildcards)
 
     if re_compile:
-        return re.compile(regex)
+        try:
+            return re.compile(regex)
+        except re.error as e:
+            msg = ("Compiling the regex expression '{}' deriving from '{}'"
+                   " failed because of {}".format(regex, wildcards, e))
+            six.raise_from(RegexCompileFail(msg), e)
     else:
         return regex
 
@@ -143,15 +157,6 @@ def scan_files(path, matches='*', exclude=None, exclude_dirs=None,
     is_matches_regex, is_exclude_regex, is_exclude_dirs_regex : bool, optional
         mark the corresponding options as a regex pattern instead of unix shell
         pattern with possible wildcards
-
-    Returns
-    -------
-    fn : string
-        name of the file (it's an iterator, not a return)
-
-    .. todo::
-        use ``Yields`` instead of ``Returns`` when the numpydoc 0.6 update will
-        be available
 
     Yields
     ------
@@ -204,18 +209,10 @@ def scan_dirs(path, matches='*', exclude=None, recursive=True,
         mark the corresponding options as a regex pattern instead of unix shell
         pattern with possible wildcards
 
-    Returns
-    -------
-    dirname : string
-        name of the directory (it's an iterator, not a return)
-
     Yields
     ------
     dirname : string
         name of the directory
-
-    .. todo::
-        remove returns when the numpydoc 0.6 update will be available
     """
     # convert ``matches``, ``exclude`` into compiled regex
     matches = wildcards_to_regex(matches, is_regex=is_matches_regex)
