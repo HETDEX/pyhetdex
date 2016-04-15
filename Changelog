@@ -1,5 +1,22 @@
 2016-04-14 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* trunk merged
+	* pyhetdex/doc/sphinxext/__init__.py: deprecation warning moved to the
+	  todo.py
+	* pyhetdex/doc/sphinxext/todo.py: add deprecation warning and info in the
+	  documentation
+	* setup.py: fix dependency
+	* tox.py: same
+
+2016-02-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/conf.py: use again sphinx.ext.todo
+    * pyhetdex/doc/sphinxext/__init__.py: deprecate it
+    * setup.py: use new sphinx version
+    * tox.ini: same
+
+2016-04-14 Francesco Montesano <montefra@mpe.mpg.de>
+
     * setup.py: bump version to 0.5.0
     * pyhetdex/het/dither.py: improve the dither_file executable
     * tests/test_dither.py: test the dither module to 100%
