@@ -2,6 +2,8 @@
 
 ## Development version @ trunk
 
+## Version 0.6.0
+
 * Deprecate pyhetdex.doc.sphinxext.todo; use the version shipped with
   sphinx>=1.4 in the module sphinx.ext.todo
 * Processes: add DeferredResult class for defer function
