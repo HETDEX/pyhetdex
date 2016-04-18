@@ -95,30 +95,37 @@ def execute_fail_safe(worker):
     worker.terminate()
 
 
-params = parametrize('execute, name, multiprocessing',
-                     [(execute_sleep, 'sp', False),
-                      (execute_sleep, 'mp', True),
-                      xfail_value_error((execute_fail, 'sp_f', False)),
-                      xfail_value_error((execute_fail, 'mp_f', True)),
-                      (execute_fail_safe, 'sp_fs', False),
-                      (execute_fail_safe, 'mp_fs', True)])
+params = parametrize('execute, name, multiprocessing, result_class',
+                     [(execute_sleep, 'sp', False, pr.Result),
+                      (execute_sleep, 'sp', False, pr.DeferredResult),
+                      (execute_sleep, 'mp', True, None),
+                      xfail_value_error((execute_fail, 'sp_f', False,
+                                         pr.Result)),
+                      xfail_value_error((execute_fail, 'sp_f', False,
+                                         pr.DeferredResult)),
+                      xfail_value_error((execute_fail, 'mp_f', True, None)),
+                      (execute_fail_safe, 'sp_fs', False, pr.Result),
+                      (execute_fail_safe, 'sp_fs', False, pr.DeferredResult),
+                      (execute_fail_safe, 'mp_fs', True, None)])
 
 
 @params
-def test_processes(execute, name, multiprocessing):
+def test_processes(execute, name, multiprocessing, result_class):
     "Run the processes"
     try:
-        execute(pr.get_worker(name=name, multiprocessing=multiprocessing))
+        execute(pr.get_worker(name=name, multiprocessing=multiprocessing,
+                              result_class=result_class))
     finally:
         pr.remove_worker(name=name)
 
 
 @params
-def test_with(execute, name, multiprocessing):
+def test_with(execute, name, multiprocessing, result_class):
     """with statement"""
     try:
         with pr.get_worker(name=name,
-                           multiprocessing=multiprocessing) as worker:
+                           multiprocessing=multiprocessing,
+                           result_class=result_class) as worker:
             execute(worker)
     finally:
         pr.remove_worker(name=name)

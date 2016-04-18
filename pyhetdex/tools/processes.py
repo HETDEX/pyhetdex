@@ -15,6 +15,7 @@ the worker in a :keyword:`with` statement, you can remove it with
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import functools
 import multiprocessing as mp
 import signal
 import sys
@@ -31,9 +32,108 @@ _workers_dict = {}
 
 
 # =============================================================================
-# Public interface
+# Result object to mimic async result and postpone error handling
 # =============================================================================
 
+class Result(object):
+    """Implements the same interface as
+    :class:`multiprocessing.pool.AsyncResult` and execute the function at
+    instantiation time.
+
+    Used to abstract single/multi processor cases in :class:`_Worker` and to
+    postpone error handling.
+
+    Parameters
+    ----------
+    func : callable
+        function to execute
+    args : list
+        positional arguments to pass to the function
+    kwargs : dict
+        keyword arguments to pass to the function
+    """
+    def __init__(self, func, *args, **kwargs):
+        self._ready = True
+        try:
+            self._value = func(*args, **kwargs)
+            self._successful = True
+        except Exception:
+            self._successful = False
+            self._tb = sys.exc_info()
+
+    def get(self, timeout=None):
+        """Return the result. If the call raised an exception then that
+        exception will be reraised.
+
+        ``timeout`` is ignored.
+        """
+        if self._successful:
+            return self._value
+        else:
+            six.reraise(*self._tb)
+
+    def wait(self, timeout=None):
+        """Do nothing method. Provided for compatibility."""
+        pass
+
+    def ready(self):
+        """
+        Returns
+        -------
+        bool
+            whether the call has completed: always ``True``
+        """
+        return self._ready
+
+    def successful(self):
+        """
+        Returns
+        -------
+        bool
+            True whether the call completed without raising an exception
+        """
+        return self._successful
+
+
+# =============================================================================
+# Result object to mimic async result and postpone function execution
+# =============================================================================
+
+class DeferredResult(Result):
+    """Reimplement :class:`Result` executing the function in the :meth:`get`
+    method.
+
+    Used to abstract single/multi processor cases in :class:`_Worker` to
+    postpone function execution.
+
+    Parameters
+    ----------
+    func : callable
+        function to execute
+    args : list
+        positional arguments to pass to the function
+    kwargs : dict
+        keyword arguments to pass to the function
+    """
+    def __init__(self, func, *args, **kwargs):
+        self._ready = False
+        self._successful = False
+        self._function = functools.partial(func, *args, **kwargs)
+
+    def get(self, timeout=None):
+        """Execute the function and return its return value(s).
+
+        ``timeout`` is ignored.
+        """
+        self._ready = True
+        result = self._function()
+        self._successful = True
+        return result
+
+
+# =============================================================================
+# Public interface
+# =============================================================================
 
 class WorkerException(Exception):
     """Generic exception"""
@@ -46,7 +146,7 @@ class WorkerNameException(KeyError, WorkerException):
 
 
 def get_worker(name='default', multiprocessing=False, always_wait=False,
-               poolclass=mp.Pool, **kwargs):
+               poolclass=mp.Pool, result_class=Result, **kwargs):
     """Returns a worker with the specified name.
 
     At the first call with a given ``name``, the worker is created using the
@@ -69,6 +169,8 @@ def get_worker(name='default', multiprocessing=False, always_wait=False,
         before closing
     poolclass : class
         class implementing the :class:`multiprocessing.Pool` interface
+    result_class : class, optional
+        :class:`Result`-like class to use to do the single processor execution
     kwargs : dictionary
         options passed to :class:`multiprocessing.Pool`; ignored if
         ``multiprocessing`` is ``False``
@@ -81,7 +183,8 @@ def get_worker(name='default', multiprocessing=False, always_wait=False,
         return _workers_dict[name]
     except KeyError:
         worker = _Worker(multiprocessing=multiprocessing,
-                         always_wait=always_wait, **kwargs)
+                         always_wait=always_wait, poolclass=poolclass,
+                         result_class=result_class, **kwargs)
         _workers_dict[name] = worker
         return worker
 
@@ -135,18 +238,21 @@ class _Worker(object):
         before closing
     poolclass : class, optional
         class implementing the :class:`multiprocessing.Pool` interface
+    result_class : class, optional
+        :class:`Result`-like class to use to do the single processor execution
     kwargs : dictionary
         options passed to :class:`multiprocessing.Pool`; ignored if
         ``multiprocessing`` is ``False``
     """
     def __init__(self, multiprocessing=False, always_wait=False,
-                 poolclass=mp.Pool, **kwargs):
+                 poolclass=mp.Pool, result_class=Result, **kwargs):
         if multiprocessing:
             self._pool = poolclass(**kwargs)
         else:
             self._pool = None
 
         self._always_wait = always_wait
+        self._result_class = result_class
         # store all the jobs run or applied
         self._jobs = []
 
@@ -194,7 +300,7 @@ class _Worker(object):
             # can then be retrieved by the get() method.
             job = self._pool.apply_async(func, args, kwargs)
         else:
-            job = Result(func, *args, **kwargs)
+            job = self._result_class(func, *args, **kwargs)
 
         self._jobs.append(job)
         return job
@@ -304,66 +410,3 @@ class _Worker(object):
             self.close()
         else:
             self.terminate()
-
-
-# =============================================================================
-# Result object to mimic async result and postpone error handling
-# =============================================================================
-
-class Result(object):
-    """Implements the same interface as
-    :class:`multiprocessing.pool.AsyncResult` and execute the function at
-    instantiation time.
-
-    Used to abstract single/multi processor cases in :class:`_Worker` and to
-    postpone error handling.
-
-    Parameters
-    ----------
-    func : callable
-        function to execute
-    args : list
-        positional arguments to pass to the function
-    kwargs : dict
-        keyword arguments to pass to the function
-    """
-    def __init__(self, func, *args, **kwargs):
-        try:
-            self._value = func(*args, **kwargs)
-            self._successful = True
-        except Exception:
-            self._successful = False
-            self._tb = sys.exc_info()
-
-    def get(self, timeout=None):
-        """Return the result. If the call raised an exception then that
-        exception will be reraised.
-
-        ``timeout`` is ignored.
-        """
-        if self._successful:
-            return self._value
-        else:
-            six.reraise(*self._tb)
-
-    def wait(self, timeout=None):
-        """Do nothing method. Provided for compatibility."""
-        pass
-
-    def ready(self):
-        """
-        Returns
-        -------
-        bool
-            whether the call has completed: always ``True``
-        """
-        return True
-
-    def successful(self):
-        """
-        Returns
-        -------
-        bool
-            True whether the call completed without raising an exception
-        """
-        return self._successful

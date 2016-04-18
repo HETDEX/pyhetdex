@@ -73,6 +73,17 @@ Public inteface
 .. autofunction:: pyhetdex.tools.processes.remove_worker
 .. autofunction:: pyhetdex.tools.processes.ignore_keyboard_interrupt
 
+Result class
+------------
+
+.. autoclass:: pyhetdex.tools.processes.Result
+   :show-inheritance:
+   :members:
+
+.. autoclass:: pyhetdex.tools.processes.DeferredResult
+   :show-inheritance:
+   :members:
+
 Exceptions
 ==========
 
@@ -82,21 +93,12 @@ Exceptions
 .. autoexception:: pyhetdex.tools.processes.WorkerNameException
    :show-inheritance:
 
-Implementation
-==============
+The worker
+==========
 
-Worker implementations
-----------------------
-
-Although the class itself should be considered as private, the attributes and
-method listed below are public
+Although the instantiation and retrieval of the class should be done via the
+:func:`get_worker`, the attributes are public.
 
 .. autoclass:: pyhetdex.tools.processes._Worker
    :members:
    :special-members: __call__, __enter__
-
-Result class
-------------
-
-.. autoclass:: pyhetdex.tools.processes.Result
-   :members:

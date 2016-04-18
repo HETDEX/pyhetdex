@@ -1,3 +1,11 @@
+2016-04-18 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/processes.py: add a DeferredResult class for defer function
+	  execution when running single processor jobs; allow to pass the
+	  result_class to the _Worker object
+    * tests/test_processes.py: add the class to the tests
+    * doc/source/tools/processes.rst: adapt documentations
+
 2016-04-15 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* .coveragerc: removed

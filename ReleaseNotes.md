@@ -1,9 +1,12 @@
 # ``pyhetdex`` release notes
 
-## Development version
+## Development version @ trunk
 
 * Deprecate pyhetdex.doc.sphinxext.todo; use the version shipped with
-    sphinx>=1.4 in the module sphinx.ext.todo
+  sphinx>=1.4 in the module sphinx.ext.todo
+* Processes: add DeferredResult class for defer function
+  execution when running single processor jobs and allow to pass it to the
+  ``_Worker`` object
 
 ## Version 0.5.0
 
