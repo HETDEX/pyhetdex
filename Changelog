@@ -1,5 +1,10 @@
 2016-04-15 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* .coveragerc: removed
+	* setup.cfg: add coverage sections; don't report pyhetdex/doc/sphinxext
+
+2016-04-15 Francesco Montesano <montefra@mpe.mpg.de>
+
     * ReleaseNotes.md: added; track history and help writing the report for the
 	  next release
 
