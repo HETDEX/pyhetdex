@@ -356,7 +356,7 @@ class QuickReconstructedIFU(object):
         center files do not match; raised by :meth:`~_reconstruct`
     """
 
-    def __init__(self, ifu_center, files, dist_r=None,
+    def __init__(self, ifu_center, dist_r=None,
                  dist_l=None, pixscale=0.25):
         if not ifu_center:
             raise ReconstructValueError('An IFU center file is needed to'
@@ -373,10 +373,18 @@ class QuickReconstructedIFU(object):
         if dist_r:
             self.dists['R'] = distortion.Distortion(dist_r)
 
-        self.files = files
+        self.dmap = {}
+        for spec in ['L', 'R']:
+            self.dmap[spec] = {}
+            D = self.dists[spec]
+            if D:
+                d = {}
+                for f in self.ifu_center.fib_number[spec]:
+                    d[f-1] = D.map_xf_y(516, D.reference_f_.data[f-1])
+                    self.dmap[spec] = d
 
-        self.dx = (0, -1.27, -1.27)
-        self.dy = (0, 0.73, -0.73)
+        self.dx = [0, -1.27, -1.27]
+        self.dy = [0, 0.73, -0.73]
 
         self._pscale = pixscale
 
@@ -393,6 +401,49 @@ class QuickReconstructedIFU(object):
         self.miny = (min((min(self.ifu_center.yifu['L']),
                           min(self.ifu_center.yifu['R']))) +
                      min(self.dy) - self.ifu_center.fiber_d/2.)
+
+        self.isEmpty = True
+        self._create_empty_image()
+
+        fr_2 = self.ifu_center.fiber_d ** 2 / 4.
+
+        self.x_idx = {}
+        self.y_idx = {}
+
+        for spec in ['L', 'R']:
+            self.x_idx[spec] = {}
+            self.y_idx[spec] = {}
+            fibs = np.array(self.ifu_center.fib_number[spec])
+
+            for dither in 1, 2, 3:
+                self.x_idx[spec][dither] = {}
+                self.y_idx[spec][dither] = {}
+
+                for f in fibs:
+                    self.x_idx[spec][dither][f] = []
+                    self.y_idx[spec][dither][f] = []
+
+                it = np.nditer(self.img, flags=['multi_index'],
+                               op_flags=['readonly'])
+                while not it.finished:
+                    px = self.minx + it.multi_index[0] * self.pscale
+                    py = self.miny + it.multi_index[1] * self.pscale
+
+                    xc = np.array(self.ifu_center.xifu[spec]) + \
+                        self.dx[dither-1]
+                    yc = np.array(self.ifu_center.yifu[spec]) + \
+                        self.dy[dither-1]
+
+                    dx = xc - px
+                    dy = yc - py
+
+                    dd = (dx*dx + dy*dy)
+
+                    for f in fibs[dd < fr_2]:
+                        self.x_idx[spec][dither][f].append(it.multi_index[0])
+                        self.y_idx[spec][dither][f].append(it.multi_index[1])
+
+                    it.iternext()
 
     @property
     def pscale(self):
@@ -412,7 +463,7 @@ class QuickReconstructedIFU(object):
         except AttributeError:
             pass
 
-    def reconstruct(self, subtract_overscan=True):
+    def reconstruct(self, files, subtract_overscan=True):
         """
         Read the fiber extracted files and creates a set of three lists for x,
         y and flux.
@@ -431,20 +482,14 @@ class QuickReconstructedIFU(object):
             attribute
         """
 
-        xc = np.array([], dtype=float)
-        yc = np.array([], dtype=float)
-        flx = np.array([], dtype=float)
-
         ifuid = None
+        self._create_empty_image()
 
-        for img in self.files:  # Loop over all input file
+        for img in files:  # Loop over all input file
 
-            dx, dy = 0, 0  # Default offset value
             f_offset = 0  # Python arrays start at 0, FITS files at 1...
 
-            with fits.open(img) as hdu:
-
-                print('Working on ', img)
+            with fits.open(img, memmap=False, do_not_scale_image_data=True) as hdu:
 
                 h = hdu[0].header
                 data = hdu[0].data.transpose()
@@ -461,66 +506,38 @@ class QuickReconstructedIFU(object):
                     raise ReconstructValueError('No distortion given for ' +
                                                 ccdpos + ' spectrograph')
 
-                if h['NAXIS2'] < 1500:
-                    if h['CCDHALF'] == 'U':
-                        f_offset = 1032  # FIXME This should come from header
-                        ampstr = 'upper amplifier'
-                    else:
-                        ampstr = 'lower amplifier'
-                else:
-                    ampstr = 'full'
+                if h['NAXIS2'] < 1500 and h['CCDHALF'] == 'U':
+                    f_offset = 1032  # FIXME This should come from header
 
                 if h['NAXIS1'] > 1032 and subtract_overscan:
-                    print('Removing bias calculated from overscan region')
                     bias = self._get_overscan(data, h['BIASSEC'])
                     data = data-bias
 
-                dither_step = int(h['DITHER'])-1
-
-                print('This is a %s image for the %s spectrograph '
-                      'in dither step %d' % (ampstr, ccdpos, dither_step+1))
-
-                dx = self.dx[dither_step]
-                dy = self.dy[dither_step]
+                dither = int(h['DITHER'])
 
                 center_x = np.round(data.shape[0]/2)
 
-                for f in range(self.ifu_center.n_fibers[ccdpos]):
+                for f in self.ifu_center.fib_number[ccdpos]:
                     # fib = f+1
-                    fy_f = D.map_xf_y(516, D.reference_f_.data[f]) - f_offset
+                    fy_f = self.dmap[ccdpos][f-1] - f_offset
                     fy = np.floor(fy_f)
                     fy_d = fy_f - fy
                     if fy < 0 or fy > data.shape[1]:
                         continue
 
-                    flx = np.append(flx, np.sum(data[center_x-20:center_x+20,
-                                                     fy-1:fy+2]) +
-                                    np.sum(data[center_x-20:center_x+20,
-                                                fy-2:fy-1]*(1.-fy_d)) +
-                                    np.sum(data[center_x-20:center_x+20,
-                                                fy+2:fy+3]*(fy_d)))
+                    flx = np.sum(data[center_x-20:center_x + 20,
+                                      fy-1:fy+2]) + \
+                        np.sum(data[center_x-20:center_x + 20,
+                                    fy-2:fy-1]*(1.-fy_d)) + \
+                        np.sum(data[center_x-20:center_x+20,
+                                    fy+2:fy+3]*(fy_d))
 
-                    # Include the dither offset
-                    xc = np.append(xc, self.ifu_center.xifu[ccdpos][f] + dx)
-                    yc = np.append(yc, self.ifu_center.yifu[ccdpos][f] + dy)
+                    if self.x_idx[ccdpos][dither][f] and \
+                       self.y_idx[ccdpos][dither][f]:
+                        self.img[[self.x_idx[ccdpos][dither][f],
+                                  self.y_idx[ccdpos][dither][f]]] += flx
 
-        # Now loop over the output image and add the flux from all fibers
-
-        fr_2 = self.ifu_center.fiber_d ** 2 / 4.
-
-        self._create_empty_image()
-        it = np.nditer(self.img, flags=['multi_index'], op_flags=['writeonly'])
-
-        while not it.finished:
-            px = self.minx + it.multi_index[0] * self.pscale
-            py = self.miny + it.multi_index[1] * self.pscale
-
-            dx = xc - px
-            dy = yc - py
-
-            dd = (dx*dx + dy*dy)
-            it[0] = np.sum(flx[dd < fr_2])
-            it.iternext()
+        self.isEmpty = False
 
     def write(self, filename):
         """Write the reconstructed image to file ``filename`` as using the fits
@@ -538,6 +555,13 @@ class QuickReconstructedIFU(object):
                                    " method to create the image before saving"
                                    " it")
         outimg.writeto(filename, clobber=True)
+
+    def load(self, filename):
+        hdu = fits.open(filename, memmap=False,
+                        do_not_scale_image_data=True)
+        self.img = hdu[0].data
+        hdu.close()
+        self.isEmpty = False
 
     def _section_to_list(self, sec):
         """
@@ -573,6 +597,7 @@ class QuickReconstructedIFU(object):
         nx = (self.maxx - self.minx) / self.pscale
         ny = (self.maxy - self.miny) / self.pscale
         self.img = np.zeros((nx, ny))
+        self.isEmpty = True
         # self.weight = np.ones((nx, ny))
 
 
