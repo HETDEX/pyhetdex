@@ -2,6 +2,11 @@
 
 ## Development version @ trunk
 
+## Version 0.7.0
+
+* pyhetdex.het.reconstruct_ifu.QuickReconstructedIFU: change interface to ease
+  reconstructing science images in VDAT. WARNING: non backward compatible change
+
 ## Version 0.6.0
 
 * Deprecate pyhetdex.doc.sphinxext.todo; use the version shipped with
@@ -20,8 +25,8 @@ output of ccdcombine
 
 ## Version 0.4.0
 
-* pyhetdex.tools.configuration: more functionalities backported from python 3.4    
-    to python 2.7
+* pyhetdex.tools.configuration: more functionalities backported from python 3.4
+  to python 2.7
 * pyhetdex.tools.files.file_tools: better error messages when compiling regex
 * documentation: add the version of pyhetdex
 

@@ -1,5 +1,10 @@
 2016-04-29 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * setup.py: update to version 0.7.0
+    * ReleaseNotes.md: update
+
+2016-04-29 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/reconstruct_ifu.py: update reconstructIFU entry point to the
 	  new QuickReconstructedIFU interface
     * tests/test_reconstructions.py: update tests
