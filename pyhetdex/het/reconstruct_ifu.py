@@ -548,13 +548,13 @@ class QuickReconstructedIFU(object):
         filename : string
             name of the output fits file
         """
-        try:
+        if not self.isEmpty:
             outimg = fits.PrimaryHDU(self.img)
-        except AttributeError:
+            outimg.writeto(filename, clobber=True)
+        else:
             raise ReconstructError("Make sure to run the ``reconstruct``"
                                    " method to create the image before saving"
                                    " it")
-        outimg.writeto(filename, clobber=True)
 
     def load(self, filename):
         hdu = fits.open(filename, memmap=False,
@@ -639,8 +639,8 @@ def create_quick_reconstruction(argv=None):
     args = argument_parser(argv=argv)
 
     # create the shot object
-    recon = QuickReconstructedIFU(args.ifucen, args.files, dist_r=args.rdist,
+    recon = QuickReconstructedIFU(args.ifucen, dist_r=args.rdist,
                                   dist_l=args.ldist, pixscale=args.scale)
 
-    recon.reconstruct(subtract_overscan=True)
+    recon.reconstruct(args.files, subtract_overscan=True)
     recon.write(args.outfile)
