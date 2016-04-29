@@ -520,7 +520,7 @@ class QuickReconstructedIFU(object):
                 for f in self.ifu_center.fib_number[ccdpos]:
                     # fib = f+1
                     fy_f = self.dmap[ccdpos][f-1] - f_offset
-                    fy = int(np.floor(fy_f))
+                    fy = int(fy_f)
                     fy_d = fy_f - fy
                     if fy < 0 or fy > data.shape[1]:
                         continue
@@ -594,8 +594,8 @@ class QuickReconstructedIFU(object):
 
     def _create_empty_image(self):
         """Find the number of pixels x and y and create empty images"""
-        nx = int(np.round((self.maxx - self.minx) / self.pscale))
-        ny = int(np.round((self.maxy - self.miny) / self.pscale))
+        nx = int((self.maxx - self.minx) / self.pscale)
+        ny = int((self.maxy - self.miny) / self.pscale)
         self.img = np.zeros((nx, ny))
         self.isEmpty = True
         # self.weight = np.ones((nx, ny))
