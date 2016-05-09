@@ -500,14 +500,20 @@ class QuickReconstructedIFU(object):
                     print('WARNING: %s if from a different IFU, skipping it!')
                     continue
                 ccdpos = h['CCDPOS']
+                ccdhalf = h['CCDHALF']
 
                 D = self.dists[ccdpos]
                 if not D:
                     raise ReconstructValueError('No distortion given for ' +
                                                 ccdpos + ' spectrograph')
 
-                if h['NAXIS2'] < 1500 and h['CCDHALF'] == 'U':
-                    f_offset = 1032  # FIXME This should come from header
+                if h['NAXIS2'] < 1500:  # Working on single images
+                    if ccdhalf == 'U':
+                        f_offset = 1032  # FIXME This should come from header
+                    if ccdpos == 'L' and ccdhalf == 'U':
+                        data = data[::-1, ::-1]
+                    if ccdpos == 'R' and ccdhalf == 'L':
+                        data = data[::-1, ::-1]
 
                 if h['NAXIS1'] > 1032 and subtract_overscan:
                     bias = self._get_overscan(data, h['BIASSEC'])
