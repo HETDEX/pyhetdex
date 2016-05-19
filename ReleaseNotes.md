@@ -1,6 +1,14 @@
+
 # ``pyhetdex`` release notes
 
 ## Development version @ trunk
+
+* pyhetdex.cure.distortion: make Distortion class compatible with
+  multiple file versions. Supports version 14 and 17
+* pyhetdex.cure.fibermodel: make FiberModel class compatible with
+  multiple file versions. Supports version 16 to 21
+* pyhetdex.cure.psfmodel: make PSFModel class compatible with
+  multiple file versions. Supports version 2 and 3.
 
 ## Version 0.7.0
 

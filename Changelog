@@ -1,3 +1,17 @@
+2016-05-19  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/cure/distortion.py: make Distortion class compatible with
+	multiple file versions. Supports version 14 and 17
+	* pyhetdex/cure/fibermodel.py: make FiberModel class compatible with
+	multiple file versions. Supports version 16 to 21
+	* pyhetdex/cure/psfmodel.py: make PSFModel class compatible with
+	multiple file versions. Supports version 2 and 3.
+	* pyhetdex/tools/astro/zscale.py: PEP8 compliancy
+	* tests/test_distortion.py: Updated
+	* tests/test_fibermodel.py: Updated
+	* tests/test_psfmodel.py: Updated
+	* tests/test_reconstructions.py: Updated
+
 2016-05-09  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/het/reconstruct_ifu.py: Correctly rotate the individual

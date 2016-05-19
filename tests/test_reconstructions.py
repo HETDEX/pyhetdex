@@ -150,8 +150,8 @@ class TestReconstruction(object):
                                          fe_prefix='')
 
 
-dist_l = 'masterflat_001L.dist'
-dist_r = 'masterflat_001R.dist'
+dist_l = 'distortion_L.dist'
+dist_r = 'distortion_R.dist'
 
 inputfilenames = ['20151025T122555_103LL_sci.fits',
                   '20151025T122555_103LU_sci.fits',

@@ -6,18 +6,52 @@ import pyhetdex.ltl.marray as ma
 from pyhetdex.tools import io_helpers
 
 import numpy as np
-
 import locale
 
 
-class Distortion(object):
+class DistortionBase(object):
 
     def __init__(self, filename):
 
-        self.filename = ''
+        _vdict = {14: Distortion_14,
+                  17: Distortion_14}
+
+        in_ = open(filename)
+        fileversion = locale.atoi(io_helpers.skip_commentlines(in_))
+        in_.close()
+
+        if fileversion not in _vdict:
+            raise IOError('Unsupported version of Distortion file!')
+
+        self._cls = _vdict[fileversion](filename)
+
+
+class Distortion(DistortionBase):
+
+    def __init__(self, filename):
+        super(Distortion, self).__init__(filename)
+
+        self._cls.read()
+
+    def __getattribute__(self, a):
+        try:
+            return super(Distortion, self).__getattribute__(a)
+        except AttributeError:
+            return self._cls.__getattribute__(a)
+
+    def __setattr__(self, a, v):
+        try:
+            return super(Distortion, self).__setattr__(a, v)
+        except AttributeError:
+            return self._cls.__setattr__(a, v)
+
+
+class Distortion_14(object):
+
+    def __init__(self, filename):
+
+        self.filename = filename
         self.version = 0
-        self.version_min = 14
-        self.version_max = 14
         self.minw = float(0)
         self.maxw = float(0)
         self.minf = float(0)
@@ -42,16 +76,10 @@ class Distortion(object):
         self.wave_offsets_ = ma.MArray()
         self.x_offsets_ = ma.MArray()
 
-        self.read(filename)
+    def read(self):
 
-    def read(self, filename):
-
-        self.filename = filename
         in_ = open(self.filename)
-        fileversion = locale.atoi(io_helpers.skip_commentlines(in_))
-        if(fileversion < self.version_min or fileversion > self.version_max):
-            raise IOError('Unsupported version of Distortion file!')
-        self.version = fileversion
+        self.version = locale.atoi(io_helpers.skip_commentlines(in_))
         self.minw = locale.atof(io_helpers.skip_commentlines(in_))
         self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
         self.minf = locale.atof(io_helpers.skip_commentlines(in_))
@@ -96,8 +124,8 @@ class Distortion(object):
         if isinstance(f, (tuple, list)):
             f = np.asarray(f)
 
-        return ma.interpCheby2D_7(self._scal_x(x), self._scal_f(f),
-                                  self.fy_par_.data)
+        return self.interp(self._scal_x(x), self._scal_f(f),
+                           self.fy_par_.data)
 
     def map_wf_y(self, w, f):
 
@@ -106,8 +134,8 @@ class Distortion(object):
         if isinstance(f, (tuple, list)):
             f = np.asarray(f)
 
-        return ma.interpCheby2D_7(self._scal_w(w), self._scal_f(f),
-                                  self.y_par_.data)
+        return self.interp(self._scal_w(w), self._scal_f(f),
+                           self.y_par_.data)
 
     def map_xy_fiber(self, x, y):
 
@@ -116,5 +144,8 @@ class Distortion(object):
         if isinstance(y, (tuple, list)):
             y = np.asarray(y)
 
-        return ma.interpCheby2D_7(self._scal_x(x), self._scal_y(y),
-                                  self.fiber_par_.data)
+        return self.interp(self._scal_x(x), self._scal_y(y),
+                           self.fiber_par_.data)
+
+    def interp(self, x, y, par):
+        return ma.interpCheby2D_7(x, y, par)
