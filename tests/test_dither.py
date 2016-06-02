@@ -117,7 +117,7 @@ def test_wrong_dither(dither_wrong):
 def test_dither_creator(dither_creator, tmp_dither_file, example_fdither,
                         basenames, modelbases):
     """Test if the dither file is created successfully"""
-    dither_creator.create_dither('046', basenames, modelbases,
+    dither_creator.create_dither('023', basenames, modelbases,
                                  str(tmp_dither_file))
 
     same_file = filecmp.cmp(str(tmp_dither_file), str(example_fdither))
