@@ -55,7 +55,7 @@ class IFU(object):
     """
     def __init__(self, ifuslot, x, y, specid, specslot,
                  ifuid, ifurot, platescl):
-        if type(ifuslot) is not str and type(ifuslot) is not unicode:
+        if not isinstance(ifuslot, six.string_types):
             raise TypeError('ifuslot must be string, not', type(ifuslot))
         self.ifuslot = ifuslot
         self.x = float(x)
