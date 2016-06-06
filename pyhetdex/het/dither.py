@@ -231,7 +231,7 @@ class DitherCreator(object):
                 self.ifu_dxs[els[0]] = array(els[1:n_x + 1], dtype=float)
                 self.ifu_dys[els[0]] = array(els[n_x + 1:], dtype=float)
 
-    def dxs(self, id_, idtype='ihmpid'):
+    def dxs(self, id_, idtype='ifuslot'):
         """Returns the x shifts for the given ``id_``
 
         Parameters
@@ -248,9 +248,9 @@ class DitherCreator(object):
             x shifts
         """
         ifu = self.fplane.by_id(id_, idtype=idtype)
-        return self.ifu_dxs[ifu.ihmpid]
+        return self.ifu_dxs[ifu.ifuslot]
 
-    def dys(self, id_, idtype='ihmpid'):
+    def dys(self, id_, idtype='ifuslot'):
         """Returns the y shifts for the given ``id_``
 
         Parameters
@@ -267,7 +267,7 @@ class DitherCreator(object):
             y shifts
         """
         ifu = self.fplane.by_id(id_, idtype=idtype)
-        return self.ifu_dys[ifu.ihmpid]
+        return self.ifu_dys[ifu.ifuslot]
 
     def create_dither(self, id_, basenames, modelbases, outfile,
                       idtype='ifuid'):
@@ -283,7 +283,7 @@ class DitherCreator(object):
         outfile : str
             the output filename
         idtype : str, optional
-            type of the id; must be one of ``'ifuid'``, ``'ihmpid'``,
+            type of the id; must be one of ``'ifuid'``, ``'ifuslot'``,
             ``'specid'``
         """
         ifu = self.fplane.by_id(id_, idtype=idtype)
@@ -332,7 +332,7 @@ def argument_parser(argv=None):
     parser.add_argument('ditherpos', help='''Name of the file containing the
                          dither shifts. The expected format is
                          ``id x1 x2 ... xn y1 y2 ... yn``. Normally the ``id``
-                         is ``ihmpid``''')
+                         is ``ifuslot``''')
     parser.add_argument('basenames', help="""Basename(s) of the data files. The
                         ``{dither}`` and ``{id}`` placeholders are replaced by
                         the dither number and the provided id. E.g., if the
@@ -353,8 +353,8 @@ def argument_parser(argv=None):
                         as many as the number of dithers in the ``ditherpos``
                         file.""", default=['masterflat_{id}', ], nargs='+')
     parser.add_argument('-t', '--id-type', help='Type of the id',
-                        choices=['ifuid', 'ihmpid', 'specid'],
-                        default='ihmpid')
+                        choices=['ifuid', 'ifuslot', 'specid'],
+                        default='ifuslot')
     parser.add_argument('-s', '--shotdir', help="""Directory of the shot. If
                         not provided use some sensible default value for image
                         quality and normalisation. WARNING: at the moment not

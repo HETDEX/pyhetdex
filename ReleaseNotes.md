@@ -9,6 +9,8 @@
   multiple file versions. Supports version 16 to 21
 * pyhetdex.cure.psfmodel: make PSFModel class compatible with
   multiple file versions. Supports version 2 and 3.
+* update fplane file to new format (issue #1460)
+* fix bug with distance calculation
 
 ## Version 0.7.0
 

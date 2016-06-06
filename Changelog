@@ -1,3 +1,14 @@
+2016-06-06 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: make it work on python 3
+
+2016-06-02  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/het/fplane.py: Updated for new fplane format
+	* pyhetdex/het/dither.py: Apdated for changed fplane
+	* pyhetdex/coordinates/distances.py: Fixed calculation and test
+	* pyhetdex/coordinates/tangent_projection.py: PEP8
+
 2016-05-19  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/cure/distortion.py: make Distortion class compatible with

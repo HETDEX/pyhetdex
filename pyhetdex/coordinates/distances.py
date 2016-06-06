@@ -3,12 +3,18 @@
 This module contain functionalities to measure angular distances between
 objects
 
-.. todo::
-    :func:`~angular_separation_deg`: the test fails. Where it is possible to
-    get a reference value?
-    http://cads.iiap.res.in/tools/angularSeparation and
-    http://www.asdc.asi.it/dist.html gives very different answers, and none of
-    them agrees with the output of the function
+Updated using the function from http://www.astronomycafe.net/qadir/q1890.html
+
+http://cads.iiap.res.in/tools/angularSeparation and
+http://www.asdc.asi.it/dist.html give now consistent answers for
+
+    ra1, dec1 = 31.4324, 68.5432
+    ra2, dec2 = 45.65, 23.452
+
+and
+
+    ra1, dec1 = 100.2, -16.58
+    ra2, dec2 = 87.5, 7.38
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -51,7 +57,7 @@ def angular_separation_deg(ra1, dec1, ra2, dec2):
     >>> ra1, dec1 = 31.4324, 68.5432
     >>> ra2, dec2 = 45.65, 23.452
     >>> print(round(angular_separation_deg(ra1, dec1, ra2, dec2), 10))
-    59.1594812046
+    45.9168596229
     """
     rad_ra1 = np.radians(ra1)
     rad_dec1 = np.radians(dec1)
@@ -62,10 +68,10 @@ def angular_separation_deg(ra1, dec1, ra2, dec2):
     cosC = (np.sin(rad_dec2) * np.sin(rad_dec1))
     cosC += (np.cos(rad_dec2) * np.cos(rad_dec1) * np.cos(rad_ra2 - rad_ra1))
 
-    x = (np.cos(rad_dec1) * np.sin(rad_ra2 - rad_ra1)) / cosC
-    y = ((np.cos(rad_dec2) * np.sin(rad_dec1)) - (np.sin(rad_dec2) *
-         np.cos(rad_dec1) * np.cos(rad_ra2 - rad_ra1))) / cosC
+    # x = (np.cos(rad_dec1) * np.sin(rad_ra2 - rad_ra1)) / cosC
+    # y = ((np.cos(rad_dec2) * np.sin(rad_dec1)) - (np.sin(rad_dec2) *
+    #      np.cos(rad_dec1) * np.cos(rad_ra2 - rad_ra1))) / cosC
 
-    r = np.degrees(np.sqrt(x * x + y * y))
+    # r = np.degrees(np.sqrt(x * x + y * y))
 
-    return r
+    return np.rad2deg(np.arccos(cosC))

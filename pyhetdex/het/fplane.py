@@ -5,9 +5,8 @@ containing the informations about the IFU from the focal plane.
 
 The focal plane is expected to be::
 
-    ##IFUID x["]   y["] xpos ypos specid
-    001 -450.0  150.0 1 3 001
-    002 -450.0   50.0 1 4 002
+    ##IFUSLOT X_FP   Y_FP   SPECID SPECSLOT IFUID IFUROT PLATESC
+      001     -450.0 150.0  37     42       024   0.0    1.00
 
 Commented lines are ignored.
 """
@@ -32,34 +31,46 @@ class IFU(object):
 
     Parameters
     ----------
-    ifuid : string
+    ifuslot : string
         id of the ifu
-    x, y : string or float
+    x, y : float
         x and y position of the ifu in the focal plane
-    xid, yid : string or int
-        x (column) and y (row) id of the ifu in the ifu head mounting plate
-        (IHMP)
-    specid : string
+    specid : int
         id of the spectrograph where the ifu is plugged into
+    specslot : int
+        id of the spectrograph slot where the spectrograph is plugged into
+    ifuid : string
+        id of the virus ifu bundle
+    ifurot : float
+        rotation of the IFU in its seat in the IHMP
+    platescl : float
+        focal plane plate scale at the position in the IHMP
 
     Attributes
     ----------
-    ifuid, x, y, xid, yid, specid : as before
-    ihmpid : string
-        id of the IHMP seat address
+    ifuid, x, y, xid, yspecid : as before
+    xid, yid : string or int
+        x (column) and y (row) id of the ifu in the ifu head mounting plate
+        (IHMP), generated from the ifuslot
     """
-    def __init__(self, ifuid, x, y, xid, yid, specid):
-        self.ifuid = ifuid
+    def __init__(self, ifuslot, x, y, specid, specslot,
+                 ifuid, ifurot, platescl):
+        if not isinstance(ifuslot, six.string_types):
+            raise TypeError('ifuslot must be string, not', type(ifuslot))
+        self.ifuslot = ifuslot
         self.x = float(x)
         self.y = float(y)
-        self.xid = int(xid)
-        self.yid = int(yid)
-        self.specid = specid
-        self.ihmpid = "{0:02d}{1:01d}".format(self.xid, self.yid)
+        self.specid = int(specid)
+        self.specslot = int(specslot)
+        self.ifuid = ifuid
+        self.ifurot = float(ifurot)
+        self.platescl = float(platescl)
+        self.xid = int(self.ifuslot[0:2])
+        self.yid = int(self.ifuslot[2])
 
     def __str__(self):
-        msg = "ifu: '{0}'; IHMP: '{1}'; spectrograph: '{2}'"
-        return msg.format(self.ifuid, self.ihmpid, self.specid)
+        msg = "ifuslot: '{0}'; ifuid: '{1}'; specid: '{2}'"
+        return msg.format(self.ifuslot, self.ifuid, self.specid)
 
 
 class FPlane(object):
@@ -87,7 +98,7 @@ class FPlane(object):
         self._fplane_file = fplane_file
         self._IFU = ifu_class
         self._ifus_by_id = {}
-        self._ifus_by_ihmp = {}
+        self._ifus_by_slot = {}
         self._ifus_by_spec = {}
 
         self._load_fplane(fplane_file)
@@ -98,7 +109,17 @@ class FPlane(object):
         return self._ifus_by_id.values()
 
     @property
-    def ids(self):
+    def ifuids(self):
+        """list of ifu ids"""
+        return self._ifus_by_id.keys()
+
+    @property
+    def ifuslots(self):
+        """list of ihmp ids"""
+        return self._ifus_by_slot.keys()
+
+    @property
+    def ihmpids(self):
         """list of ifu ids
 
         Deprecated
@@ -106,19 +127,9 @@ class FPlane(object):
         import warnings
         with warnings.catch_warnings():
             warnings.simplefilter("default")
-            warnings.warn("``ids`` is deprecated, please use ``ifuids``"
+            warnings.warn("``ihmpids`` is deprecated, please use ``ifuslots``"
                           " instead", DeprecationWarning)
-        return self._ifus_by_id.keys()
-
-    @property
-    def ifuids(self):
-        """list of ifu ids"""
-        return self._ifus_by_id.keys()
-
-    @property
-    def ihmpids(self):
-        """list of ihmp ids"""
-        return self._ifus_by_ihmp.keys()
+        return self._ifus_by_slot.keys()
 
     @property
     def specids(self):
@@ -147,6 +158,42 @@ class FPlane(object):
         except KeyError as e:
             six.raise_from(NoIFUError(e), e)
 
+    def by_ifuslot(self, ifuslot):
+        """Returns the ifu with ``ifuslot``
+
+        Parameters
+        ----------
+        ifuslot : string
+            id of the ihmp slot
+
+        Returns
+        -------
+        :class:`IFU` instance
+        """
+        try:
+            return self._ifus_by_slot[ifuslot]
+        except KeyError as e:
+            six.raise_from(NoIFUError(e), e)
+
+    def by_slotpos(self, x, y):
+        """Returns the ifu in ifu slot position x, y
+
+        Parameters
+        ----------
+        x : int
+            x position in the IHMP (1 to 10)
+        y : int
+            y position in the IHMP (1 to 9)
+
+        Returns
+        -------
+        :class:`IFU` instance
+        """
+        try:
+            return self._ifus_by_slot['{:02d}{:d}'.format(x, y)]
+        except KeyError as e:
+            six.raise_from(NoIFUError(e), e)
+
     def by_ihmpid(self, ihmpid):
         """Returns the ifu with ``ihmpid``
 
@@ -158,9 +205,16 @@ class FPlane(object):
         Returns
         -------
         :class:`IFU` instance
+
+        Deprecated
         """
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("default")
+            warnings.warn("``ihmpids`` is deprecated, please use ``ifuslots``"
+                          " instead", DeprecationWarning)
         try:
-            return self._ifus_by_ihmp[ihmpid]
+            return self._ifus_by_slot[ihmpid]
         except KeyError as e:
             six.raise_from(NoIFUError(e), e)
 
@@ -197,8 +251,15 @@ class FPlane(object):
         """
         if idtype == 'ifuid':
             ifu = self.by_ifuid
+        elif idtype == 'ifuslot':
+            ifu = self.by_ifuslot
         elif idtype == 'ihmpid':
-            ifu = self.by_ihmpid
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("default")
+                warnings.warn("``ihmpid`` is deprecated, please use "
+                              "``ifuslot`` instead", DeprecationWarning)
+            ifu = self.by_ifuslot
         elif idtype == 'specid':
             ifu = self.by_specid
         else:
@@ -214,13 +275,21 @@ class FPlane(object):
         fname : string
             name of the focal plane file
         """
+        missing = 1
         with open(fname, mode='r') as f:
             for l in f:
                 if l.startswith("#"):
                     continue
-                self.add_ifu(l.strip("\n").strip())
+                line = l.strip("\n").strip()
+                params = [i.strip() for i in line.split()]
 
-    def add_ifu(self, line):
+                if params[5] == '000':
+                    params[5] = 'N%02d' % missing
+                    params[3] = '-%02d' % missing
+                    missing += 1
+                self.add_ifu(params)
+
+    def add_ifu(self, fpars):
         """Parse a fplane ``line`` and add the IFU to the internal dictionary.
 
         Make sure that the ifuid, specid are a three digit string. Override
@@ -232,10 +301,10 @@ class FPlane(object):
         line : string
             line of the fplane file
         """
-        ifuid, x, y, xid, yid, specid = [i.strip() for i in line.split()]
-        ifuid = "{0:03d}".format(int(ifuid))
-        specid = "{0:03d}".format(int(specid))
-        _ifu = self._IFU(ifuid, x, y, xid, yid, specid)
-        self._ifus_by_id[ifuid] = _ifu
-        self._ifus_by_ihmp[_ifu.ihmpid] = _ifu
-        self._ifus_by_spec[specid] = _ifu
+        ifuslot, x, y, specid, speclot, ifuid, ifurot, platescl = fpars
+        _ifu = self._IFU(ifuslot, x, y, specid, speclot,
+                         ifuid, ifurot, platescl)
+
+        self._ifus_by_id[_ifu.ifuid] = _ifu
+        self._ifus_by_slot[_ifu.ifuslot] = _ifu
+        self._ifus_by_spec[_ifu.specid] = _ifu
