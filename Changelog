@@ -1,5 +1,10 @@
 2016-06-06 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * setup.py: set version to 0.8.0
+    * ReleaseNotes.md: prepare release notes for release
+
+2016-06-06 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/fplane.py: make it work on python 3
 
 2016-06-02  Jan Snigula  <snigula@mpe.mpg.de>

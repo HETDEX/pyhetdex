@@ -1,7 +1,8 @@
-
 # ``pyhetdex`` release notes
 
 ## Development version @ trunk
+
+## Version 0.8.0
 
 * pyhetdex.cure.distortion: make Distortion class compatible with
   multiple file versions. Supports version 14 and 17
