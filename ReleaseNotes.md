@@ -10,6 +10,11 @@
 * pyhetdex.cure.psfmodel: make PSFModel class compatible with
   multiple file versions. Supports version 2 and 3.
 
+## Development version @ branches/fplane_1460
+
+* update fplane file to new format (issue #1460)
+* fix bug with distance calculation
+
 ## Version 0.7.0
 
 * pyhetdex.het.reconstruct_ifu.QuickReconstructedIFU: change interface to ease
