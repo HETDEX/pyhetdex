@@ -1,12 +1,12 @@
 from __future__ import absolute_import, print_function
 
-__version__ = '$Id$'
-
 import pyhetdex.ltl.marray as ma
 from pyhetdex.tools import io_helpers
 
 import numpy as np
 import locale
+
+__version__ = '$Id$'
 
 
 class DistortionBase(object):

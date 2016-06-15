@@ -14,3 +14,4 @@
     illumination
     throughput
     telescope
+    flux_conversions

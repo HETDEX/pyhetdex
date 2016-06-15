@@ -1,3 +1,14 @@
+2016-06-15 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/cure.rst: add modules
+    * doc/source/het/flux_conversions.rst: added
+    * doc/source/het/index.rst: add to index
+    * doc/source/het/reconstruct_ifu.rst: show inheritance
+    * doc/source/ltl.rst: add marray docs
+    * pyhetdex/cure/distortion.py: some pep8, some little change
+    * pyhetdex/het/flux_conversions.py: same
+    * tox.ini: raise the coverage target to 90%
+
 2016-06-06 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: set version to 0.8.0
