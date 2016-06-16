@@ -22,6 +22,7 @@ dither_other = os.path.join(s.datadir,
 
 ifucenter_file = os.path.join(s.datadir, "IFUcen_HETDEX.txt")
 ifucenter_fail = os.path.join(s.datadir, "IFUcen_HETDEX_fail.txt")
+ifucenter_missid = os.path.join(s.datadir, "IFUcen_HETDEX_missid.txt")
 ifucenter_missf = os.path.join(s.datadir, "IFUcen_HETDEX_missf.txt")
 
 
@@ -58,6 +59,12 @@ class TestIFUCenters(object):
     def test_fail(self):
         "Test comments, negative or non numeric fiber number and failure"
         ifu_centers.IFUCenter(ifucenter_fail)
+
+    @pytest.mark.xfail(raises=ifu_centers.IFUCenterError,
+                       reason="Test failures in parsing the IFUcen file")
+    def test_missingid(self):
+        "Test missing ID string in header"
+        ifu_centers.IFUCenter(ifucenter_missid)
 
 
 # TODO: check that the reconstruction does a proper job checking the outputs

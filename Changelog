@@ -1,3 +1,8 @@
+2016-06-16  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/het/ifu_centers.py: Read the IFU ID from the header
+	* tests/test_reconstructions.py: Added test
+
 2016-06-06 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/fplane.py: make it work on python 3

@@ -96,6 +96,7 @@ class IFUCenter(object):
     def __init__(self, ifu_center_file):
         # these constitute the public interface
         self.filename = ifu_center_file
+        self.ifuid = 0
         self.fiber_d = 0.
         self.fiber_sep = 0.
         self.nfibx, self.nfiby = 0, 0
@@ -130,8 +131,24 @@ class IFUCenter(object):
         f : file object
             file object after consuming the header
         """
+        # Try to determine the IFU ID from the header
+        while True:
+            line = f.readline().strip()
+            if not line.startswith('#'):
+                raise IFUCenterError('Failed to find IFU bundle ID in '
+                                     'file header')
+
+            line = line[1:].strip()
+
+            if not line.startswith('IFU '):
+                continue
+
+            self.ifuid = int(line[4:])
+            # Read remaining comment lines
+            f = ft.skip_comments(f)
+            break
+
         # get the fiber diameter and fiber separation
-        f = ft.skip_comments(f)
         line = f.readline()
         self.fiber_d, self.fiber_sep = [float(i) for i in line.split()]
         # get the number of fibers in the x and y direction
