@@ -140,7 +140,7 @@ class IFUCenter(object):
 
             line = line[1:].strip()
 
-            if not line.startswith('IFU '):
+            if not line.startswith('IFU ') and not line.startswith('VIFU'):
                 continue
 
             self.ifuid = int(line[4:])
