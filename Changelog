@@ -1,3 +1,7 @@
+2016-06-28  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/cure/distortion.py: Added more mapping routines
+
 2016-06-17  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/het/ifu_centers.py: Accept also VIFU in header for id

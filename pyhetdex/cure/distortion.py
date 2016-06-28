@@ -99,7 +99,7 @@ class Distortion_14(object):
         self.y_errors_.read(in_)
         self.fy_par_.read(in_)
         self.fy_errors_.read(in_)
-        self.reference_wavelength = locale.atof(io_helpers.skip_commentlines(in_))
+        self.reference_wavelength_ = locale.atof(io_helpers.skip_commentlines(in_))
         self.reference_w_.read(in_)
         self.reference_f_.read(in_)
         self.wave_offsets_.read(in_)
@@ -127,6 +127,23 @@ class Distortion_14(object):
         return self.interp(self._scal_x(x), self._scal_f(f),
                            self.fy_par_.data)
 
+    def map_wf_x(self, w, f):
+
+        if isinstance(w, (tuple, list)):
+            w = np.asarray(w)
+        if isinstance(f, (tuple, list)):
+            f = np.asarray(f)
+
+        value = self.interp(self._scal_w(w), self._scal_f(f),
+                            self.x_par_.data)
+
+        if self.reference_wavelength_ < 0:
+            return value
+
+        return value - \
+            self.x_offsets_.data[self._find_closest_index(self.reference_f_.data,
+                                                          f)]
+
     def map_wf_y(self, w, f):
 
         if isinstance(w, (tuple, list)):
@@ -146,6 +163,47 @@ class Distortion_14(object):
 
         return self.interp(self._scal_x(x), self._scal_y(y),
                            self.fiber_par_.data)
+
+    def map_xy_wavelength(self, x, y):
+
+        if isinstance(x, (tuple, list)):
+            x = np.asarray(x)
+        if isinstance(y, (tuple, list)):
+            y = np.asarray(y)
+
+        value = self.interp(self._scal_x(x), self._scal_y(y),
+                            self.wave_par_.data)
+
+        if self.reference_wavelength_ < 0:
+            return value
+
+        fiber = self.map_xy_fiber(x, y)
+
+        return value - \
+            self.wave_offsets_.data[self._find_closest_index(self.reference_f_.data,
+                                                             fiber)]
+
+    def map_xy_wf(self, x, y):
+
+        if isinstance(x, (tuple, list)):
+            x = np.asarray(x)
+        if isinstance(y, (tuple, list)):
+            y = np.asarray(y)
+
+        value = self.interp(self._scal_x(x), self._scal_y(y),
+                            self.wave_par_.data)
+
+        if self.reference_wavelength_ < 0:
+            return value
+
+        fiber = self.map_xy_fiber(x, y)
+
+        return value - \
+            self.wave_offsets_.data[self._find_closest_index(self.reference_f_.data,
+                                                             fiber)], fiber
+
+    def _find_closest_index(self, a, v):
+        return (np.abs(a-v)).argmin()
 
     def interp(self, x, y, par):
         return ma.interpCheby2D_7(x, y, par)
