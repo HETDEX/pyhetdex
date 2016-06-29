@@ -43,6 +43,15 @@ class TestDistortion(object):
             assert np.isclose(dist.map_xy_fiber([100, 1000], (200, 1500)),
                               np.array([199.062, 1496.21])).all()
 
+    def test_dist_xy_wf(self, dist):
+        # OCD Test...
+        if dist.version == 14:
+            w, f = dist.map_xy_wf(100, 200)
+            assert np.isclose(w, 3696.6) and np.isclose(f, 201.066)
+        else:
+            w, f = dist.map_xy_wf(100, 200)
+            assert np.isclose(w, 3674.79) and np.isclose(f, 199.062)
+
     def test_dist_xy_fiber_array(self, dist):
         if dist.version == 14:
             assert np.isclose(dist.map_xy_fiber(np.array([100, 1000]),
@@ -52,6 +61,52 @@ class TestDistortion(object):
             assert np.isclose(dist.map_xy_fiber(np.array([100, 1000]),
                                                 np.array([200, 1500])),
                               np.array([199.062, 1496.21])).all()
+
+    def test_dist_xy_fibernum(self, dist):
+        if dist.version == 14:
+            assert (dist.map_xy_fibernum([100, 1000], (200, 1500))
+                    == np.array([203, 62])).all()
+        else:
+            assert (dist.map_xy_fibernum([100, 1000], (200, 1500))
+                    == np.array([203, 62])).all()
+
+    def test_dist_xy_wavelength(self, dist):
+        if dist.version == 14:
+            assert np.isclose(dist.map_xy_wavelength([100, 1000], (200, 1500)),
+                              np.array([3696.6, 5434.6])).all()
+        else:
+            assert np.isclose(dist.map_xy_wavelength([100, 1000], (200, 1500)),
+                              np.array([3674.79, 5464.62])).all()
+
+    def test_dist_xy_wavelength_array(self, dist):
+        if dist.version == 14:
+            assert np.isclose(dist.map_xy_wavelength(np.array([100, 1000]),
+                                                     np.array([200, 1500])),
+                              np.array([3696.6, 5434.6])).all()
+        else:
+            assert np.isclose(dist.map_xy_wavelength(np.array([100, 1000]),
+                                                     np.array([200, 1500])),
+                              np.array([3674.79, 5464.62])).all()
+
+    def test_dist_wf_x(self, dist):
+        if dist.version == 14:
+            assert np.isclose(dist.map_wf_x([3600, 5000], (20, 220)),
+                              np.array([52.9629, 778.098])).all()
+            assert np.isclose(dist.map_wf_x(3600, 20), 52.9629)
+        else:
+            assert np.isclose(dist.map_wf_x([3600, 5000], (20, 220)),
+                              np.array([62.3172, 766.703])).all()
+            assert np.isclose(dist.map_wf_x(3600, 20), 62.3172)
+
+    def test_dist_wf_x_array(self, dist):
+        if dist.version == 14:
+            assert np.isclose(dist.map_wf_x(np.array([3600, 5000]),
+                                            np.array([20, 220])),
+                              np.array([52.9629, 778.098])).all()
+        else:
+            assert np.isclose(dist.map_wf_x(np.array([3600, 5000]),
+                                            np.array([20, 220])),
+                              np.array([62.3172, 766.703])).all()
 
     def test_dist_wf_y(self, dist):
         if dist.version == 14:

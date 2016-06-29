@@ -6,6 +6,7 @@ import pyhetdex.cure.psfmodel as psfm
 import pytest
 import locale
 
+
 @pytest.fixture(scope='module', params=['psfmodel_2.pmod',
                                         'psfmodel_3.pmod'])
 def pmod(datadir, request):

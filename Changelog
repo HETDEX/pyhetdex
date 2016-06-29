@@ -1,3 +1,8 @@
+2016-06-29  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/cure/distortion.py: Added remaining mapping functions
+	* tests/test_distortion.py: Added corresponding tests
+
 2016-06-28  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/cure/distortion.py: Added more mapping routines
