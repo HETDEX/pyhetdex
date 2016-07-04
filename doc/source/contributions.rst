@@ -1,23 +1,99 @@
 Contribute to pyhetdex
 **********************
 
+How To
+======
+
+The suggested workflow for implement bug fixes and/or new features is the
+following:
+
+* Identify or, if necessary, add to our `redmine issue tracker
+  <https://luna.mpe.mpg.de/redmine/projects/pyhetdex>`_ one or more issues to
+  tackle. Multiple issues can be addressed together if they belong together.
+  Assign the issues to yourself.
+* Create a new branch from the trunk with a name either referring to the topic
+  or the issue to solve. E.g. if you need to add a new executable, tracked by
+  issue #1111
+  ``do_something``::
+
+    svn cp ^/trunk ^/branches/do_something_1111\
+    -m 'create branch to solve issue #1111'
+
+* Switch to the branch::
+
+    svn switch ^/branches/do_something_1111
+
+* Implement the required changes and don't forget to track your progress on
+  redmine. If the feature/bug fix requires a large amount of time, we suggest,
+  when possible, to avoid one big commit at the end in favour of smaller
+  commits. In this way, in case of breakages, is easier to traverse the branch
+  history and find the offending code. For each commit you should add an entry
+  in the ``Changelog`` file.
+
+  If you work on multiple issues on the same branch, close one issue before
+  proceeding to the next. When closing one issue is good habit to add in the
+  description on the redmine the revision that resolves it.
+* Every function or class added or modified should be adequately documented as
+  described in :ref:`code_style`.
+
+  Documentation is essential both for users and for your fellow developers to
+  understand the scope and signature of functions and classes. If a new module
+  is added, it should be also added to the documentation in the appropriate
+  place. See the existing documentation as example.
+
+  For each executable should be documented and its description should contain
+  enough information and examples to allow users to easily run it.
+* Every functionality should be thoroughly tested for python 2.7 and 3.4 or 3.5
+  in order to ensure that the code behaves as expected and that future
+  modifications will not break existing functionalities. When fixing bugs, add
+  tests to ensure that the bug will not repeat. For more information see
+  :ref:`testing`.
+* Once the issue(s) are solved and the branch is ready, merge any pending change
+  from the trunk::
+
+    svn merge ^/trunk
+
+  While doing the merge, you might be asked to manually resolve some conflict.
+  Once all the conflicts has been solved, commit the changes with a meaningful
+  commit message, e.g.: ``merge ^/trunk into ^/branches/do_something_1111``.
+  Then rerun the test suite to make sure your changes do not break
+  functionalities implemented while you were working on your branch.
+* Then contact the maintainer of ``pyhetdex`` and ask to merge your branch back
+  to the trunk.
+
+Information about branching and merging can be found on the `svn book
+<http://svnbook.red-bean.com/en/1.8/svn.branchmerge.html>`_. For any question or
+if you need support do not hesitate to contact the maintainer or the other
+developers.
+
+.. _code_style:
+
 Coding style
 ============
 
-All the code should be compliant with the :pep:`8`.
+All the code should be compliant with the official python style guidelines
+described in :pep:`8`. To help you keep the code in spec, we suggest to install
+plugins that check the code for you, like `Synstastic
+<https://github.com/scrooloose/syntastic>`_ for vim or `flycheck
+<http://www.flycheck.org/en/latest/>`_ for Emacs.
 
-The code should also be thoroughly documented. We follow the `numpy style
+The code should also be thoroughly documented using the `numpy style
 <https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`_. See
-the existing documentation.
+the existing documentation for examples.
+
+.. _testing:
 
 Testing
 =======
 
-*Every part of the code should be tested and should run at least under python
-2.7, 3.4 and possibly 3.5*
+.. note::
+    Every part of the code should be tested and should run at least under python
+    2.7, 3.4 and possibly 3.5
 
-The tests are written using the `pytest
-<http://pytest.org/latest/contents.html#>`_ framework.
+``pyhetdex`` use the testing framework provided by the `pytest package
+<http://pytest.org/latest/contents.html#>`_. The tests should cover every
+aspect of a function or method. If exceptions are explicitly raised, this should
+also tested to ensure that the implementation behaves as expected.
 
 The preferred way to run the tests is using `tox
 <https://testrun.org/tox/latest/index.html>`_, an automatised test help
@@ -77,7 +153,6 @@ running ``py.test``::
     --cov-report term
     --cov-report term-missing
     
-
 Besides running the tests, the ``tox`` command also builds, by default, the
 documentation and collate the coverage tests from the various python
 interpreters and can copy then to some directory. To do the latter create, if
@@ -108,8 +183,6 @@ For a list of available fixtures type::
 
     py.test --fixtures tests/
 
-To every unit of code, should correspond one or more tests.
-
 Documentation
 =============
 
@@ -138,3 +211,6 @@ If you are updating the documentation and want avoid the
 
 then visit http://127.0.0.1:8000. The html documentation is automatically
 rebuilt after every change of the source and the browser reloaded.
+
+Please make sure that every module in ``pyhetdex`` is present in the
+:ref:`code_documentation`.

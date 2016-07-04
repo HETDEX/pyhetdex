@@ -1,3 +1,9 @@
+2016-07-04 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/contributions.rst: improved
+    * doc/source/index.rst: add reference anchor
+    * doc/source/install.rst: update information
+
 2016-06-29  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/cure/distortion.py: Added remaining mapping functions

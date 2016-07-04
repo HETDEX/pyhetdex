@@ -36,6 +36,8 @@ Command Line Tools
     generate_randoms
     add_fluxes_to_randoms
 
+.. _code_documentation:
+
 Code documentation
 ------------------
 

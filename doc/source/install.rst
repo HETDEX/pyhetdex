@@ -4,23 +4,64 @@ Installation
 Instructions
 ============
 
+.. _install:
+
+The recommended way
+-------------------
+
+The recommended way to install pyhetdex is using `pip <https://pip.pypa.io/en/latest/>`_::
+
+    pip install --extra-index-url https://gate.mpe.mpg.de/pypi/simple/ pyhetdex
+
+It's possible to set the extra index URL permanently by adding the following lines
+to the ``$HOME/.pip/pip.conf`` file::
+
+    [global]
+    extra-index-url = https://gate.mpe.mpg.de/pypi/simple
+
+or exporting the environment variable::
+
+    export PIP_EXTRA_INDEX_URL=https://gate.mpe.mpg.de/pypi/simple
+
+The list of released versions can be seen `on the MPE pypi server
+<https://gate.mpe.mpg.de/pypi/simple/pyhetdex/>`_. A specific version can be
+installed using `specifiers
+<https://pip.pypa.io/en/stable/reference/pip_install/#requirement-specifiers>`_,
+e.g. issuing ``pip install pyhetdex==0.5``.
+
+``pip`` will take care of installing :ref:`pyhetdex dependances <Dependances>`.
+
+We suggest you install pyhetdex into a `virtualenv
+<https://virtualenv.pypa.io/en/stable/>`_, in an `anaconda
+<https://www.continuum.io/downloads>`_/`conda
+<http://conda.pydata.org/docs/index.html>`_ or in similar environments.
+
+Of course it is also possible to install pyhetdex without any of the above with::
+
+    pip install --user --extra-index-url https://gate.mpe.mpg.de/pypi/simple/ pyhetdex
+
+This way the pyhetdex executables are installed in ``$HOME/.local/bin``, so make
+sure to add this to the environment variable ``PATH`` to be able to easily use
+them on the command line. The use of ``sudo`` when installing with pip is
+`discouraged
+<http://stackoverflow.com/questions/21055859/what-are-the-risks-of-running-sudo-pip>`_
+and potentially harmful.
+
 .. _sourceinst:
 
 From local ``pyhetdex`` copy
 ----------------------------
 
-First you need to obtain the source ``pyhetdex`` code with ::
-
-  svn checkout svn://luna.mpe.mpg.de/pyhetdex
-
-or ::
+If you develop pyhetdex or want to use always the latest version, you can
+install it directly from the checked out svn repository.
+First you can obtain the source ``pyhetdex`` code with ::
 
   svn checkout svn://luna.mpe.mpg.de/pyhetdex/trunk pyhetdex
 
-if only the trunk is desired.
+If you already have the repository, you can of course keep it up to date with
+``svn update``
 
-Once this command has finished you can install ``pyhetdex`` using `pip
-<https://pip.pypa.io/en/latest/>`_ :: 
+Then you can install the library with::
 
   pip install /path/to/pyhetdex
 
@@ -31,15 +72,6 @@ or ::
 
 where ``/path/to/pyhetdex`` is the base directory containing the ``setup.py``
 file.
-
-The above command installs ``pyhetdex`` in a system directory, so might be
-necessary to use superuser powers, a.k.a. ``sudo``, to succeed. It is possible
-to install the software in the user directories, usually
-``$HOME/.local/lib/pythonX.X/site-packages`` adding the option ``--user``.
-
-An other option is to use a `virtual environment
-<https://virtualenv.pypa.io/en/latest/>`_ [#venvw]_: in this case ``pyhetdex`` will
-be installed inside the environment with the above command.
 
 .. _svninst:
 
@@ -71,8 +103,6 @@ We do not recommend this method.
 
 .. note::
     
-  * At the moment ``pyhetdex`` is under active development, so we suggest to
-    follow the instructions in :ref:`inst_devel`
   * If the installation gets interrupted with an error like::
 
       ImportError: No module named 'numpy'
@@ -96,7 +126,6 @@ Mandatory dependences
   matplotlib
   six
 
-
 .. _optdep:
 
 Optional dependences
@@ -106,6 +135,7 @@ Optional dependences
 
    pytest
    pytest-cov
+   pytest-xdist
 
    tox
 
