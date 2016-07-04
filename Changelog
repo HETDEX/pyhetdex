@@ -1,5 +1,9 @@
 2016-07-04 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * doc/source/contributions.rst: fix English
+
+2016-07-04 Francesco Montesano <montefra@mpe.mpg.de>
+
     * doc/source/contributions.rst: improved
     * doc/source/index.rst: add reference anchor
     * doc/source/install.rst: update information

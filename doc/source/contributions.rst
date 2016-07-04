@@ -4,7 +4,7 @@ Contribute to pyhetdex
 How To
 ======
 
-The suggested workflow for implement bug fixes and/or new features is the
+The suggested workflow for implementing bug fixes and/or new features is the
 following:
 
 * Identify or, if necessary, add to our `redmine issue tracker
@@ -39,9 +39,9 @@ following:
   Documentation is essential both for users and for your fellow developers to
   understand the scope and signature of functions and classes. If a new module
   is added, it should be also added to the documentation in the appropriate
-  place. See the existing documentation as example.
+  place. See the existing documentation for examples.
 
-  For each executable should be documented and its description should contain
+  Each executable should be documented and its description should contain
   enough information and examples to allow users to easily run it.
 * Every functionality should be thoroughly tested for python 2.7 and 3.4 or 3.5
   in order to ensure that the code behaves as expected and that future
@@ -49,20 +49,21 @@ following:
   tests to ensure that the bug will not repeat. For more information see
   :ref:`testing`.
 * Once the issue(s) are solved and the branch is ready, merge any pending change
-  from the trunk::
+  **from** the trunk::
 
     svn merge ^/trunk
 
-  While doing the merge, you might be asked to manually resolve some conflict.
-  Once all the conflicts has been solved, commit the changes with a meaningful
-  commit message, e.g.: ``merge ^/trunk into ^/branches/do_something_1111``.
-  Then rerun the test suite to make sure your changes do not break
-  functionalities implemented while you were working on your branch.
-* Then contact the maintainer of ``pyhetdex`` and ask to merge your branch back
-  to the trunk.
+  While doing the merge, you might be asked to manually resolve one or more
+  conflicts.  Once all the conflicts have been solved, commit the changes with a
+  meaningful commit message, e.g.: ``merge ^/trunk into
+  ^/branches/do_something_1111``.  Then rerun the test suite to make sure your
+  changes do not break functionalities implemented while you were working on
+  your branch.
+* Then contact the maintainer of ``pyhetdex`` and ask to merge your branch **back
+  to the trunk**.
 
-Information about branching and merging can be found on the `svn book
-<http://svnbook.red-bean.com/en/1.8/svn.branchmerge.html>`_. For any question or
+Information about branching and merging can be found in the `svn book
+<http://svnbook.red-bean.com/en/1.8/svn.branchmerge.html>`_. For any questions or
 if you need support do not hesitate to contact the maintainer or the other
 developers.
 
@@ -90,7 +91,7 @@ Testing
     Every part of the code should be tested and should run at least under python
     2.7, 3.4 and possibly 3.5
 
-``pyhetdex`` use the testing framework provided by the `pytest package
+``pyhetdex`` uses the testing framework provided by the `pytest package
 <http://pytest.org/latest/contents.html#>`_. The tests should cover every
 aspect of a function or method. If exceptions are explicitly raised, this should
 also tested to ensure that the implementation behaves as expected.
@@ -98,7 +99,7 @@ also tested to ensure that the implementation behaves as expected.
 The preferred way to run the tests is using `tox
 <https://testrun.org/tox/latest/index.html>`_, an automatised test help
 package. If you have installed tox, with e.g. ``pip install tox``, you can run
-it typing::
+it by typing::
 
     tox
 
@@ -154,10 +155,10 @@ running ``py.test``::
     --cov-report term-missing
     
 Besides running the tests, the ``tox`` command also builds, by default, the
-documentation and collate the coverage tests from the various python
+documentation and collates the coverage tests from the various python
 interpreters and can copy then to some directory. To do the latter create, if
 necessary, the configuration file ``~/.config/little_deploy.cfg`` and add to it
-a section called ``pyhetdex`` and either one or both of the following options:
+a section called ``pyhetdex`` with either one or both of the following options:
 
 .. code-block:: ini
 
@@ -188,13 +189,13 @@ Documentation
 
 To build the documentation you need the additional dependences described in
 :ref:`optdep`. They can be installed by hand or during ``pyhetdex`` installation
-executing one of the following commands on a local copy::
+by executing one of the following commands on a local copy::
 
   pip install /path/to/pyhetdex[doc]
   pip install /path/to/pyhetdex[livedoc]
 
 The first install ``sphinx``, the ``alabaster`` theme and the ``numpydoc``
-extension; the second also ``sphinx-autobuild``.
+extension; the second also installs ``sphinx-autobuild``.
 
 To build the documentation in html format go to the ``doc`` directory and run::
 
