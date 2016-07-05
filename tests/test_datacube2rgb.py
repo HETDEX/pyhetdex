@@ -4,20 +4,21 @@ tests for pyhetdex.tools.datacube2rgb
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
-import settings
 import pytest
 
 from pyhetdex.tools.datacube2rgb import main
 
-datacube = os.path.join(settings.datadir, "Sigma_test_data.fits") 
+
+@pytest.fixture
+def datacube(datadir):
+    'returns the reference data cube as a py.path.local object'
+    return datadir.join("Sigma_test_data.fits")
 
 
-def test_fluxes_and_snr_to_randoms_cmd(tmpdir):
+def test_fluxes_and_snr_to_randoms_cmd(tmpdir, datacube):
     """test command line tool to add flux and snr to randoms"""
-    test_im = str(tmpdir.join("TestIm.jpeg"))
-    args = [datacube, test_im]
+    test_im = tmpdir.join("TestIm.jpeg")
+    args = [datacube.strpath, test_im.strpath]
     main(args=args)
 
-    assert os.path.exists(test_im), "could not create an image from a datacube"
-
+    assert test_im.check(file=True), "no image created from a datacube"

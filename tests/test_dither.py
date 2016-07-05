@@ -14,36 +14,6 @@ from pyhetdex.het import dither
 parametrize = pytest.mark.parametrize
 
 
-@pytest.fixture(scope='session')
-def dither_fast(datadir):
-    """Returns the path to the dither_fast file as a py.path object"""
-    return datadir.join("dither_fast_SIMDEX-4000-obs-1_046.txt")
-
-
-@pytest.fixture(scope='session')
-def dither_wrong(datadir):
-    """Returns the path to the dither_wrong file"""
-    return datadir.join("dither_wrong_SIMDEX-4000-obs-1_046.txt")
-
-
-@pytest.fixture(scope='session')
-def example_fdither(datadir):
-    """Returns the path to the dither.example.txt file"""
-    return datadir.join('dither.example.txt')
-
-
-@pytest.fixture(scope='session')
-def ditherpos_file(datadir):
-    """Returns the path to the dither_positions.txt file"""
-    return datadir.join("dither_positions.txt")
-
-
-@pytest.fixture(scope='session')
-def fplane_file(datadir):
-    """Returns the path to the fplane.txt file"""
-    return datadir.join('fplane.txt')
-
-
 @pytest.fixture
 def tmp_dither_file(tmpdir):
     """Returns the name of a dither file in a tmp directory as a py.path

@@ -13,6 +13,7 @@ import locale
 @pytest.fixture(scope='module', params=['distortion_14.dist',
                                         'distortion_17.dist'])
 def dist(datadir, request):
+    'return a distortion object'
     return distortion.Distortion(datadir.join(request.param).strpath)
 
 

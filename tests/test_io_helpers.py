@@ -6,29 +6,27 @@ import pyhetdex.tools.io_helpers as ioh
 import pytest
 
 
-@pytest.fixture()
+@pytest.yield_fixture
 def testfile(request, tmpdir):
+    '''Create a test file and returns a file object to read it'''
     fname = tmpdir.mkdir('io').join('test.txt')
-    fout = fname.open('w')
-    fout.write('# Comment\n')
-    fout.write('#!\n')
-    fout.write('#\n')
-    fout.write('\n')
-    fout.write('Test <123>\n')
-    fout.write('[ 1 2 3 ]\n')
-    fout.close()
+    with fname.open('w') as fout:
+        # fout = fname.open('w')
+        fout.write('# Comment\n')
+        fout.write('#!\n')
+        fout.write('#\n')
+        fout.write('\n')
+        fout.write('Test <123>\n')
+        fout.write('[ 1 2 3 ]\n')
+        # fout.close()
 
-    fin = fname.open()
-
-    def final():
-        fin.close()
-    request.addfinalizer(final)
-
-    return fin
+    with fname.open() as fin:
+        yield fin
 
 
 @pytest.fixture(scope='module')
 def testlist():
+    'return a list of integers'
     return [1, 1, 1, 2, 1, 3, 2, 1]
 
 

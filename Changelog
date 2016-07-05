@@ -1,3 +1,18 @@
+2016-07-05 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tests/conftest.py: reorganization and use pytest properly
+    * tests/test_datacube2rgb.py: same
+    * tests/test_distortion.py: same
+    * tests/test_dither.py: same
+    * tests/test_fibermodel.py: same
+    * tests/test_fplane.py: same
+    * tests/test_generate_randoms.py: same
+    * tests/test_io_helpers.py: same
+    * tests/test_iq_fit.py: same
+    * tests/test_psfmodel.py: same
+    * tests/test_reconstructions.py: same
+    * tests/test_sky.py: same
+
 2016-07-04 Francesco Montesano <montefra@mpe.mpg.de>
 
     * doc/source/contributions.rst: fix English

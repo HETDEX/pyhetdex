@@ -14,6 +14,7 @@ import numpy as np
                                         'fibermodel_19.fmod',
                                         'fibermodel_21.fmod'])
 def fmod(datadir, request):
+    'return a fiber model'
     return fib.FiberModel(datadir.join(request.param).strpath)
 
 
