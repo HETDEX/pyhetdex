@@ -8,7 +8,7 @@ import numpy as np
 
 def virus_eff(lbda):
     """
-    Model fit to Virus + HET + atmosphere efficiency
+    Model fit to Virus + HET 
 
     Parameters
     ----------
@@ -18,7 +18,7 @@ def virus_eff(lbda):
     Returns
     -------
     virus_eff : float
-        the efficiency of Virus + HET + atmos
+        the efficiency of Virus + HET 
     """
 
     l = lbda/1000.0
