@@ -9,8 +9,6 @@ import pytest
 from pyhetdex.het import dither, ifu_centers
 import pyhetdex.het.reconstruct_ifu as rifu
 
-import conftest
-
 
 @pytest.fixture
 def ifucen(ifucenter_file):
@@ -161,7 +159,7 @@ inputfilenames_r = ['20151025T122555_103RL_sci.fits',
 class TestQuickReconstruction(object):
     "Test various ways to do the reconstruction"
 
-    def test_init(self, datadir, tmpdir, ifucenter_file):
+    def test_init(self, datadir, tmpdir, ifucenter_file, compare_fits):
         "Quick Reconstruction from existing ifu center and dither objects"
 
         infiles = [datadir.join(i).strpath for i in inputfilenames]
@@ -178,7 +176,7 @@ class TestQuickReconstruction(object):
 
         expected = datadir.join('reconstructed.fits').strpath
 
-        assert conftest.compare_fits(expected, actual)
+        assert compare_fits(expected, actual)
 
     def test_pscale_setter(self, datadir, tmpdir, ifucenter_file):
         dl = datadir.join(dist_l).strpath
@@ -330,7 +328,7 @@ class TestQuickReconstruction(object):
         assert a.ifucen == 'ifufile'
         assert a.files == ['file1', 'file3']
 
-    def test_entry_point(self, datadir, tmpdir, ifucenter_file):
+    def test_entry_point(self, datadir, tmpdir, ifucenter_file, compare_fits):
         "Quick Reconstruction from existing ifu center and dither objects"
 
         infiles = [datadir.join(i).strpath for i in inputfilenames]
@@ -346,4 +344,4 @@ class TestQuickReconstruction(object):
 
         expected = datadir.join('reconstructed.fits').strpath
 
-        assert conftest.compare_fits(expected, actual)
+        assert compare_fits(expected, actual)

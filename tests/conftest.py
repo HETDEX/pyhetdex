@@ -67,7 +67,6 @@ def dither_other(datadir):
     return datadir.join("dither_other_SIMDEX-4000-obs-1_046.txt")
 
 
-
 @pytest.fixture(scope='session')
 def ifucenter_fail(datadir):
     return datadir.join("IFUcen_HETDEX_fail.txt")
@@ -107,10 +106,13 @@ def randoms(datadir):
     return datadir.join("Randoms_test_data.fits")
 
 
-def compare_fits(expected, actual, hkeys=[]):
-    with fits.open(expected) as e_hdu:
-        with fits.open(actual) as a_hdu:
+@pytest.fixture
+def compare_fits():
+    '''Return a function that compare fits files'''
+    def _compare_fist(expected, actual, hkeys=[]):
+        with fits.open(expected) as e_hdu, fits.open(actual) as a_hdu:
             for h in hkeys:
                 assert e_hdu[0].header[h] == a_hdu[0].header[h]
 
             return np.isclose(e_hdu[0].data, a_hdu[0].data, 8).all()
+    return _compare_fist

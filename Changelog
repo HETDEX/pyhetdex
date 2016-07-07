@@ -1,5 +1,19 @@
 2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* setup.py: add pytest-catchlog dependency
+    * tox.ini: same
+    * tests/test_tools/test_logging_helper.py: rewrite getting rid of nose way
+	  and streamline the tests
+    * tests/conftest.py: make the compare_fits a fixture
+    * tests/test_het/test_reconstructions.py: use it
+    * tests/settings.py: removed
+    * tests/test_cure/test_distortion.py: use int instead of locale.atoi
+    * tests/test_cure/test_fibermodel.py: same
+    * tests/test_cure/test_psfmodel.py: same
+	* doc/source/install.rst: update dependencies
+
+2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* tests/*: reorganize the tests in directories; adjust some test
 
 2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>

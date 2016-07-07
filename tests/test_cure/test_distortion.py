@@ -5,7 +5,6 @@ from __future__ import (absolute_import, division, print_function,
 import pyhetdex.cure.distortion as distortion
 import numpy as np
 import pytest
-import locale
 
 
 __version__ = '$Id'
@@ -133,7 +132,7 @@ class TestDistortion(object):
 
     def test_version(self, dist):
         expected = dist.filename.split('.')[-2].split('_')[-1]
-        assert dist.version == locale.atoi(expected)
+        assert dist.version == int(expected)
 
     def test_wrong_version(self, datadir):
         with pytest.raises(IOError):

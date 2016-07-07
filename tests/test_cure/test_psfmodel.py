@@ -4,7 +4,6 @@ from __future__ import (absolute_import, division, print_function,
 
 import pyhetdex.cure.psfmodel as psfm
 import pytest
-import locale
 
 
 @pytest.fixture(scope='module', params=['psfmodel_2.pmod',
@@ -17,7 +16,7 @@ def pmod(datadir, request):
 class TestPSFModel(object):
     def test_version(self, pmod):
         expected = pmod.filename.split('.')[-2].split('_')[-1]
-        assert pmod.version == locale.atoi(expected)
+        assert pmod.version == int(expected)
 
     def test_maxx(self, pmod):
         if pmod.version == 2:
