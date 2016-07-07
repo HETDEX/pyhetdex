@@ -83,9 +83,15 @@ def ifucenter_missf(datadir):
 
 
 @pytest.fixture
-def detection(datadir):
-    'Returns the detection file as a py.path.local object'
+def cont_detection(datadir):
+    'Returns a continuum detection file as a py.path.local object'
     return datadir.join('detect046_cont.dat')
+
+
+@pytest.fixture
+def line_detection(datadir):
+    'Returns a line detection file as a py.path.local object'
+    return datadir.join('detect085_line.dat')
 
 
 @pytest.fixture

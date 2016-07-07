@@ -45,7 +45,12 @@ entry_points = {'console_scripts':
                  'add_fluxes_to_randoms ='
                  'pyhetdex.randoms.generate_randoms:add_fluxes_and_snr_to_randoms_cmd',
                  'generate_randoms ='
-                 ' pyhetdex.randoms.generate_randoms:generate_randoms_cmd']}
+                 'pyhetdex.randoms.generate_randoms:generate_randoms_cmd', 
+                 'add_ra_dec ='
+                 'pyhetdex.coordinates.astrometry:add_ra_dec',
+                 'add_wcs ='
+                 'pyhetdex.coordinates.astrometry:add_wcs',
+                 ]}
 
 setup(
     # package description and version

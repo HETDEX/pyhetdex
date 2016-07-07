@@ -30,6 +30,7 @@ Command Line Tools
 .. toctree::
     :maxdepth: 2
 
+    astrometry_tools
     dither_file
     quick_ifu_recon
     datacube2rgb

@@ -35,22 +35,22 @@ class TangentPlane(object):
     w : :class:`~astropy.wcs.WCS`
         a WCS object to store the tangent plane info
     """
-    def __init__(self, ra0, dec0, rot, x_scale=-1, y_scale=1):
+    def __init__(self, ra0, dec0, rot, x_scale=1, y_scale=1):
 
         ARCSECPERDEG = 1.0/3600.0
 
         # make a WCS object with appropriate FITS headers
-        self.w = wcs.WCS(naxis=2)
-        self.w.wcs.crpix = [0.0, 0.0]  # central "pixel"
-        self.w.wcs.crval = [ra0, dec0]  # tangent point
-        self.w.wcs.ctype = ['RA---TAN', 'DEC--TAN']
+        self.wcs = wcs.WCS(naxis=2)
+        self.wcs.wcs.crpix = [0.0, 0.0]  # central "pixel"
+        self.wcs.wcs.crval = [ra0, dec0]  # tangent point
+        self.wcs.wcs.ctype = ['RA---TAN', 'DEC--TAN']
         # pixel scale in deg.
-        self.w.wcs.cdelt = [ARCSECPERDEG * x_scale, ARCSECPERDEG * y_scale]
+        self.wcs.wcs.cdelt = [ARCSECPERDEG * x_scale, ARCSECPERDEG * y_scale]
 
         # Deal with PA rotation by adding rotation matrix to header
         rrot = deg2rad(rot)
         # clockwise rotation matrix
-        self.w.wcs.pc = [[cos(rrot), sin(rrot)], [-1.0*sin(rrot), cos(rrot)]]
+        self.wcs.wcs.pc = [[cos(rrot), sin(rrot)], [-1.0*sin(rrot), cos(rrot)]]
 
     def raDec2xy(self, ra, dec):
         """
@@ -67,7 +67,7 @@ class TangentPlane(object):
         x, y : array
             the x and y position in arcseconds
         """
-        return self.w.wcs_world2pix(ra, dec, 1)
+        return self.wcs.wcs_world2pix(ra, dec, 1)
 
     def xy2raDec(self, x, y):
         """
@@ -84,4 +84,4 @@ class TangentPlane(object):
         ra, dec : array
             the ra and dec position in degrees
         """
-        return self.w.wcs_pix2world(x, y, 1)
+        return self.wcs.wcs_pix2world(x, y, 1)

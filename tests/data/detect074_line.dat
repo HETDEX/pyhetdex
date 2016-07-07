@@ -1,0 +1,3 @@
+# CALL : /home/03946/hetdex/curehome/cure/bin/detect -s 4.5 -c 10 -C 1e6 -i /home/03946/hetdex/curehome/cure/bin/../config/IFUcen_cam037.txt -o /work/04120/dfarrow/maverick/scirun/good10_c037/detect_074_20160512T054627.4 /work/04120/dfarrow/maverick/scirun/good10_c037/dither_074_20160512T054627.4.txt 
+#FILE CREATED ON : Thu May 12 21:31:59 2016  by version $Id: ditherenv.cpp 840 2013-06-17 15:17:14Z snigula $
+#     NR        ID         XS        YS        l        z         dataflux    modflux   fluxfrac        sigma    chi2      chi2s     chi2w  gammq  gammq_s        eqw       cont

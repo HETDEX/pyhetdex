@@ -1,0 +1,4 @@
+# basename          modelbase           ditherx dithery              seeing norm airmass
+fast_SIMDEX-4000-obs-1_D1_046 fast_SIMDEX-4000-obs-1_D1_046  0.00    0.00 1.400 1.0000 1.2200
+fast_SIMDEX-4000-obs-1_D2_046 fast_SIMDEX-4000-obs-1_D2_046 -1.27    0.73 1.400 1.0000 1.2200
+fast_SIMDEX-4000-obs-1_D3_046 fast_SIMDEX-4000-obs-1_D3_046 -1.27   -0.73 1.400 1.0000 1.2200
