@@ -380,7 +380,7 @@ def create_dither_file(argv=None):
     args = argument_parser(argv=argv)
 
     # create the shot object
-    shot = Shot(args.shotdir)
+    shot = Shot()
 
     # create the dither
     dithers = DitherCreator(args.ditherpos, args.fplane, shot)

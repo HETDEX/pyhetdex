@@ -24,7 +24,7 @@ def tmp_dither_file(tmpdir):
 @pytest.fixture
 def shot():
     """Create and returns a pyhetdex.het.telescope.Shot object"""
-    return Shot('a/dir')
+    return Shot()
 
 
 @pytest.fixture

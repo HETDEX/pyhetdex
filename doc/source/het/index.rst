@@ -10,8 +10,6 @@
     dither
     ifu_centers
     reconstruct_ifu
-    image_quality
-    illumination
     throughput
     telescope
     flux_conversions

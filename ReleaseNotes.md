@@ -2,6 +2,11 @@
 
 ## Development version @ trunk
 
+## Development version @ branches/shot_rework_1515
+
+* update the Shot class according to issue #1515; remove the illumination and
+  image quality servers as they are not used
+
 ## Version 0.8.0
 
 * pyhetdex.cure.distortion: make Distortion class compatible with

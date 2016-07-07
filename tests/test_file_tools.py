@@ -101,7 +101,8 @@ class Test_scan_files(object):
 
     def test_directory_exclusion(self):
         """exclude directories"""
-        flist = self._scan_files(exclude_dirs=['data', '__pycache__'])
+        flist = self._scan_files(exclude_dirs=['data', '__pycache__'],
+                                 recursive=False)
         find_list = self._find_files(options=['-maxdepth', '1'])
         assert flist == find_list
 

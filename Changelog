@@ -1,3 +1,20 @@
+2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/het/illumination.rst: removed
+    * doc/source/het/image_quality.rst: removed
+    * doc/source/het/index.rst: remove them from index
+    * doc/source/het/telescope.rst: update autodoc options
+    * pyhetdex/het/telescope.py: rewrite shot according to issuei #1515
+    * pyhetdex/het/dither.py: update to the new shot object
+    * pyhetdex/het/illumination.py: removed
+    * pyhetdex/het/image_quality.py: removed
+    * tests/test_dither.py: update test
+    * tests/test_file_tools.py: same
+    * tests/test_het/test_telescope.py: added
+    * tests/test_image_quality.py: removed
+    * tests/test_reconstructions.py: removed
+	* ReleaseNotes.md: update
+
 2016-07-05 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tests/conftest.py: reorganization and use pytest properly
