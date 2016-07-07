@@ -2,6 +2,13 @@
 
 ## Development version @ trunk
 
+* pyhetdex.cure.fiber_fractions: Computes the fill factor of 
+  apertures by fibers, expected to be useful in any model of
+  how likely you are to detect and LAE
+* pyhetdex.coordinates.astrometry: Command line tools to add
+  ra, dec to catalogues from VIRUS. Also a tool to add a 2D WCS
+  to datacubes/apimages, but this is still a work in progress.
+
 ## Version 0.8.0
 
 * pyhetdex.cure.distortion: make Distortion class compatible with
