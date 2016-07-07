@@ -2,12 +2,13 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-__version__ = '$Id'
-
 import pyhetdex.cure.distortion as distortion
 import numpy as np
 import pytest
 import locale
+
+
+__version__ = '$Id'
 
 
 @pytest.fixture(scope='module', params=['distortion_14.dist',
@@ -65,11 +66,11 @@ class TestDistortion(object):
 
     def test_dist_xy_fibernum(self, dist):
         if dist.version == 14:
-            assert (dist.map_xy_fibernum([100, 1000], (200, 1500))
-                    == np.array([203, 62])).all()
+            assert (dist.map_xy_fibernum([100, 1000], (200, 1500)) ==
+                    np.array([203, 62])).all()
         else:
-            assert (dist.map_xy_fibernum([100, 1000], (200, 1500))
-                    == np.array([203, 62])).all()
+            assert (dist.map_xy_fibernum([100, 1000], (200, 1500)) ==
+                    np.array([203, 62])).all()
 
     def test_dist_xy_wavelength(self, dist):
         if dist.version == 14:

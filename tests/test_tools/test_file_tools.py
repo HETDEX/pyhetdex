@@ -126,7 +126,7 @@ class Test_scan_dir(object):
     @classmethod
     def setup_class(cls):
         "setup the class"
-        cls.test_dir = os.path.join(os.path.dirname(__file__), "..",
+        cls.test_dir = os.path.join(os.path.dirname(__file__), "..", "..",
                                     "pyhetdex")
         return cls
 

@@ -1,5 +1,9 @@
 2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* tests/*: reorganize the tests in directories; adjust some test
+
+2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
+
     * doc/source/het/illumination.rst: removed
     * doc/source/het/image_quality.rst: removed
     * doc/source/het/index.rst: remove them from index
