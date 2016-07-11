@@ -1,3 +1,8 @@
+2016-07-11  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/cure/fibermodel.py: Added compability for version 22
+	fibermodels, started adding evaluation functions.
+
 2016-07-07 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/coordinates/astrometry.py: added routines to add ra, dec to
