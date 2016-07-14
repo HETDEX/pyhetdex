@@ -1,3 +1,9 @@
+2016-07-14 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/telescope.py: add HetpupilModel to use CUREBIN/hetpupil
+    * tests/test_het/test_telescope.py: test it
+    * tox.ini: pass the CUREBIN environment variable in the test environments
+
 2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* : merge ^/trunk into ^/branches/shot_rework_1515

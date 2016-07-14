@@ -8,8 +8,12 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import abc
+from distutils.spawn import find_executable
+import os
+import subprocess as sp
 
 import numpy as np
+from pyhetdex.tools.six_ext import SubprocessExeError
 import six
 
 
@@ -184,3 +188,65 @@ class ConstantModel(ModelInterface):
         '''Returns the constant passed to the constructor. The arguments are
         ignored'''
         return self._constant
+
+
+class HetpupilModel(ModelInterface):
+    '''Run the ``$CUREBIN/hetpupil`` code on the input files and save the
+    relative illumination into a list. If required normalize the whole list to
+    the first element. :func:`subprocess.check_output` is used.
+
+    ``hetpupil`` is searched in CUREBIN and then in the path
+
+    Parameters
+    ----------
+    files : list of strings
+        name of the files on which to run the command
+    normalize : bool, optional
+        normalize the output of hetpupil to the first value found
+
+    Attributes
+    ----------
+    fill_factor : list
+        list of filling factors for each input file
+
+    Raises
+    ------
+    ``pyhetdex.tools.six_ext.SubprocessExeError``
+        if he hetpupil executable cannot be found
+    '''
+    def __init__(self, files, normalize=True):
+        # try to get distutils from the path
+        hetpupil = find_executable('hetpupil',
+                                   path=os.environ.get('CUREBIN', None))
+        if not hetpupil:  # otherwise in CUREBIN
+            hetpupil = find_executable('hetpupil')
+
+        if not hetpupil:
+            raise SubprocessExeError('The executable ``hetpupil`` cannot be'
+                                     ' found in $CUREBIN nor in the $PATH')
+
+        cmd_list = [hetpupil, '-q'] + files
+        stdout = sp.check_output(cmd_list, universal_newlines=True)
+
+        self.fill_factor = [float(i.split()[-1].strip())
+                            for i in stdout.splitlines()]
+        self.fill_factor = np.array(self.fill_factor)
+        if normalize:
+            self.fill_factor /= self.fill_factor[0]
+
+    def __call__(self, x, y, dither):
+        '''Returns the value of the model for ``dither``. ``x/y`` are ignored
+
+        Parameters
+        ----------
+        x, y : float
+            position in the focal plane in arcseconds
+        dither : int
+            the dither number, starting from 1
+
+        Returns
+        -------
+        float
+            relative/absolute pupil fill factor
+        '''
+        return self.fill_factor[dither - 1]
