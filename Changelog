@@ -1,3 +1,10 @@
+2016-07-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/dither.py: add possibility to pass the dither positions via
+	  command line
+    * tests/test_het/test_dither.py: update the tests
+    * doc/source/dither_file.rst: document the changes
+
 2016-07-14 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/telescope.py: add HetpupilModel to use CUREBIN/hetpupil

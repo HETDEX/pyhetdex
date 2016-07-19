@@ -29,8 +29,20 @@ def shot():
 @pytest.fixture
 def dither_creator(ditherpos_file, fplane_file, shot):
     """Create and return a DitherCreator object"""
-    return dither.DitherCreator(str(ditherpos_file), str(fplane_file), shot)
+    return dither.DitherCreator.from_file(str(fplane_file), shot,
+                                          str(ditherpos_file))
 
+
+@pytest.fixture
+def ditherpos_046():
+    '''Return the list of dither positions for IFU slot 046'''
+    return ['0.000', '0.615', '1.230', '0.000', '1.065', '0.000']
+
+
+@pytest.fixture
+def ditherpos_file_list(ditherpos_file):
+    '''Returns the dither position file as list wrapped into a list'''
+    return [ditherpos_file.strpath]
 
 xfail_dither_create = pytest.mark.xfail(raises=dither.DitherCreationError,
                                         reason="Wrong number of basenames")
@@ -95,14 +107,15 @@ def test_dither_creator(dither_creator, tmp_dither_file, example_fdither,
 
 @pytest.mark.xfail(raises=dither.DitherPositionError,
                    reason="Fail to parse the dither position file")
-def test_dither_creator_wrong_number_dithers(tmpdir, fplane_file, shot):
+def test_dither_creator_wrong_number_dithers(fplane_file, shot):
     """Test the case in which the number of dither positions is odd"""
-    ditherpos_file = tmpdir.join('dither_pos.txt')
-    ditherpos_file.write('001 2 3 4\n')
 
-    dither.DitherCreator(str(ditherpos_file), str(fplane_file), shot)
+    dither.DitherCreator(str(fplane_file), shot,
+                         dither_positions=[['001', 2, 3, 4]])
 
 
+@parametrize('option, fixture',
+             [('-f', 'ditherpos_file_list'), ('-d', 'ditherpos_046')])
 @parametrize('basenames, modelbases',
              [(['fast_SIMDEX-4000-obs-1_D{dither}_{id}', ],
                ['fast_SIMDEX-4000-obs-1_D{dither}_{id}', ]),
@@ -123,17 +136,27 @@ def test_dither_creator_wrong_number_dithers(tmpdir, fplane_file, shot):
               xfail_system_exit((['1', '2'], [])),
               xfail_system_exit((['1', ], ['1', '2'])),
               ])
-def test_command_line_dithertool(tmp_dither_file, fplane_file, ditherpos_file,
-                                 example_fdither, basenames, modelbases):
+def test_command_line_dithertool(request, tmp_dither_file, fplane_file,
+                                 example_fdither, basenames, modelbases,
+                                 option, fixture):
     """Test the command line tool to create the dither file works"""
 
     args = ['--modelbase', ] + modelbases + ['-o', str(tmp_dither_file)]
-    args += ['046', str(fplane_file), str(ditherpos_file)] + basenames
+    args += [option, ] + request.getfuncargvalue(fixture)
+    args += ['--', '046', str(fplane_file), ] + basenames
 
     dither.create_dither_file(argv=args)
 
     same_file = filecmp.cmp(str(tmp_dither_file), str(example_fdither))
     assert same_file
+
+
+@pytest.mark.xfail(raises=SystemExit,
+                   reason=('It is not possible to give both the dither'
+                           ' positions and the dither position file'))
+def test_command_line_dithertool_exclusive():
+    dither.create_dither_file(argv=['-d', '1', '2', '-f', 'dpos.txt',
+                                    '046', 'fplane.txt', 'basename'])
 
 
 def test_command_line_dithertool_header(datadir, tmp_dither_file, fplane_file,
@@ -142,7 +165,8 @@ def test_command_line_dithertool_header(datadir, tmp_dither_file, fplane_file,
     fine"""
     args = ['--modelbase', 'fast_SIMDEX-4000-obs-1_D{dither}_{id}']
     args += ['-o', str(tmp_dither_file), '-O', 'DITHER']
-    args += ['046', str(fplane_file), str(ditherpos_file)]
+    args += ['-f', str(ditherpos_file)]
+    args += ['046', str(fplane_file)]
     args += [str(datadir.join(f)) for f in ['fast_SIMDEX-4000-obs-1_D2_046',
                                             'fast_SIMDEX-4000-obs-1_D3_046',
                                             'fast_SIMDEX-4000-obs-1_D1_046']]
