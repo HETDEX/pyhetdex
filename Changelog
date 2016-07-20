@@ -1,5 +1,10 @@
 2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* : merge ^/trunk into ^/branches/shot_rework_1515
+    * ReleaseNotes.md: updated
+
+2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/dither.py: add an option to use the hetpupil in the
 	  illumination model
     * doc/source/dither_file.rst: document it
@@ -74,6 +79,11 @@
     * tests/test_psfmodel.py: same
     * tests/test_reconstructions.py: same
     * tests/test_sky.py: same
+
+2016-07-11  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/cure/fibermodel.py: Added compability for version 22
+	fibermodels, started adding evaluation functions.
 
 2016-07-07 Daniel Farrow <dfarrow@mpe.mpg.de>
 
