@@ -4,8 +4,6 @@ Test pyhetdex.tools.analysis.sky
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
-
 from astropy.io import fits
 import numpy as np
 import py
@@ -14,17 +12,15 @@ import pytest
 from pyhetdex.tools.astro import sky
 from pyhetdex.tools.files.file_tools import prefix_filename
 
-import settings as s
-
 
 wls = [3800, 4500, 5200]
 # wls = [3600, 4000, 4500, 5000, 5400]
 
 
 @pytest.fixture
-def fname_template(tmpdir):
+def fname_template(datadir):
     """Template for joined file names"""
-    return os.path.join(s.datadir, "jpes20120301T000000_046L_sci.fits")
+    return datadir.join("jpes20120301T000000_046L_sci.fits").strpath
 
 
 @pytest.fixture

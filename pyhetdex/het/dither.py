@@ -27,7 +27,7 @@ from numpy import array
 from six.moves import zip
 
 from pyhetdex.het.fplane import FPlane
-from pyhetdex.het.telescope import Shot
+import pyhetdex.het.telescope as tel
 import pyhetdex.tools.files.file_tools as ft
 
 
@@ -183,18 +183,16 @@ class DitherCreator(object):
 
     Parameters
     ----------
-    dither_positions : str
-        path to file containing the positions of the dithers for each
-        IHMPID; the file must have the following format::
-
-            ihmpid x1 x2 ... xn y1 y2 ... yn
-
     fplane_file : str
         path the focal plane file; it is parsed using
         :class:`~pyhetdex.het.fplane.FPlane`
     shot : :class:`pyhetdex.het.telescope.Shot` instance
         a ``shot`` instance that contains info on the image quality and
         normalization
+    dither_positions : list of lists, optional
+        list of lists with 2*n+1 elements: the first element is the ``id_``,
+        used in, e.g., :meth:`create_dither`, then there are the n x-positions
+        of the dithers and finally their n y-positions
 
     Attributes
     ----------
@@ -202,34 +200,64 @@ class DitherCreator(object):
         key: ihmpid; key: x and y shifts for the dithers
     shot : :class:`pyhetdex.het.telescope.Shot` instance
     fplane : :class:`~pyhetdex.het.fplane.FPlane` instance
+
+    Raises
+    ------
+    DitherPositionError
+        if the number of x and y dither shifts for one id does not match
     """
-    def __init__(self, dither_positions, fplane_file, shot):
+    def __init__(self, fplane_file, shot,
+                 dither_positions=[['000', 0.000, -1.270, -1.270,
+                                    0.000, 0.730, -0.730], ]):
         self.ifu_dxs = {}
         self.ifu_dys = {}
         self.shot = shot
         self.fplane = FPlane(fplane_file)
-        self._parse_dither_posistions(dither_positions)
+        self._store_dither_positions(dither_positions)
 
-    def _parse_dither_posistions(self, dither_positions):
-        """Parse the file containing the dither positions"""
-        # read in the file of dither positions
-        with open(dither_positions, 'r') as f:
+    @classmethod
+    def from_file(cls, fplane_file, shot, dither_positions_file):
+        """Create an instance of the class reading the dither positions from a
+        file.
+
+        Parameters
+        ----------
+        fplane_file : str
+            path the focal plane file; it is parsed using
+            :class:`~pyhetdex.het.fplane.FPlane`
+        shot : :class:`pyhetdex.het.telescope.Shot` instance
+            a ``shot`` instance that contains info on the image quality and
+            normalization
+        dither_positions_file : str
+            path to file containing the positions of the dithers for each
+            IHMPID; the file must have the following format::
+
+                ihmpid x1 x2 ... xn y1 y2 ... yn
+        """
+        dither_positions = []
+        with open(dither_positions_file, 'r') as f:
             for line in f:
                 els = line.strip().split()
                 if '#' in els[0]:
                     continue
-
-                if len(els[1:]) % 2 == 1:
-                    msg = ("The line '{}' in file '{} has a miss-matching"
-                           " number of x and y entries")
-                    raise DitherPositionError(msg.format(line,
-                                                         dither_positions))
                 else:
-                    n_x = len(els[1:]) // 2
-                # save dither positions in dictionary of IFUs
-                #                      dither1 dither2  dither3
-                self.ifu_dxs[els[0]] = array(els[1:n_x + 1], dtype=float)
-                self.ifu_dys[els[0]] = array(els[n_x + 1:], dtype=float)
+                    dither_positions.append(els)
+
+        return cls(fplane_file, shot, dither_positions=dither_positions)
+
+    def _store_dither_positions(self, dither_positions):
+        '''Store the dither positions into the ``ifu_dxs`` and ``ifu_dys``
+        dictionaries'''
+        for dp in dither_positions:
+            key = dp[0]
+            if len(dp[1:]) % 2 == 1:
+                msg = ("The line '{}' has a miss-matching"
+                       " number of x and y entries")
+                raise DitherPositionError(msg.format(dp))
+            else:
+                n_x = len(dp[1:]) // 2
+            self.ifu_dxs[key] = array(dp[1:n_x + 1], dtype=float)
+            self.ifu_dys[key] = array(dp[n_x + 1:], dtype=float)
 
     def dxs(self, id_, idtype='ifuslot'):
         """Returns the x shifts for the given ``id_``
@@ -329,10 +357,6 @@ def argument_parser(argv=None):
                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('id', help="id of the chosen IFU")
     parser.add_argument('fplane', help="The fplane file")
-    parser.add_argument('ditherpos', help='''Name of the file containing the
-                         dither shifts. The expected format is
-                         ``id x1 x2 ... xn y1 y2 ... yn``. Normally the ``id``
-                         is ``ifuslot``''')
     parser.add_argument('basenames', help="""Basename(s) of the data files. The
                         ``{dither}`` and ``{id}`` placeholders are replaced by
                         the dither number and the provided id. E.g., if the
@@ -362,10 +386,24 @@ def argument_parser(argv=None):
     parser.add_argument('-O', '--order-by', help="""If given, order the
                         ``basenames`` files by the value of the header keyword
                         '%(dest)s'""")
-    parser.add_argument('-e', '--extension', help="""If 'order_by' is given,
-                        add '%(dest)s' to the basenames to create valid file
-                        names""", default='_L.fits')
+    parser.add_argument('--use-hetpupil', action='store_true', help='''Use
+                        $CUREBIN/hetpupil to get the relative illumination from
+                        the files passed via basename. The ``extension`` is
+                        used to have valid file names.''')
+    parser.add_argument('-e', '--extension', help="""Extension appended to the
+                        base names to create valid file names""",
+                        default='_L.fits')
 
+    ditherpos = parser.add_mutually_exclusive_group()
+    ditherpos.add_argument('-d', '--ditherpos', help='''Dither postions''',
+                           type=float, nargs='+',
+                           default=[0.000, -1.270, -1.270, 0.000, 0.730,
+                                    -0.730])
+    ditherpos.add_argument('-f', '--ditherpos-file', help='''Name of the file
+                           containing the dither shifts. The expected format is
+                           ``id x1 x2 ...  xn y1 y2 ... yn``. Normally the
+                           ``id`` is ``ifuslot``. This option deactivate the
+                           ``ditherpos`` one''')
     return parser.parse_args(argv)
 
 
@@ -380,10 +418,15 @@ def create_dither_file(argv=None):
     args = argument_parser(argv=argv)
 
     # create the shot object
-    shot = Shot(args.shotdir)
+    shot = tel.Shot()
 
     # create the dither
-    dithers = DitherCreator(args.ditherpos, args.fplane, shot)
+    if args.ditherpos_file:
+        dithers = DitherCreator.from_file(args.fplane, shot,
+                                          args.ditherpos_file)
+    else:
+        dpos = [args.id, ] + args.ditherpos
+        dithers = DitherCreator(args.fplane, shot, dither_positions=[dpos, ])
     n_dithers = len(dithers.dxs(args.id, idtype=args.id_type))
 
     if not check_dithers(n_dithers, args.basenames, args.modelbases):
@@ -396,6 +439,10 @@ def create_dither_file(argv=None):
 
     if args.order_by:
         basenames = sort_basenames(basenames, args.extension, args.order_by)
+
+    if args.use_hetpupil:
+        hp_model = tel.HetpupilModel([b + args.extension for b in basenames])
+        dithers.shot.illumination_model = hp_model
 
     dithers.create_dither(args.id, basenames, modelbases,
                           args.outfile.format(id=args.id, dither=n_dithers),

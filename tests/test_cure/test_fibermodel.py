@@ -2,7 +2,6 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import locale
 import pyhetdex.cure.fibermodel as fib
 import pytest
 import numpy as np
@@ -14,13 +13,14 @@ import numpy as np
                                         'fibermodel_19.fmod',
                                         'fibermodel_21.fmod'])
 def fmod(datadir, request):
+    'return a fiber model'
     return fib.FiberModel(datadir.join(request.param).strpath)
 
 
 class TestFibermodel(object):
     def test_version(self, fmod):
         expected = fmod.filename.split('.')[-2].split('_')[-1]
-        assert fmod.version == locale.atoi(expected)
+        assert fmod.version == int(expected)
 
     def test_fiducial(self, fmod):
         if fmod.version < 18:

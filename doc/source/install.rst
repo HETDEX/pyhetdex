@@ -136,6 +136,7 @@ Optional dependences
    pytest
    pytest-cov
    pytest-xdist
+   pytest-catchlog
 
    tox
 

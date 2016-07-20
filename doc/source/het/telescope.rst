@@ -4,8 +4,8 @@
 ============================================================
 
 .. automodule:: pyhetdex.het.telescope
-   :member-order: groupwise
+   :member-order: bysource
    :members:
-   :undoc-members:
    :private-members:
-  
+   :special-members: __call__
+   :show-inheritance:

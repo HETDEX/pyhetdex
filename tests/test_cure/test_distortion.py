@@ -2,17 +2,18 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-__version__ = '$Id'
-
 import pyhetdex.cure.distortion as distortion
 import numpy as np
 import pytest
-import locale
+
+
+__version__ = '$Id'
 
 
 @pytest.fixture(scope='module', params=['distortion_14.dist',
                                         'distortion_17.dist'])
 def dist(datadir, request):
+    'return a distortion object'
     return distortion.Distortion(datadir.join(request.param).strpath)
 
 
@@ -64,11 +65,11 @@ class TestDistortion(object):
 
     def test_dist_xy_fibernum(self, dist):
         if dist.version == 14:
-            assert (dist.map_xy_fibernum([100, 1000], (200, 1500))
-                    == np.array([203, 62])).all()
+            assert (dist.map_xy_fibernum([100, 1000], (200, 1500)) ==
+                    np.array([203, 62])).all()
         else:
-            assert (dist.map_xy_fibernum([100, 1000], (200, 1500))
-                    == np.array([203, 62])).all()
+            assert (dist.map_xy_fibernum([100, 1000], (200, 1500)) ==
+                    np.array([203, 62])).all()
 
     def test_dist_xy_wavelength(self, dist):
         if dist.version == 14:
@@ -131,7 +132,7 @@ class TestDistortion(object):
 
     def test_version(self, dist):
         expected = dist.filename.split('.')[-2].split('_')[-1]
-        assert dist.version == locale.atoi(expected)
+        assert dist.version == int(expected)
 
     def test_wrong_version(self, datadir):
         with pytest.raises(IOError):

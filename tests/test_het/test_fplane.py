@@ -2,14 +2,11 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
 import subprocess as sp
 
 import pytest
 
 import pyhetdex.het.fplane as fp
-
-import settings as s
 
 
 def test_ifu():
@@ -31,95 +28,100 @@ class TestFPlane(object):
     """Test the fplane class
     """
 
-    @classmethod
-    def setup_class(cls):
-        """Instantiate the FPlane object
+    @pytest.fixture(scope='class')
+    def fplane(self, fplane_file):
+        """Instantiate the FPlane object. Returns it and the number of lines in
+        it
         """
-        fplane_file = os.path.join(s.datadir, "fplane.txt")
-        cls.fplane = fp.FPlane(fplane_file)
-        n_lines = sp.check_output(['awk', '!/^#/ {print $0}', fplane_file])
-        cls.n_lines = len(n_lines.splitlines())
+        return fp.FPlane(fplane_file.strpath)
 
-        return cls
+    @pytest.fixture(scope='class')
+    def n_lines(self, fplane_file):
+        'return the number of lines in the fplane file'
+        n_lines = sp.check_output(['awk', '!/^#/ {print $0}',
+                                   fplane_file.strpath])
+        n_lines = len(n_lines.splitlines())
+
+        return n_lines
 
     def test_ifuslot_type(self):
         """Test error if ifuslot is of wrong type"""
         with pytest.raises(TypeError):
             fp.IFU(2, 1, 1, 1, 1, '111', 0, 0)
 
-    def test_ihmpid(self):
+    def test_ihmpid(self, fplane, n_lines):
         """Test the size of the ifu dictionary"""
         with pytest.warns(DeprecationWarning):
-            assert len(self.fplane.ihmpids) == self.n_lines
+            assert len(fplane.ihmpids) == n_lines
         with pytest.warns(DeprecationWarning):
-            ifu = self.fplane.by_ihmpid('073')
+            ifu = fplane.by_ihmpid('073')
             assert ifu.ifuid == '023'
             with pytest.raises(KeyError):
-                self.fplane.by_ihmpid('001')
+                fplane.by_ihmpid('001')
 
-    def test_ifuid(self):
+    def test_ifuid(self, fplane):
         """Test the by_ifuid function"""
-        ifu = self.fplane.by_ifuid('023')
+        ifu = fplane.by_ifuid('023')
         assert ifu.ifuslot == '073'
         with pytest.raises(KeyError):
-            self.fplane.by_ifuid('200')
+            fplane.by_ifuid('200')
 
-    def test_ifuslot(self):
+    def test_ifuslot(self, fplane):
         """Test the by_ifuslot function"""
-        ifu = self.fplane.by_ifuslot('073')
+        ifu = fplane.by_ifuslot('073')
         assert ifu.ifuid == '023'
         with pytest.raises(KeyError):
-            self.fplane.by_ifuslot('001')
+            fplane.by_ifuslot('001')
 
-    def test_slotpos(self):
+    def test_slotpos(self, fplane):
         """Test the by_slotpos function"""
-        ifu = self.fplane.by_slotpos(7, 3)
+        ifu = fplane.by_slotpos(7, 3)
         assert ifu.ifuid == '023'
         with pytest.raises(fp.NoIFUError):
-            self.fplane.by_slotpos(11, 12)
+            fplane.by_slotpos(11, 12)
 
-    def test_specid(self):
+    def test_specid(self, fplane):
         """Test the by_specid function"""
-        ifu = self.fplane.by_specid(4)
+        ifu = fplane.by_specid(4)
         assert ifu.ifuid == '023'
         with pytest.raises(fp.NoIFUError):
-            self.fplane.by_specid(100)
+            fplane.by_specid(100)
 
-    def test_byid(self):
+    def test_byid(self, fplane):
         """Test the by_specid function"""
-        ifu = self.fplane.by_id('023', 'ifuid')
+        ifu = fplane.by_id('023', 'ifuid')
         assert ifu.ifuslot == '073'
-        ifu = self.fplane.by_id('073', 'ifuslot')
+        ifu = fplane.by_id('073', 'ifuslot')
         assert ifu.ifuid == '023'
         with pytest.warns(DeprecationWarning):
-            ifu = self.fplane.by_id('073', 'ihmpid')
+            ifu = fplane.by_id('073', 'ihmpid')
             assert ifu.ifuid == '023'
-        ifu = self.fplane.by_id(4, 'specid')
+        ifu = fplane.by_id(4, 'specid')
         assert ifu.ifuslot == '073'
         with pytest.raises(fp.UnknownIDTypeError):
-            self.fplane.by_id(1, 'lall')
+            fplane.by_id(1, 'lall')
 
-    def test_ifuids_size(self):
+    def test_ifuids_size(self, fplane, n_lines):
         """Test the size of the ifu dictionary"""
-        assert len(self.fplane.ifuids) == self.n_lines
+        assert len(fplane.ifuids) == n_lines
 
-    def test_specids_size(self):
+    def test_specids_size(self, fplane, n_lines):
         """Test the size of the ifu dictionary"""
-        assert len(self.fplane.specids) == self.n_lines
+        assert len(fplane.specids) == n_lines
 
-    def test_size_dict(self):
+    def test_size_dict(self, fplane, n_lines):
         """Test the size of the ifu dictionary"""
-        assert len(self.fplane.difus) == self.n_lines
+        assert len(fplane.difus) == n_lines
 
-    def test_size_keys(self):
+    def test_size_keys(self, fplane, n_lines):
         """Test the size of the keys of the ifu dictionary"""
-        assert len(self.fplane.ifus) == self.n_lines
+        assert len(fplane.ifus) == n_lines
 
-    def test_size_values(self):
+    def test_size_values(self, fplane, n_lines):
         """Test the size of the values of the ifu dictionary"""
-        assert len(self.fplane.ifus) == self.n_lines
+        assert len(fplane.ifus) == n_lines
 
-    def test_ifuslots(self):
+    def test_ifuslots(self, fplane):
         """Test that the ids are correct"""
         slots = ['013', '014', '015', '016', '021', '022', '023', '024', '025',
                  '026', '027', '028', '030', '031', '032', '033', '034', '035',
@@ -130,15 +132,15 @@ class TestFPlane(object):
                  '078', '079', '080', '081', '082', '083', '084', '085', '086',
                  '087', '088', '089', '091', '092', '093', '094', '095', '096',
                  '097', '098', '103', '104', '105', '106']
-        assert (sorted(self.fplane.ifuslots) == slots)
+        assert (sorted(fplane.ifuslots) == slots)
 
-    def test_missing_ius(self):
+    def test_missing_ius(self, fplane):
         """Test that the ids are correct"""
-        ifu = self.fplane.by_ifuslot('013')
+        ifu = fplane.by_ifuslot('013')
         assert ifu.ifuid == 'N01'
 
 
-def test_custom_IFU():
+def test_custom_IFU(datadir):
     "Basic customisation of the IFU object"
     class _MyIFU(fp.IFU):
         "test custom IFU class"
@@ -148,7 +150,7 @@ def test_custom_IFU():
                                          ifuid, ifurot, platescl)
             self.mod_id = "1" + self.ifuslot
 
-    fplane_file = os.path.join(s.datadir, "fplane.txt")
+    fplane_file = datadir.join("fplane.txt").strpath
     fplane = fp.FPlane(fplane_file, ifu_class=_MyIFU)
     mod_ids = [ifu.mod_id for ifu in fplane.ifus]
     slots = ['1013', '1014', '1015', '1016', '1021', '1022', '1023', '1024',

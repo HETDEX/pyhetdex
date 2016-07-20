@@ -1,3 +1,89 @@
+2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/branches/shot_rework_1515 into ^/trunk
+
+2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/trunk into ^/branches/shot_rework_1515
+    * ReleaseNotes.md: updated
+
+2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/dither.py: add an option to use the hetpupil in the
+	  illumination model
+    * doc/source/dither_file.rst: document it
+    * tests/test_het/test_dither.py: test it
+    * tests/conftest.py: make fixture to skip non existing executable
+    * tests/test_het/test_telescope.py: update according to the above
+
+2016-07-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/dither.py: add possibility to pass the dither positions via
+	  command line
+    * tests/test_het/test_dither.py: update the tests
+    * doc/source/dither_file.rst: document the changes
+
+2016-07-14 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/telescope.py: add HetpupilModel to use CUREBIN/hetpupil
+    * tests/test_het/test_telescope.py: test it
+    * tox.ini: pass the CUREBIN environment variable in the test environments
+
+2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/trunk into ^/branches/shot_rework_1515
+	* tests/test_astrometry.py: adapted
+
+2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* setup.py: add pytest-catchlog dependency
+    * tox.ini: same
+    * tests/test_tools/test_logging_helper.py: rewrite getting rid of nose way
+	  and streamline the tests
+    * tests/conftest.py: make the compare_fits a fixture
+    * tests/test_het/test_reconstructions.py: use it
+    * tests/settings.py: removed
+    * tests/test_cure/test_distortion.py: use int instead of locale.atoi
+    * tests/test_cure/test_fibermodel.py: same
+    * tests/test_cure/test_psfmodel.py: same
+	* doc/source/install.rst: update dependencies
+
+2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* tests/*: reorganize the tests in directories; adjust some test
+
+2016-07-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/het/illumination.rst: removed
+    * doc/source/het/image_quality.rst: removed
+    * doc/source/het/index.rst: remove them from index
+    * doc/source/het/telescope.rst: update autodoc options
+    * pyhetdex/het/telescope.py: rewrite shot according to issuei #1515
+    * pyhetdex/het/dither.py: update to the new shot object
+    * pyhetdex/het/illumination.py: removed
+    * pyhetdex/het/image_quality.py: removed
+    * tests/test_dither.py: update test
+    * tests/test_file_tools.py: same
+    * tests/test_het/test_telescope.py: added
+    * tests/test_image_quality.py: removed
+    * tests/test_reconstructions.py: removed
+	* ReleaseNotes.md: update
+
+2016-07-05 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tests/conftest.py: reorganization and use pytest properly
+    * tests/test_datacube2rgb.py: same
+    * tests/test_distortion.py: same
+    * tests/test_dither.py: same
+    * tests/test_fibermodel.py: same
+    * tests/test_fplane.py: same
+    * tests/test_generate_randoms.py: same
+    * tests/test_io_helpers.py: same
+    * tests/test_iq_fit.py: same
+    * tests/test_psfmodel.py: same
+    * tests/test_reconstructions.py: same
+    * tests/test_sky.py: same
+
 2016-07-11  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/cure/fibermodel.py: Added compability for version 22

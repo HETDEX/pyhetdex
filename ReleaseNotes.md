@@ -8,6 +8,12 @@
 * pyhetdex.coordinates.astrometry: Command line tools to add
   ra, dec to catalogues from VIRUS. Also a tool to add a 2D WCS
   to datacubes/apimages, but this is still a work in progress.
+* pyhetdex.het.telescope: update the Shot class according to issue #1515; remove
+  the illumination and image quality servers as they are not used
+* pyhetdex.het.dither: pass the dither positions or a file with them from the
+  command line (issue #1544)
+* pyhetdex.het.dither: add the possibility to use the hetpupil executable when
+  creating dither files
 
 ## Version 0.8.0
 
