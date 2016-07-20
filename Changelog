@@ -1,5 +1,10 @@
 2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * tests/test_astrometry.py: moved to test_coordinates
+    * tests/test_fiber_fractions.py: moved to test_cure
+
+2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* : merge ^/branches/shot_rework_1515 into ^/trunk
 
 2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
