@@ -3,8 +3,6 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from distutils.spawn import find_executable
-import os
 import random
 import subprocess as sp
 import stat
@@ -92,22 +90,14 @@ def test_hetpupil_model_tmpexec(tmpdir, monkeypatch, envvar):
     tel.HetpupilModel([])
 
 
-hetpupil_exe = find_executable('hetpupil')
-if hetpupil_exe is None:
-    hetpupil_exe = find_executable('hetpupil',
-                                   path=os.environ.get('CUREBIN', ''))
-no_hetpupil = pytest.mark.skipif(hetpupil_exe is None,
-                                 reason='hetpupil not found')
-
-
 @parametrize('normalize', [True, False])
-@no_hetpupil
-def test_hetpupil_model(tmpdir, normalize):
+def test_hetpupil_model(tmpdir, skip_if_no_executable, normalize):
     '''Create two fits files into tmpdir with all the needed header entries and
     test the model'''
+    skip_if_no_executable('hetpupil')
     # create the mock fits files
-    fits1 = tmpdir.join('file1.fits').strpath
-    fits2 = tmpdir.join('file2.fits').strpath
+    fits1 = tmpdir.join('file1_L.fits').strpath
+    fits2 = tmpdir.join('file2_L.fits').strpath
 
     hdu = fits.PrimaryHDU()
     hdu.header['STRUCTAZ'] = 320.681062

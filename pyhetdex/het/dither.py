@@ -27,7 +27,7 @@ from numpy import array
 from six.moves import zip
 
 from pyhetdex.het.fplane import FPlane
-from pyhetdex.het.telescope import Shot
+import pyhetdex.het.telescope as tel
 import pyhetdex.tools.files.file_tools as ft
 
 
@@ -386,9 +386,13 @@ def argument_parser(argv=None):
     parser.add_argument('-O', '--order-by', help="""If given, order the
                         ``basenames`` files by the value of the header keyword
                         '%(dest)s'""")
-    parser.add_argument('-e', '--extension', help="""If 'order_by' is given,
-                        add '%(dest)s' to the basenames to create valid file
-                        names""", default='_L.fits')
+    parser.add_argument('--use-hetpupil', action='store_true', help='''Use
+                        $CUREBIN/hetpupil to get the relative illumination from
+                        the files passed via basename. The ``extension`` is
+                        used to have valid file names.''')
+    parser.add_argument('-e', '--extension', help="""Extension appended to the
+                        base names to create valid file names""",
+                        default='_L.fits')
 
     ditherpos = parser.add_mutually_exclusive_group()
     ditherpos.add_argument('-d', '--ditherpos', help='''Dither postions''',
@@ -414,7 +418,7 @@ def create_dither_file(argv=None):
     args = argument_parser(argv=argv)
 
     # create the shot object
-    shot = Shot()
+    shot = tel.Shot()
 
     # create the dither
     if args.ditherpos_file:
@@ -435,6 +439,10 @@ def create_dither_file(argv=None):
 
     if args.order_by:
         basenames = sort_basenames(basenames, args.extension, args.order_by)
+
+    if args.use_hetpupil:
+        hp_model = tel.HetpupilModel([b + args.extension for b in basenames])
+        dithers.shot.illumination_model = hp_model
 
     dithers.create_dither(args.id, basenames, modelbases,
                           args.outfile.format(id=args.id, dither=n_dithers),

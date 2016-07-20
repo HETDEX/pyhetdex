@@ -2,6 +2,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from distutils.spawn import find_executable
+
 import matplotlib
 matplotlib.use('Agg')
 
@@ -122,3 +124,18 @@ def compare_fits():
 
             return np.isclose(e_hdu[0].data, a_hdu[0].data, 8).all()
     return _compare_fist
+
+
+@pytest.fixture
+def skip_if_no_executable():
+    '''return a function that skips if the executable is not found in the path
+    or CUREBIN'''
+
+    def _skip_executable(exename):
+        fullexe = find_executable(exename)
+        if fullexe is None:
+            fullexe = find_executable(exename,
+                                      path=os.environ.get('CUREBIN', ''))
+        if fullexe is None:
+            pytest.skip('Executable "{}" not found'.format(exename))
+    return _skip_executable

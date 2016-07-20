@@ -52,10 +52,12 @@ is::
     -O ORDER_BY, --order-by ORDER_BY
                             If given, order the ``basenames`` files by the value
                             of the header keyword 'order_by' (default: None)
+    --use-hetpupil          Use $CUREBIN/hetpupil to get the relative illumination
+                            from the files passed via basename. The ``extension``
+                            is used to have valid file names. (default: False)
     -e EXTENSION, --extension EXTENSION
-                            If 'order_by' is given, add 'extension' to the
-                            basenames to create valid file names (default:
-                            _L.fits)
+                            Extension appended to the base names to create valid
+                            file names (default: _L.fits)
     -d DITHERPOS [DITHERPOS ...], --ditherpos DITHERPOS [DITHERPOS ...]
                             Dither postions (default: [0.0, -1.27, -1.27, 0.0,
                             0.73, -0.73])
@@ -64,7 +66,6 @@ is::
                             expected format is ``id x1 x2 ... xn y1 y2 ... yn``.
                             Normally the ``id`` is ``ifuslot``. This option
                             deactivate the ``ditherpos`` one (default: None)
-
 
 Running::
 
@@ -111,10 +112,22 @@ writes the file::
     20160410T000017_067_sci masterflat_067 0.615000 1.065000 1.600 1.0000 1.2200
     20160410T000030_067_sci masterflat_067 1.230000 0.000000 1.600 1.0000 1.2200
 
+With the ``--use-hetpupil`` switch, the default illumination model, is replaced
+with one that uses the ``hetpupil`` executable from cure to estimate
+the average pupil illumination and thus the normalisation. If, e.g., for the
+above three files ``hetpupil`` return 0.9, 1.2 and 0.7, running::
 
-Seeing and normalisation values are inferred from the guide probe and the
-tracker position information.
+    dither_file -O DITHER --use-hetpupil\
+        -f vhc_config/trunk/reference_files/dither_positions.txt\
+        067 fplane.txt\
+        20160410T000030_067_sci 20160410T000003_067_sci\
+        20160410T000017_067_sci
 
-.. warning::
-    Currently the servers just return fixed values, they still need to be
-    implemented.
+will create a file with the second to last column like in the following example::
+
+    # basename          modelbase           ditherx dithery                seeing norm airmass
+    20160410T000003_067_sci masterflat_067 0.000000 0.000000 1.600 1.0000 1.2200
+    20160410T000017_067_sci masterflat_067 0.615000 1.065000 1.600 1.3333 1.2200
+    20160410T000030_067_sci masterflat_067 1.230000 0.000000 1.600 0.7778 1.2200
+
+The output of ``hetpupil`` is normalized to the value of the first file.

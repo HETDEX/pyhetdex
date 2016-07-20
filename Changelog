@@ -1,3 +1,12 @@
+2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/dither.py: add an option to use the hetpupil in the
+	  illumination model
+    * doc/source/dither_file.rst: document it
+    * tests/test_het/test_dither.py: test it
+    * tests/conftest.py: make fixture to skip non existing executable
+    * tests/test_het/test_telescope.py: update according to the above
+
 2016-07-19 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/dither.py: add possibility to pass the dither positions via

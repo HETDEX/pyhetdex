@@ -177,3 +177,24 @@ def test_command_line_dithertool_header(datadir, tmp_dither_file, fplane_file,
     dither_file = tmp_dither_file.readlines(cr=False)
     for ef, df in zip(example_file, dither_file):
         assert ef in df
+
+
+def test_command_line_dithertool_hetpupil(datadir, example_fdither,
+                                          skip_if_no_executable,
+                                          tmp_dither_file, fplane_file,
+                                          ditherpos_046):
+    '''Test using the hetpupil model'''
+    skip_if_no_executable('hetpupil')
+
+    args = ['--modelbase', 'fast_SIMDEX-4000-obs-1_D{dither}_{id}']
+    args += ['-d'] + ditherpos_046
+    args += ['-o', str(tmp_dither_file), '--use-hetpupil']
+    args += ['046', str(fplane_file),
+             datadir.join('fast_SIMDEX-4000-obs-1_D{dither}_{id}').strpath]
+
+    dither.create_dither_file(argv=args)
+
+    example_file = example_fdither.readlines(cr=False)
+    dither_file = tmp_dither_file.readlines(cr=False)
+    for ef, df in zip(example_file, dither_file):
+        assert ef in df
