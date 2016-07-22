@@ -5,7 +5,8 @@ __version__ = '$Id'
 import pyhetdex.ltl.marray as ma
 from pyhetdex.tools import io_helpers
 
-import locale
+from pyhetdex.cure.gaussian import gauss1D_H
+from pyhetdex.cure.bspline import BSpline
 
 
 class FiberModelBase(object):
@@ -20,7 +21,7 @@ class FiberModelBase(object):
                   22: FiberModel_22}
 
         in_ = open(filename)
-        fileversion = locale.atoi(io_helpers.skip_commentlines(in_))
+        fileversion = int(io_helpers.skip_commentlines(in_))
         in_.close()
 
         if fileversion not in _vdict:
@@ -75,24 +76,24 @@ class FiberModel_16(object):
     def read(self):
 
         in_ = open(self.filename)
-        self.version = locale.atoi(io_helpers.skip_commentlines(in_))
-        self.minw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.miny = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxy = locale.atof(io_helpers.skip_commentlines(in_))
+        self.version = int(io_helpers.skip_commentlines(in_))
+        self.minw = float(io_helpers.skip_commentlines(in_))
+        self.maxw = float(io_helpers.skip_commentlines(in_))
+        self.minf = float(io_helpers.skip_commentlines(in_))
+        self.maxf = float(io_helpers.skip_commentlines(in_))
+        self.minx = float(io_helpers.skip_commentlines(in_))
+        self.maxx = float(io_helpers.skip_commentlines(in_))
+        self.miny = float(io_helpers.skip_commentlines(in_))
+        self.maxy = float(io_helpers.skip_commentlines(in_))
 
-        self.fiducial_fib_ = locale.atoi(io_helpers.skip_commentlines(in_))
+        self.fiducial_fib_ = int(io_helpers.skip_commentlines(in_))
         self.sigma_par_.read(in_)
         self.sigma_errors_.read(in_)
         self.h2_par_.read(in_)
         self.h2_errors_.read(in_)
         self.h3_par_.read(in_)
         self.h3_errors_.read(in_)
-        size = locale.atof(io_helpers.skip_commentlines(in_))
+        size = float(io_helpers.skip_commentlines(in_))
         # print('Reading %d amplitudes' % size)
         i = 0
         while i < size:
@@ -127,15 +128,15 @@ class FiberModel_18(object):
     def read(self):
 
         in_ = open(self.filename)
-        self.version = locale.atoi(io_helpers.skip_commentlines(in_))
-        self.minw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.miny = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxy = locale.atof(io_helpers.skip_commentlines(in_))
+        self.version = int(io_helpers.skip_commentlines(in_))
+        self.minw = float(io_helpers.skip_commentlines(in_))
+        self.maxw = float(io_helpers.skip_commentlines(in_))
+        self.minf = float(io_helpers.skip_commentlines(in_))
+        self.maxf = float(io_helpers.skip_commentlines(in_))
+        self.minx = float(io_helpers.skip_commentlines(in_))
+        self.maxx = float(io_helpers.skip_commentlines(in_))
+        self.miny = float(io_helpers.skip_commentlines(in_))
+        self.maxy = float(io_helpers.skip_commentlines(in_))
 
         self.sigma_par_.read(in_)
         self.sigma_errors_.read(in_)
@@ -143,7 +144,7 @@ class FiberModel_18(object):
         self.h2_errors_.read(in_)
         self.h3_par_.read(in_)
         self.h3_errors_.read(in_)
-        size = locale.atof(io_helpers.skip_commentlines(in_))
+        size = float(io_helpers.skip_commentlines(in_))
         # print('Reading %d amplitudes' % size)
         i = 0
         while i < size:
@@ -180,15 +181,15 @@ class FiberModel_19(object):
     def read(self):
 
         in_ = open(self.filename)
-        self.version = locale.atoi(io_helpers.skip_commentlines(in_))
-        self.minw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.miny = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxy = locale.atof(io_helpers.skip_commentlines(in_))
+        self.version = int(io_helpers.skip_commentlines(in_))
+        self.minw = float(io_helpers.skip_commentlines(in_))
+        self.maxw = float(io_helpers.skip_commentlines(in_))
+        self.minf = float(io_helpers.skip_commentlines(in_))
+        self.maxf = float(io_helpers.skip_commentlines(in_))
+        self.minx = float(io_helpers.skip_commentlines(in_))
+        self.maxx = float(io_helpers.skip_commentlines(in_))
+        self.miny = float(io_helpers.skip_commentlines(in_))
+        self.maxy = float(io_helpers.skip_commentlines(in_))
 
         self.sigma_par_.read(in_)
         self.sigma_errors_.read(in_)
@@ -198,7 +199,7 @@ class FiberModel_19(object):
         self.h3_errors_.read(in_)
         self.exp_par_.read(in_)
         self.exp_errors_.read(in_)
-        size = locale.atof(io_helpers.skip_commentlines(in_))
+        size = float(io_helpers.skip_commentlines(in_))
         # print('Reading %d amplitudes' % size)
         i = 0
         while i < size:
@@ -236,15 +237,15 @@ class FiberModel_21(object):
     def read(self):
 
         in_ = open(self.filename)
-        self.version = locale.atoi(io_helpers.skip_commentlines(in_))
-        self.minw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.miny = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxy = locale.atof(io_helpers.skip_commentlines(in_))
+        self.version = int(io_helpers.skip_commentlines(in_))
+        self.minw = float(io_helpers.skip_commentlines(in_))
+        self.maxw = float(io_helpers.skip_commentlines(in_))
+        self.minf = float(io_helpers.skip_commentlines(in_))
+        self.maxf = float(io_helpers.skip_commentlines(in_))
+        self.minx = float(io_helpers.skip_commentlines(in_))
+        self.maxx = float(io_helpers.skip_commentlines(in_))
+        self.miny = float(io_helpers.skip_commentlines(in_))
+        self.maxy = float(io_helpers.skip_commentlines(in_))
 
         self.sigma_par_.read(in_)
         self.sigma_errors_.read(in_)
@@ -255,9 +256,9 @@ class FiberModel_21(object):
         self.exp_par_.read(in_)
         self.exp_errors_.read(in_)
         for i in range(0, 4):
-            val = locale.atof(io_helpers.skip_commentlines(in_))
+            val = float(io_helpers.skip_commentlines(in_))
             self.powerlaw_wings.append(val)
-        size = locale.atof(io_helpers.skip_commentlines(in_))
+        size = float(io_helpers.skip_commentlines(in_))
         # print('Reading %d amplitudes' % size)
         i = 0
         while i < size:
@@ -270,6 +271,8 @@ class FiberModel_21(object):
 class FiberModel_22(object):
 
     def __init__(self, filename):
+
+        self._max_fiber_dist = 14
 
         self.filename = filename
         self.version = 0
@@ -292,18 +295,20 @@ class FiberModel_22(object):
         self.exp_errors_ = ma.FVector()
         self.amplitudes = []
 
+        self.profile = None
+
     def read(self):
 
         in_ = open(self.filename)
-        self.version = locale.atoi(io_helpers.skip_commentlines(in_))
-        self.minw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.miny = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxy = locale.atof(io_helpers.skip_commentlines(in_))
+        self.version = int(io_helpers.skip_commentlines(in_))
+        self.minw = float(io_helpers.skip_commentlines(in_))
+        self.maxw = float(io_helpers.skip_commentlines(in_))
+        self.minf = float(io_helpers.skip_commentlines(in_))
+        self.maxf = float(io_helpers.skip_commentlines(in_))
+        self.minx = float(io_helpers.skip_commentlines(in_))
+        self.maxx = float(io_helpers.skip_commentlines(in_))
+        self.miny = float(io_helpers.skip_commentlines(in_))
+        self.maxy = float(io_helpers.skip_commentlines(in_))
 
         self.sigma_par_.read(in_)
         self.sigma_errors_.read(in_)
@@ -314,35 +319,98 @@ class FiberModel_22(object):
         self.exp_par_.read(in_)
         self.exp_errors_.read(in_)
         for i in range(0, 4):
-            val = locale.atof(io_helpers.skip_commentlines(in_))
+            val = float(io_helpers.skip_commentlines(in_))
             self.powerlaw_wings.append(val)
-        size = locale.atof(io_helpers.skip_commentlines(in_))
+        size = int(io_helpers.skip_commentlines(in_))
         # print('Reading %d amplitudes' % size)
         i = 0
         while i < size:
-            amp = ma.FVector()
+            amp = BSpline()
             amp.read(in_)
             self.amplitudes.append(amp)
             i += 1
+
+        self.profile = gauss1D_H(self.powerlaw_wings)
+
+    def get_params(self, x, y, D):
+        '''
+        Return the fit parameters at x,y  as a tuple:
+        fiber, H2, H3, amp, y0, sigma, exp
+        '''
+        fiber = D.map_xy_fibernum(x, y)
+        return fiber, self.get_xy_h2(x, y), \
+            self.get_xy_h3(x, y), self.get_xy_amplitude(x, y, D), \
+            D.map_xf_y(x, D.get_reference_f(fiber)), \
+            self.get_xy_sigma(x, y), self.get_xy_exp(x, y)
+
+    def get_single_fiberflux(self, x, y, D):
+        print(self.get_params(x, y, D))
+        _, H2, H3, amp, y0, sigma, exp = self.get_params(x, y, D)
+        if abs(y-y0) > self._max_fiber_dist:
+            return 0.0
+        else:
+            return self.profile.eval(y, amp, y0, sigma, H2, H3, exp)
+
+    def get_single_fiberflux_fiber(self, x, y, fiber, D):
+        f = D.get_reference_f(fiber)
+        _y0 = D.map_xf_y(x, f)
+        _, H2, H3, amp, y0, sigma, exp = self.get_params(x, _y0, D)
+        if abs(y-y0) > self._max_fiber_dist:
+            return 0.0
+        else:
+            return self.profile.eval(y, amp, y0, sigma, H2, H3, exp)
+
+    def get_single_fiberprofile(self, x, y, D):
+        print(self.get_params(x, y, D))
+        _, H2, H3, amp, y0, sigma, exp = self.get_params(x, y, D)
+        if abs(y-y0) > self._max_fiber_dist:
+            return 0.0
+        else:
+            return self.profile.eval(y, amp, y0, sigma, H2, H3, exp) / \
+                self.profile.eval(y0, amp, y0, sigma, H2, H3, exp)
+
+    def get_single_fiberprofile_fiber(self, x, y, fiber, D):
+        f = D.get_reference_f(fiber)
+        _y0 = D.map_xf_y(x, f)
+        _, H2, H3, amp, y0, sigma, exp = self.get_params(x, _y0, D)
+        if abs(y-y0) > self._max_fiber_dist:
+            return 0.0
+        else:
+            return self.profile.eval(y, amp, y0, sigma, H2, H3, exp) / \
+                self.profile.eval(y0, amp, y0, sigma, H2, H3, exp)
+
+    def get_cumulative_fiberflux(self, x, y, D):
+        fiber = D.map_xy_fibernum(x, y)
+        f = self.get_single_fiberflux(x, y, D)
+
+        if fiber > 1:
+            f += self.get_single_fiberflux_fiber(x, y, fiber-1, D)
+
+        if fiber < D.get_numfibers():
+            f += self.get_single_fiberflux_fiber(x, y, fiber+1, D)
+
+        return f
 
     def get_xy_amplitude(self, x, y, D):
         return self.get_wf_amplitude(D.map_xy_wavelength(x, y),
                                      D.map_xy_fibernum(x, y))
 
     def get_wf_amplitude(self, w, f):
-        return self.amplitudes[f-1].data[self._scal_w(w)]
+        return self.amplitudes[f-1].evaluate(self._scal_w(w))
 
     def get_xy_sigma(self, x, y):
-        return self.interp(self._scal_x(x), self._scal_y(y), self.sigma_par_)
+        return self.interp(self._scal_x(x), self._scal_y(y),
+                           self.sigma_par_.data)
 
     def get_xy_h2(self, x, y):
-        return self.interp(self._scal_x(x), self._scal_y(y), self.h2_par_)
+        return self.interp(self._scal_x(x), self._scal_y(y), self.h2_par_.data)
 
     def get_xy_h3(self, x, y):
-        return self.interp(self._scal_x(x), self._scal_y(y), self.h3_par_)
+        return self.interp(self._scal_x(x), self._scal_y(y), self.h3_par_.data)
 
     def get_xy_exp(self, x, y):
-        return self.interp(self._scal_x(x), self._scal_y(y), self.exp_par_)
+        return self.interp(self._scal_x(x), self._scal_y(y),
+                           self.exp_par_.data)
 
     def _scal_x(self, x):
         return (x - self.minx) / (self.maxx - self.minx)
@@ -352,9 +420,6 @@ class FiberModel_22(object):
 
     def _scal_w(self, w):
         return (w - self.minw) / (self.maxw - self.minw)
-
-    def _scal_f(self, f):
-        return (f - self.minf) / (self.maxf - self.minf)
 
     def interp(self, x, y, par):
         return ma.interpCheby2D_7(x, y, par)

@@ -1,3 +1,14 @@
+2016-07-22  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* tests/test_cure/test_distortion.py: Updated
+	* test/test_cure/test_fibermodel.py Added new tests
+	* tests/data/fibermodel_22.fmod: Added
+	* tests/data/distortion_17.dist: Updated to match fibermodel
+	* pyhetdex/cure/gaussian.py: Added gauss1d_H evaluation routines
+	* pyhetdex/cure/fibermodel.py: More evaluation functions
+	* pyhetdex/cure/distortion.py: Added get_numfibers and get_reference_f
+	* pyhetdex/cure/bspline.py: Added bspline evaluation routines
+
 2016-07-20 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tests/test_astrometry.py: moved to test_coordinates

@@ -24,7 +24,7 @@ class TestDistortion(object):
                               np.array([18.6529, 217.801])).all()
         else:
             assert np.isclose(dist.map_xf_y([100, 1000], (20, 220)),
-                              np.array([20.9811, 211.596])).all()
+                              np.array([14.9945, 212.873])).all()
 
     def test_dist_xf_y_array(self, dist):
         if dist.version == 14:
@@ -34,7 +34,7 @@ class TestDistortion(object):
         else:
             assert np.isclose(dist.map_xf_y(np.array([100, 1000]),
                                             np.array([20, 220])),
-                              np.array([20.9811, 211.596])).all()
+                              np.array([14.9945, 212.873])).all()
 
     def test_dist_xy_fiber(self, dist):
         if dist.version == 14:
@@ -42,7 +42,7 @@ class TestDistortion(object):
                               np.array([201.066, 1498.73])).all()
         else:
             assert np.isclose(dist.map_xy_fiber([100, 1000], (200, 1500)),
-                              np.array([199.062, 1496.21])).all()
+                              np.array([204.086, 1495.69])).all()
 
     def test_dist_xy_wf(self, dist):
         # OCD Test...
@@ -51,7 +51,7 @@ class TestDistortion(object):
             assert np.isclose(w, 3696.6) and np.isclose(f, 201.066)
         else:
             w, f = dist.map_xy_wf(100, 200)
-            assert np.isclose(w, 3674.79) and np.isclose(f, 199.062)
+            assert np.isclose(w, 3685.32) and np.isclose(f, 204.086)
 
     def test_dist_xy_fiber_array(self, dist):
         if dist.version == 14:
@@ -61,7 +61,7 @@ class TestDistortion(object):
         else:
             assert np.isclose(dist.map_xy_fiber(np.array([100, 1000]),
                                                 np.array([200, 1500])),
-                              np.array([199.062, 1496.21])).all()
+                              np.array([204.086, 1495.69])).all()
 
     def test_dist_xy_fibernum(self, dist):
         if dist.version == 14:
@@ -69,7 +69,7 @@ class TestDistortion(object):
                     np.array([203, 62])).all()
         else:
             assert (dist.map_xy_fibernum([100, 1000], (200, 1500)) ==
-                    np.array([203, 62])).all()
+                    np.array([204, 62])).all()
 
     def test_dist_xy_wavelength(self, dist):
         if dist.version == 14:
@@ -77,7 +77,7 @@ class TestDistortion(object):
                               np.array([3696.6, 5434.6])).all()
         else:
             assert np.isclose(dist.map_xy_wavelength([100, 1000], (200, 1500)),
-                              np.array([3674.79, 5464.62])).all()
+                              np.array([3685.32, 5468.21])).all()
 
     def test_dist_xy_wavelength_array(self, dist):
         if dist.version == 14:
@@ -87,7 +87,7 @@ class TestDistortion(object):
         else:
             assert np.isclose(dist.map_xy_wavelength(np.array([100, 1000]),
                                                      np.array([200, 1500])),
-                              np.array([3674.79, 5464.62])).all()
+                              np.array([3685.32, 5468.21])).all()
 
     def test_dist_wf_x(self, dist):
         if dist.version == 14:
@@ -96,8 +96,8 @@ class TestDistortion(object):
             assert np.isclose(dist.map_wf_x(3600, 20), 52.9629)
         else:
             assert np.isclose(dist.map_wf_x([3600, 5000], (20, 220)),
-                              np.array([62.3172, 766.703])).all()
-            assert np.isclose(dist.map_wf_x(3600, 20), 62.3172)
+                              np.array([57.713, 763.913])).all()
+            assert np.isclose(dist.map_wf_x(3600, 20), 57.713)
 
     def test_dist_wf_x_array(self, dist):
         if dist.version == 14:
@@ -107,7 +107,7 @@ class TestDistortion(object):
         else:
             assert np.isclose(dist.map_wf_x(np.array([3600, 5000]),
                                             np.array([20, 220])),
-                              np.array([62.3172, 766.703])).all()
+                              np.array([57.713, 763.913])).all()
 
     def test_dist_wf_y(self, dist):
         if dist.version == 14:
@@ -115,7 +115,7 @@ class TestDistortion(object):
                               np.array([17.8654, 220.41])).all()
         else:
             assert np.isclose(dist.map_wf_y([3600, 5000], (20, 220)),
-                              np.array([20.1775, 218.321])).all()
+                              np.array([13.5371, 218.609])).all()
 
     def test_dist_wf_y_array(self, dist):
         if dist.version == 14:
@@ -125,10 +125,13 @@ class TestDistortion(object):
         else:
             assert np.isclose(dist.map_wf_y(np.array([3600, 5000]),
                                             np.array([20, 220])),
-                              np.array([20.1775, 218.321])).all()
+                              np.array([13.5371, 218.609])).all()
 
     def test_maxf(self, dist):
-        assert abs(dist.maxf - 2031.) < 1.e-4
+        if dist.version == 14:
+            assert abs(dist.maxf - 2031.) < 1.e-4
+        else:
+            assert abs(dist.maxf - 2065.) < 1.e-4
 
     def test_version(self, dist):
         expected = dist.filename.split('.')[-2].split('_')[-1]
@@ -147,4 +150,4 @@ class TestDistortion(object):
                               np.array([18.6529, 217.801])).all()
         else:
             assert np.isclose(ma.interpCheby2D_7(x, y, dist.fy_par_.data),
-                              np.array([20.9811, 211.596])).all()
+                              np.array([14.9945, 212.873])).all()

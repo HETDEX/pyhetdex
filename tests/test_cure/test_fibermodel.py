@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import pyhetdex.cure.fibermodel as fib
+import pyhetdex.cure.distortion as dist
 import pytest
 import numpy as np
 
@@ -11,13 +12,17 @@ import numpy as np
                                         'fibermodel_17.fmod',
                                         'fibermodel_18.fmod',
                                         'fibermodel_19.fmod',
-                                        'fibermodel_21.fmod'])
+                                        'fibermodel_21.fmod',
+                                        'fibermodel_22.fmod'])
 def fmod(datadir, request):
     'return a fiber model'
     return fib.FiberModel(datadir.join(request.param).strpath)
 
+testprecision = 1.e-5
+
 
 class TestFibermodel(object):
+
     def test_version(self, fmod):
         expected = fmod.filename.split('.')[-2].split('_')[-1]
         assert fmod.version == int(expected)
@@ -46,9 +51,69 @@ class TestFibermodel(object):
     def test_ampsize(self, fmod):
         if fmod.version < 19:
             assert len(fmod.amplitudes) == 224
-        else:
+        elif fmod.version >= 19 and fmod.version < 22:
             assert len(fmod.amplitudes) == 223
+        else:
+            assert len(fmod.amplitudes) == 224
 
     def test_wrong_version(self, datadir):
         with pytest.raises(Exception):
             fib.FiberModel(datadir.join('fibermodel_14.fmod').strpath)
+
+    def test_single_fiberflux(self, datadir, fmod):
+        if fmod.version >= 22:
+            D = dist.Distortion(datadir.join('distortion_17.dist').strpath)
+            assert abs(fmod.get_single_fiberflux(100, 200, D)
+                       - 0.532356) < testprecision
+            assert abs(fmod.get_single_fiberflux(1000, 1500, D)
+                       - 0.59453) < testprecision
+            assert abs(fmod.get_single_fiberflux(1000, 3000, D)
+                       - 0.) < testprecision
+
+    def test_single_fiberflux_fiber(self, datadir, fmod):
+        if fmod.version >= 22:
+            D = dist.Distortion(datadir.join('distortion_17.dist').strpath)
+            assert abs(fmod.get_single_fiberflux_fiber(100, 200, 204, D)
+                       - 0.53198) < testprecision
+            assert abs(fmod.get_single_fiberflux_fiber(1000, 1500, 62, D)
+                       - 0.59448) < testprecision
+            assert abs(fmod.get_single_fiberflux_fiber(100, 200, 203, D)
+                       - 0.00018) < testprecision
+            assert abs(fmod.get_single_fiberflux_fiber(1000, 1500, 63, D)
+                       - 0.00031) < testprecision
+            assert abs(fmod.get_single_fiberflux_fiber(1000, 3000, 63, D)
+                       - 0.0) < testprecision
+
+    def test_single_fiberprofile(self, datadir, fmod):
+        if fmod.version >= 22:
+            D = dist.Distortion(datadir.join('distortion_17.dist').strpath)
+            assert abs(fmod.get_single_fiberprofile(100, 200, D)
+                       - 0.499776) < testprecision
+            assert abs(fmod.get_single_fiberprofile(1000, 1500, D)
+                       - 0.549257) < testprecision
+            assert abs(fmod.get_single_fiberprofile(1000, 3000, D)
+                       - 0.) < testprecision
+
+    def test_single_fiberprofile_fiber(self, datadir, fmod):
+        if fmod.version >= 22:
+            D = dist.Distortion(datadir.join('distortion_17.dist').strpath)
+            assert abs(fmod.get_single_fiberprofile_fiber(100, 200, 204, D)
+                       - 0.499428) < testprecision
+            assert abs(fmod.get_single_fiberprofile_fiber(1000, 1500, 62, D)
+                       - 0.549209) < testprecision
+            assert abs(fmod.get_single_fiberprofile_fiber(100, 200, 203, D)
+                       - 0.000167601) < testprecision
+            assert abs(fmod.get_single_fiberprofile_fiber(1000, 1500, 63, D)
+                       - 0.000292374) < testprecision
+            assert abs(fmod.get_single_fiberprofile_fiber(1000, 3000, 63, D)
+                       - 0.0) < testprecision
+
+    def test_cumulative_fiberflux(self, datadir, fmod):
+        if fmod.version >= 22:
+            D = dist.Distortion(datadir.join('distortion_17.dist').strpath)
+            assert abs(fmod.get_cumulative_fiberflux(100, 200, D)
+                       - 0.579471) < testprecision
+            assert abs(fmod.get_cumulative_fiberflux(1000, 1500, D)
+                       - 0.59504) < testprecision
+            assert abs(fmod.get_cumulative_fiberflux(1000, 3000, D)
+                       - 0.) < testprecision

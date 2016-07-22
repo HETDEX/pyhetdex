@@ -117,6 +117,12 @@ class Distortion_14(object):
     def _scal_f(self, f):
         return (f - self.minf) / (self.maxf - self.minf)
 
+    def get_numfibers(self):
+        return len(self.reference_f_.data)
+
+    def get_reference_f(self, fiber):
+        return self.reference_f_.data[fiber-1]
+
     def map_xy_fiber(self, x, y):
 
         if isinstance(x, (tuple, list)):
