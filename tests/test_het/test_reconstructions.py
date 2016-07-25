@@ -16,43 +16,6 @@ def ifucen(ifucenter_file):
     return ifu_centers.IFUCenter(ifucenter_file.strpath)
 
 
-def test_ifu_centers_channels(ifucen):
-    "Test the channels number and names"
-    channels = ifucen.channels
-    assert len(channels) == 2
-    assert sorted(channels) == ['L', 'R']
-
-
-def test_ifu_centers_L_nfibers(ifucen):
-    "Test the number of fibers in the L channel"
-    nL1 = ifucen.n_fibers['L']
-    nL2 = len(ifucen.fib_number['L'])
-    assert nL1 == nL2
-    assert nL1 == 224
-
-
-def test_ifu_centers_R_nfibers(ifucen):
-    "Test the number of fibers in the R channel"
-    nR1 = ifucen.n_fibers['R']
-    nR2 = len(ifucen.fib_number['R'])
-    assert nR1 == nR2
-    assert nR1 == 224
-
-
-@pytest.mark.xfail(raises=ifu_centers.IFUCenterError,
-                   reason="Test failures in parsing the IFUcen file")
-def test_ifu_centers_fail(ifucenter_fail):
-    "Test comments, negative or non numeric fiber number and failure"
-    ifu_centers.IFUCenter(ifucenter_fail.strpath)
-
-
-@pytest.mark.xfail(raises=ifu_centers.IFUCenterError,
-                   reason="Test failures in parsing the IFUcen file")
-def test_ifu_centers_missingid(ifucenter_missid):
-    "Test missing ID string in header"
-    ifu_centers.IFUCenter(ifucenter_missid.strpath)
-
-
 def test_recon_init(ifucenter_file, dither_fast):
     "Reconstruction from existing ifu center and dither objects"
     ifucen = ifu_centers.IFUCenter(ifucenter_file.strpath)

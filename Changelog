@@ -1,3 +1,12 @@
+2016-07-25 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/ifu_centers.py: fail if the throughput is less than zero
+    * tests/data/IFUcen_HETDEX_fail.txt: removed
+    * tests/data/IFUcen_HETDEX_missid.txt: same
+    * tests/conftest.py: remove fixtures using the above files
+    * tests/test_het/test_ifu_centers.py: test the IFU center file parser here
+    * tests/test_het/test_reconstructions.py: see the previous items
+
 2016-07-22  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* tests/test_cure/test_distortion.py: Updated

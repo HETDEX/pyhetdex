@@ -70,16 +70,6 @@ def dither_other(datadir):
 
 
 @pytest.fixture(scope='session')
-def ifucenter_fail(datadir):
-    return datadir.join("IFUcen_HETDEX_fail.txt")
-
-
-@pytest.fixture(scope='session')
-def ifucenter_missid(datadir):
-    return datadir.join("IFUcen_HETDEX_missid.txt")
-
-
-@pytest.fixture(scope='session')
 def ifucenter_missf(datadir):
     return datadir.join("IFUcen_HETDEX_missf.txt")
 

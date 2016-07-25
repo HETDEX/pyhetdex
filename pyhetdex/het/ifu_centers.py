@@ -1,6 +1,4 @@
-"""Parse and manipulation of the IFU center files with the following structure
-
-::
+"""Parse and manipulation of the IFU center files with the following structure::
 
     # HETDEX IFU description file
     # $Id: IFUcen_HETDEX.txt 789 2012-08-17 19:52:17Z mxhf $
@@ -45,7 +43,7 @@ extracted. The rest of the file is parsed as follow:
     1. it starts with ``#``;
     2. the target fiber number is negative or cannot be converted to an
         integer (e.g. ``nan``, ``--``);
-* if the throughput if a valid fiber is less than ``0.01`` a
+* if the throughput if a valid fiber is less than ``0.00`` a
     :class:`IFUCenterError` is raised as such a fiber should be ignored.
 """
 from __future__ import (absolute_import, division, print_function,
@@ -96,7 +94,7 @@ class IFUCenter(object):
     def __init__(self, ifu_center_file):
         # these constitute the public interface
         self.filename = ifu_center_file
-        self.ifuid = 0
+        self.ifuid = None
         self.fiber_d = 0.
         self.fiber_sep = 0.
         self.nfibx, self.nfiby = 0, 0
@@ -184,7 +182,7 @@ class IFUCenter(object):
                 continue
 
             if _fib_n > 0:
-                if float(_t) < 0.01:  # zero or less
+                if float(_t) < 0:  # zero or less
                     msg = 'In the fiber mapping file there is at least one'
                     msg += ' fiber with positive fiber number and 0 throughput'
                     msg += '. What should I do?'
