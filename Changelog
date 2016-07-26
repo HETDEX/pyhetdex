@@ -1,3 +1,7 @@
+2016-07-26 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/het/fplane.rst: update documentation
+
 2016-07-25 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/ifu_centers.py: fail if the throughput is less than zero

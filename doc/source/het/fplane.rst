@@ -29,8 +29,10 @@ signature, you can do something like this:
 .. doctest::
 
     >>> class MyIFU(IFU):
-    ...     def __init__(self, ifuid, x, y, xid, yid, specid):
-    ...         super(MyIFU, self).__init__(ifuid, x, y, xid, yid, specid)
+    ...     def __init__(self, ifuslot, x, y, specid, specslot,
+    ...                  ifuid, ifurot, platescl):
+    ...         super(MyIFU, self).__init__(self, ifuslot, x, y, specid,
+    ...                                     specslot, ifuid, ifurot, platescl)
     ...         # do something else
     ...     def new_method(self, a_variable):
     ...         # implement
