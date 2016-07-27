@@ -84,10 +84,10 @@ class FVector(object):
 
         if 'float64' in self._data.dtype.name:
             ios.write('double,')
-            frmt = ' %.16e'
+            frmt = ' %.6e'
         elif 'float' in self._data.dtype.name:
             ios.write('float,')
-            frmt = ' %.8f'
+            frmt = ' %.6e'
         elif 'int' in self._data.dtype.name:
             ios.write('int,')
             frmt = ' %d'
@@ -99,7 +99,7 @@ class FVector(object):
         for i in range(0, self.data.size):
             ios.write(frmt % self.data[i])
             if not ((i+1) % 9):
-                ios.write('\n  ')
+                ios.write(' \n ')
 
         ios.write("  ]\n")  # LTL writes two spaces before final ]
 
@@ -212,10 +212,10 @@ class MArray(object):
         ios.write("MArray<")
         if 'float64' in self._data.dtype.name:
             ios.write('double,')
-            frmt = ' %.16e'
+            frmt = ' %.6e'
         elif 'float' in self._data.dtype.name:
             ios.write('float,')
-            frmt = ' %.8f'
+            frmt = ' %.6e'
         elif 'int' in self._data.dtype.name:
             ios.write('int,')
             frmt = ' %d'
@@ -233,7 +233,7 @@ class MArray(object):
 
         for d in range(self._data.ndim):
             ios.write(' (%s)' % self.shapes[d])
-        ios.write('\n')
+        ios.write(' \n')
 
         # Write the data
 
@@ -252,8 +252,8 @@ class MArray(object):
         else:
             for j in range(0, data.size):
                 ios.write(frmt % data[j])
-                if not ((j+1) % 9):
-                    ios.write('\n'+pad)
+                # if not ((j+1) % 9):
+                #    ios.write('\n'+pad)
             ios.write(' ')
 
 

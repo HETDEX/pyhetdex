@@ -128,4 +128,6 @@ def skip_if_no_executable():
                                       path=os.environ.get('CUREBIN', ''))
         if fullexe is None:
             pytest.skip('Executable "{}" not found'.format(exename))
+
+        return fullexe
     return _skip_executable

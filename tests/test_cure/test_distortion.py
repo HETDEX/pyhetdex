@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 import pyhetdex.cure.distortion as distortion
 import numpy as np
 import pytest
+import subprocess
 
 
 __version__ = '$Id'
@@ -133,6 +134,15 @@ class TestDistortion(object):
         else:
             assert abs(dist.maxf - 2065.) < 1.e-4
 
+    def test_numfibers(self, dist):
+        assert dist.get_numfibers() == 224
+
+    def test_reference_f(self, dist):
+        if dist.version == 14:
+            assert abs(dist.get_reference_f(1)-2054.9929) < 1e4
+        else:
+            assert abs(dist.get_reference_f(1)-2045.011) < 1e4
+
     def test_version(self, dist):
         expected = dist.filename.split('.')[-2].split('_')[-1]
         assert dist.version == int(expected)
@@ -140,6 +150,38 @@ class TestDistortion(object):
     def test_wrong_version(self, datadir):
         with pytest.raises(IOError):
             distortion.Distortion(datadir.join('distortion_12.dist').strpath)
+
+    def test_write(self, dist, tmpdir):
+        if dist.version >= 14:
+            dname = tmpdir.strpath + '/test.dist'
+            dist.writeto(dname)
+            D = distortion.Distortion(dname)
+            assert dist.version == D.version
+            assert np.isclose(dist.maxx, D.maxx)
+            assert np.isclose(dist.wave_par_.data,
+                              D.wave_par_.data).all()
+            assert np.isclose(dist.reference_w_.data,
+                              D.reference_w_.data).all()
+            assert np.isclose(dist.reference_wavelength_,
+                              D.reference_wavelength_)
+
+    def test_write_ltl(self, dist, tmpdir, skip_if_no_executable):
+        curever = skip_if_no_executable('cureversion')
+        versions = subprocess.check_output(curever).strip()
+        for k, v in [ver.split() for ver in versions.split('\n')]:
+            if k == 'Distortion':
+                distver = int(v)
+                break
+        if dist.version == distver:  # Skip till distview is fixed
+            exe = skip_if_no_executable('distview')
+            dname = tmpdir.strpath + '/test2.dist'
+            dist.writeto(dname)
+            orig = subprocess.check_output([exe, dist.filename])
+            mine = subprocess.check_output([exe, dname])
+
+            assert orig == mine
+        else:
+            pytest.skip()
 
     def test_cheb(self, dist):
         import pyhetdex.ltl.marray as ma

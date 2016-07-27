@@ -2,6 +2,8 @@
 
 ## Development version @ trunk
 
+* pyhetdex.cure.distortion: Added write routine and tests
+* pyhetdex.cure.fibermodel: Added interpolation routines
 * pyhetdex.cure.fiber_fractions: Computes the fill factor of 
   apertures by fibers, expected to be useful in any model of
   how likely you are to detect and LAE

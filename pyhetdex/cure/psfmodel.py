@@ -5,8 +5,6 @@ __version__ = '$Id'
 from pyhetdex.ltl.marray import FVector
 from pyhetdex.tools import io_helpers
 
-import locale
-
 
 class PSFModelBase(object):
 
@@ -16,7 +14,7 @@ class PSFModelBase(object):
                   3: PSFModel_3}
 
         in_ = open(filename)
-        fileversion = locale.atoi(io_helpers.skip_commentlines(in_))
+        fileversion = int(io_helpers.skip_commentlines(in_))
         in_.close()
 
         if fileversion not in _vdict:
@@ -41,7 +39,7 @@ class PSFModel(PSFModelBase):
     def __setattr__(self, a, v):
         try:
             return super(PSFModel, self).__setattr__(a, v)
-        except AttributeError:
+        except AttributeError:  # pragma: no cover
             return self._cls.__setattr__(a, v)
 
 
@@ -62,17 +60,17 @@ class PSFModel_2(object):
 
     def read(self):
 
-        in_ = open(self.filename)
-        self.version = locale.atoi(io_helpers.skip_commentlines(in_))
-        self.minx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.miny = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxy = locale.atof(io_helpers.skip_commentlines(in_))
+        with open(self.filename) as in_:
+            self.version = int(io_helpers.skip_commentlines(in_))
+            self.minx = float(io_helpers.skip_commentlines(in_))
+            self.maxx = float(io_helpers.skip_commentlines(in_))
+            self.miny = float(io_helpers.skip_commentlines(in_))
+            self.maxy = float(io_helpers.skip_commentlines(in_))
 
-        self.sigx_par_.read(in_)
-        self.sigy_par_.read(in_)
-        self.h2y_par_.read(in_)
-        self.h3y_par_.read(in_)
+            self.sigx_par_.read(in_)
+            self.sigy_par_.read(in_)
+            self.h2y_par_.read(in_)
+            self.h3y_par_.read(in_)
 
 
 class PSFModel_3(PSFModel_2):
@@ -90,18 +88,18 @@ class PSFModel_3(PSFModel_2):
     def read(self):
 
         # Overload the complete read routine
-        in_ = open(self.filename)
-        self.version = locale.atoi(io_helpers.skip_commentlines(in_))
-        self.minw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxw = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxf = locale.atof(io_helpers.skip_commentlines(in_))
-        self.minx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxx = locale.atof(io_helpers.skip_commentlines(in_))
-        self.miny = locale.atof(io_helpers.skip_commentlines(in_))
-        self.maxy = locale.atof(io_helpers.skip_commentlines(in_))
+        with open(self.filename) as in_:
+            self.version = int(io_helpers.skip_commentlines(in_))
+            self.minw = float(io_helpers.skip_commentlines(in_))
+            self.maxw = float(io_helpers.skip_commentlines(in_))
+            self.minf = float(io_helpers.skip_commentlines(in_))
+            self.maxf = float(io_helpers.skip_commentlines(in_))
+            self.minx = float(io_helpers.skip_commentlines(in_))
+            self.maxx = float(io_helpers.skip_commentlines(in_))
+            self.miny = float(io_helpers.skip_commentlines(in_))
+            self.maxy = float(io_helpers.skip_commentlines(in_))
 
-        self.sigx_par_.read(in_)
-        self.sigy_par_.read(in_)
-        self.h2y_par_.read(in_)
-        self.h3y_par_.read(in_)
+            self.sigx_par_.read(in_)
+            self.sigy_par_.read(in_)
+            self.h2y_par_.read(in_)
+            self.h3y_par_.read(in_)

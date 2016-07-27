@@ -1,3 +1,12 @@
+2016-07-27  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/ltl/marray.py: Updated whitespace when writing
+	* pyhetdex/cure/fibermodel.py: Update coverage
+	* pyhetdex/cure/psfmodel.py: Remove locale
+	* tests/conftest.py: Updated skip_if_no_executable to return path
+	* pyhetdex/cure/distortion.py: Added write routine
+	* tests/test_cure/test_distortion.py: Added tests
+
 2016-07-26 Francesco Montesano <montefra@mpe.mpg.de>
 
     * doc/source/het/fplane.rst: update documentation

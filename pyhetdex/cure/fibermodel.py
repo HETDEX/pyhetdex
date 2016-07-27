@@ -20,9 +20,8 @@ class FiberModelBase(object):
                   21: FiberModel_21,
                   22: FiberModel_22}
 
-        in_ = open(filename)
-        fileversion = int(io_helpers.skip_commentlines(in_))
-        in_.close()
+        with open(filename) as in_:
+            fileversion = int(io_helpers.skip_commentlines(in_))
 
         if fileversion not in _vdict:
             raise IOError('Unsupported version of Fibermodel file!')
@@ -46,7 +45,7 @@ class FiberModel(FiberModelBase):
     def __setattr__(self, a, v):
         try:
             return super(FiberModel, self).__setattr__(a, v)
-        except AttributeError:
+        except AttributeError:  # pragma: no cover
             return self._cls.__setattr__(a, v)
 
 
@@ -75,32 +74,32 @@ class FiberModel_16(object):
 
     def read(self):
 
-        in_ = open(self.filename)
-        self.version = int(io_helpers.skip_commentlines(in_))
-        self.minw = float(io_helpers.skip_commentlines(in_))
-        self.maxw = float(io_helpers.skip_commentlines(in_))
-        self.minf = float(io_helpers.skip_commentlines(in_))
-        self.maxf = float(io_helpers.skip_commentlines(in_))
-        self.minx = float(io_helpers.skip_commentlines(in_))
-        self.maxx = float(io_helpers.skip_commentlines(in_))
-        self.miny = float(io_helpers.skip_commentlines(in_))
-        self.maxy = float(io_helpers.skip_commentlines(in_))
+        with open(self.filename) as in_:
+            self.version = int(io_helpers.skip_commentlines(in_))
+            self.minw = float(io_helpers.skip_commentlines(in_))
+            self.maxw = float(io_helpers.skip_commentlines(in_))
+            self.minf = float(io_helpers.skip_commentlines(in_))
+            self.maxf = float(io_helpers.skip_commentlines(in_))
+            self.minx = float(io_helpers.skip_commentlines(in_))
+            self.maxx = float(io_helpers.skip_commentlines(in_))
+            self.miny = float(io_helpers.skip_commentlines(in_))
+            self.maxy = float(io_helpers.skip_commentlines(in_))
 
-        self.fiducial_fib_ = int(io_helpers.skip_commentlines(in_))
-        self.sigma_par_.read(in_)
-        self.sigma_errors_.read(in_)
-        self.h2_par_.read(in_)
-        self.h2_errors_.read(in_)
-        self.h3_par_.read(in_)
-        self.h3_errors_.read(in_)
-        size = float(io_helpers.skip_commentlines(in_))
-        # print('Reading %d amplitudes' % size)
-        i = 0
-        while i < size:
-            amp = ma.FVector()
-            amp.read(in_)
-            self.amplitudes.append(amp)
-            i += 1
+            self.fiducial_fib_ = int(io_helpers.skip_commentlines(in_))
+            self.sigma_par_.read(in_)
+            self.sigma_errors_.read(in_)
+            self.h2_par_.read(in_)
+            self.h2_errors_.read(in_)
+            self.h3_par_.read(in_)
+            self.h3_errors_.read(in_)
+            size = float(io_helpers.skip_commentlines(in_))
+            # print('Reading %d amplitudes' % size)
+            i = 0
+            while i < size:
+                amp = ma.FVector()
+                amp.read(in_)
+                self.amplitudes.append(amp)
+                i += 1
 
 
 class FiberModel_18(object):
@@ -127,31 +126,31 @@ class FiberModel_18(object):
 
     def read(self):
 
-        in_ = open(self.filename)
-        self.version = int(io_helpers.skip_commentlines(in_))
-        self.minw = float(io_helpers.skip_commentlines(in_))
-        self.maxw = float(io_helpers.skip_commentlines(in_))
-        self.minf = float(io_helpers.skip_commentlines(in_))
-        self.maxf = float(io_helpers.skip_commentlines(in_))
-        self.minx = float(io_helpers.skip_commentlines(in_))
-        self.maxx = float(io_helpers.skip_commentlines(in_))
-        self.miny = float(io_helpers.skip_commentlines(in_))
-        self.maxy = float(io_helpers.skip_commentlines(in_))
+        with open(self.filename) as in_:
+            self.version = int(io_helpers.skip_commentlines(in_))
+            self.minw = float(io_helpers.skip_commentlines(in_))
+            self.maxw = float(io_helpers.skip_commentlines(in_))
+            self.minf = float(io_helpers.skip_commentlines(in_))
+            self.maxf = float(io_helpers.skip_commentlines(in_))
+            self.minx = float(io_helpers.skip_commentlines(in_))
+            self.maxx = float(io_helpers.skip_commentlines(in_))
+            self.miny = float(io_helpers.skip_commentlines(in_))
+            self.maxy = float(io_helpers.skip_commentlines(in_))
 
-        self.sigma_par_.read(in_)
-        self.sigma_errors_.read(in_)
-        self.h2_par_.read(in_)
-        self.h2_errors_.read(in_)
-        self.h3_par_.read(in_)
-        self.h3_errors_.read(in_)
-        size = float(io_helpers.skip_commentlines(in_))
-        # print('Reading %d amplitudes' % size)
-        i = 0
-        while i < size:
-            amp = ma.FVector()
-            amp.read(in_)
-            self.amplitudes.append(amp)
-            i += 1
+            self.sigma_par_.read(in_)
+            self.sigma_errors_.read(in_)
+            self.h2_par_.read(in_)
+            self.h2_errors_.read(in_)
+            self.h3_par_.read(in_)
+            self.h3_errors_.read(in_)
+            size = float(io_helpers.skip_commentlines(in_))
+            # print('Reading %d amplitudes' % size)
+            i = 0
+            while i < size:
+                amp = ma.FVector()
+                amp.read(in_)
+                self.amplitudes.append(amp)
+                i += 1
 
 
 class FiberModel_19(object):
@@ -180,33 +179,33 @@ class FiberModel_19(object):
 
     def read(self):
 
-        in_ = open(self.filename)
-        self.version = int(io_helpers.skip_commentlines(in_))
-        self.minw = float(io_helpers.skip_commentlines(in_))
-        self.maxw = float(io_helpers.skip_commentlines(in_))
-        self.minf = float(io_helpers.skip_commentlines(in_))
-        self.maxf = float(io_helpers.skip_commentlines(in_))
-        self.minx = float(io_helpers.skip_commentlines(in_))
-        self.maxx = float(io_helpers.skip_commentlines(in_))
-        self.miny = float(io_helpers.skip_commentlines(in_))
-        self.maxy = float(io_helpers.skip_commentlines(in_))
+        with open(self.filename) as in_:
+            self.version = int(io_helpers.skip_commentlines(in_))
+            self.minw = float(io_helpers.skip_commentlines(in_))
+            self.maxw = float(io_helpers.skip_commentlines(in_))
+            self.minf = float(io_helpers.skip_commentlines(in_))
+            self.maxf = float(io_helpers.skip_commentlines(in_))
+            self.minx = float(io_helpers.skip_commentlines(in_))
+            self.maxx = float(io_helpers.skip_commentlines(in_))
+            self.miny = float(io_helpers.skip_commentlines(in_))
+            self.maxy = float(io_helpers.skip_commentlines(in_))
 
-        self.sigma_par_.read(in_)
-        self.sigma_errors_.read(in_)
-        self.h2_par_.read(in_)
-        self.h2_errors_.read(in_)
-        self.h3_par_.read(in_)
-        self.h3_errors_.read(in_)
-        self.exp_par_.read(in_)
-        self.exp_errors_.read(in_)
-        size = float(io_helpers.skip_commentlines(in_))
-        # print('Reading %d amplitudes' % size)
-        i = 0
-        while i < size:
-            amp = ma.FVector()
-            amp.read(in_)
-            self.amplitudes.append(amp)
-            i += 1
+            self.sigma_par_.read(in_)
+            self.sigma_errors_.read(in_)
+            self.h2_par_.read(in_)
+            self.h2_errors_.read(in_)
+            self.h3_par_.read(in_)
+            self.h3_errors_.read(in_)
+            self.exp_par_.read(in_)
+            self.exp_errors_.read(in_)
+            size = float(io_helpers.skip_commentlines(in_))
+            # print('Reading %d amplitudes' % size)
+            i = 0
+            while i < size:
+                amp = ma.FVector()
+                amp.read(in_)
+                self.amplitudes.append(amp)
+                i += 1
 
 
 class FiberModel_21(object):
@@ -236,36 +235,36 @@ class FiberModel_21(object):
 
     def read(self):
 
-        in_ = open(self.filename)
-        self.version = int(io_helpers.skip_commentlines(in_))
-        self.minw = float(io_helpers.skip_commentlines(in_))
-        self.maxw = float(io_helpers.skip_commentlines(in_))
-        self.minf = float(io_helpers.skip_commentlines(in_))
-        self.maxf = float(io_helpers.skip_commentlines(in_))
-        self.minx = float(io_helpers.skip_commentlines(in_))
-        self.maxx = float(io_helpers.skip_commentlines(in_))
-        self.miny = float(io_helpers.skip_commentlines(in_))
-        self.maxy = float(io_helpers.skip_commentlines(in_))
+        with open(self.filename) as in_:
+            self.version = int(io_helpers.skip_commentlines(in_))
+            self.minw = float(io_helpers.skip_commentlines(in_))
+            self.maxw = float(io_helpers.skip_commentlines(in_))
+            self.minf = float(io_helpers.skip_commentlines(in_))
+            self.maxf = float(io_helpers.skip_commentlines(in_))
+            self.minx = float(io_helpers.skip_commentlines(in_))
+            self.maxx = float(io_helpers.skip_commentlines(in_))
+            self.miny = float(io_helpers.skip_commentlines(in_))
+            self.maxy = float(io_helpers.skip_commentlines(in_))
 
-        self.sigma_par_.read(in_)
-        self.sigma_errors_.read(in_)
-        self.h2_par_.read(in_)
-        self.h2_errors_.read(in_)
-        self.h3_par_.read(in_)
-        self.h3_errors_.read(in_)
-        self.exp_par_.read(in_)
-        self.exp_errors_.read(in_)
-        for i in range(0, 4):
-            val = float(io_helpers.skip_commentlines(in_))
-            self.powerlaw_wings.append(val)
-        size = float(io_helpers.skip_commentlines(in_))
-        # print('Reading %d amplitudes' % size)
-        i = 0
-        while i < size:
-            amp = ma.FVector()
-            amp.read(in_)
-            self.amplitudes.append(amp)
-            i += 1
+            self.sigma_par_.read(in_)
+            self.sigma_errors_.read(in_)
+            self.h2_par_.read(in_)
+            self.h2_errors_.read(in_)
+            self.h3_par_.read(in_)
+            self.h3_errors_.read(in_)
+            self.exp_par_.read(in_)
+            self.exp_errors_.read(in_)
+            for i in range(0, 4):
+                val = float(io_helpers.skip_commentlines(in_))
+                self.powerlaw_wings.append(val)
+            size = float(io_helpers.skip_commentlines(in_))
+            # print('Reading %d amplitudes' % size)
+            i = 0
+            while i < size:
+                amp = ma.FVector()
+                amp.read(in_)
+                self.amplitudes.append(amp)
+                i += 1
 
 
 class FiberModel_22(object):
@@ -299,36 +298,36 @@ class FiberModel_22(object):
 
     def read(self):
 
-        in_ = open(self.filename)
-        self.version = int(io_helpers.skip_commentlines(in_))
-        self.minw = float(io_helpers.skip_commentlines(in_))
-        self.maxw = float(io_helpers.skip_commentlines(in_))
-        self.minf = float(io_helpers.skip_commentlines(in_))
-        self.maxf = float(io_helpers.skip_commentlines(in_))
-        self.minx = float(io_helpers.skip_commentlines(in_))
-        self.maxx = float(io_helpers.skip_commentlines(in_))
-        self.miny = float(io_helpers.skip_commentlines(in_))
-        self.maxy = float(io_helpers.skip_commentlines(in_))
+        with open(self.filename) as in_:
+            self.version = int(io_helpers.skip_commentlines(in_))
+            self.minw = float(io_helpers.skip_commentlines(in_))
+            self.maxw = float(io_helpers.skip_commentlines(in_))
+            self.minf = float(io_helpers.skip_commentlines(in_))
+            self.maxf = float(io_helpers.skip_commentlines(in_))
+            self.minx = float(io_helpers.skip_commentlines(in_))
+            self.maxx = float(io_helpers.skip_commentlines(in_))
+            self.miny = float(io_helpers.skip_commentlines(in_))
+            self.maxy = float(io_helpers.skip_commentlines(in_))
 
-        self.sigma_par_.read(in_)
-        self.sigma_errors_.read(in_)
-        self.h2_par_.read(in_)
-        self.h2_errors_.read(in_)
-        self.h3_par_.read(in_)
-        self.h3_errors_.read(in_)
-        self.exp_par_.read(in_)
-        self.exp_errors_.read(in_)
-        for i in range(0, 4):
-            val = float(io_helpers.skip_commentlines(in_))
-            self.powerlaw_wings.append(val)
-        size = int(io_helpers.skip_commentlines(in_))
-        # print('Reading %d amplitudes' % size)
-        i = 0
-        while i < size:
-            amp = BSpline()
-            amp.read(in_)
-            self.amplitudes.append(amp)
-            i += 1
+            self.sigma_par_.read(in_)
+            self.sigma_errors_.read(in_)
+            self.h2_par_.read(in_)
+            self.h2_errors_.read(in_)
+            self.h3_par_.read(in_)
+            self.h3_errors_.read(in_)
+            self.exp_par_.read(in_)
+            self.exp_errors_.read(in_)
+            for i in range(0, 4):
+                val = float(io_helpers.skip_commentlines(in_))
+                self.powerlaw_wings.append(val)
+            size = int(io_helpers.skip_commentlines(in_))
+            # print('Reading %d amplitudes' % size)
+            i = 0
+            while i < size:
+                amp = BSpline()
+                amp.read(in_)
+                self.amplitudes.append(amp)
+                i += 1
 
         self.profile = gauss1D_H(self.powerlaw_wings)
 
