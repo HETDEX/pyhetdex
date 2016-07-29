@@ -1,3 +1,10 @@
+2016-07-29 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/Makefile: add coverage command
+    * doc/build: ignore everything under build
+    * doc/source/changelog.rst: include the changelog verbatim
+    * tests/test_cure/test_distortion.py: fix tests in python 3
+
 2016-07-27  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/ltl/marray.py: Updated whitespace when writing

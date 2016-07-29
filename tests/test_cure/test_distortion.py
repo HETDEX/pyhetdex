@@ -167,7 +167,8 @@ class TestDistortion(object):
 
     def test_write_ltl(self, dist, tmpdir, skip_if_no_executable):
         curever = skip_if_no_executable('cureversion')
-        versions = subprocess.check_output(curever).strip()
+        versions = subprocess.check_output(curever,
+                                           universal_newlines=True).strip()
         for k, v in [ver.split() for ver in versions.split('\n')]:
             if k == 'Distortion':
                 distver = int(v)
@@ -176,8 +177,10 @@ class TestDistortion(object):
             exe = skip_if_no_executable('distview')
             dname = tmpdir.strpath + '/test2.dist'
             dist.writeto(dname)
-            orig = subprocess.check_output([exe, dist.filename])
-            mine = subprocess.check_output([exe, dname])
+            orig = subprocess.check_output([exe, dist.filename],
+                                           universal_newlines=True)
+            mine = subprocess.check_output([exe, dname],
+                                           universal_newlines=True)
 
             assert orig == mine
         else:
