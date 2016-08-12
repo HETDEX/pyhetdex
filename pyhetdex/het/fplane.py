@@ -115,14 +115,16 @@ class FPlane(object):
 
     @property
     def ifuslots(self):
-        """list of ihmp ids"""
+        """list of slot ids"""
         return self._ifus_by_slot.keys()
 
     @property
     def ihmpids(self):
-        """list of ifu ids
+        """list of slot ids
 
-        Deprecated
+        .. warning::
+
+            Deprecated name. Use :attr:`ifuslots`
         """
         import warnings
         with warnings.catch_warnings():
@@ -197,6 +199,10 @@ class FPlane(object):
     def by_ihmpid(self, ihmpid):
         """Returns the ifu with ``ihmpid``
 
+        .. warning::
+
+            Deprecated. Use :meth:`by_ifuslot`.
+
         Parameters
         ----------
         ihmpid : string
@@ -205,8 +211,6 @@ class FPlane(object):
         Returns
         -------
         :class:`IFU` instance
-
-        Deprecated
         """
         import warnings
         with warnings.catch_warnings():
@@ -243,7 +247,7 @@ class FPlane(object):
         id_ : string
             id of the spectrograph
         idtype : str
-            type of the id; must be one of 'ifuid', 'ihmpid', 'specid'
+            type of the id; must be one of 'ifuid', 'ifuslot', 'specid'
 
         Returns
         -------

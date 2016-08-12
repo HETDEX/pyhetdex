@@ -1,3 +1,7 @@
+2016-08-12 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: fix deprecations in documentation
+
 2016-07-29 Francesco Montesano <montefra@mpe.mpg.de>
 
     * doc/Makefile: add coverage command
