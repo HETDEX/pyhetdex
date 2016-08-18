@@ -2,6 +2,8 @@
 
 ## Development version @ trunk
 
+## Version 0.9.0
+
 * pyhetdex.cure.distortion: Added write routine and tests
 * pyhetdex.cure.fibermodel: Added interpolation routines
 * pyhetdex.cure.fiber_fractions: Computes the fill factor of 
