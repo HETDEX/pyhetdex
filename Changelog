@@ -1,3 +1,7 @@
+2016-09-01 Greg Zeimann <gregz@astro.as.utexas.edu>
+	* pyhetdex/ltl/marray.py: added function to build the Chebyshev
+	      matrix for post fitting ("matrixCheby2D_7") 
+
 2016-08-18 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: bump version to 0.9
