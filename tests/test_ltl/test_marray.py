@@ -2,8 +2,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import pytest
 import numpy as np
+import pytest
 
 import pyhetdex.ltl.marray as ma
 
@@ -14,10 +14,11 @@ clsmap = {'fvec': ma.FVector, 'marray': ma.MArray}
 
 def pytest_generate_tests(metafunc):
     # called once per each test function
-    funcarglist = metafunc.cls.params[metafunc.function.__name__]
-    argnames = list(funcarglist[0])
-    metafunc.parametrize(argnames, [[funcargs[name] for name in argnames]
-                                    for funcargs in funcarglist])
+    if metafunc.cls:
+        funcarglist = metafunc.cls.params[metafunc.function.__name__]
+        argnames = list(funcarglist[0])
+        metafunc.parametrize(argnames, [[funcargs[name] for name in argnames]
+                                        for funcargs in funcarglist])
 
 
 def write(outname, cls_type, typ, data):

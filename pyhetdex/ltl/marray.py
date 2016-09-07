@@ -1,9 +1,10 @@
 from __future__ import absolute_import, print_function
 
-__version__ = '$Id$'
-
 import numpy as np
+from numpy.polynomial.chebyshev import chebvander
 from pyhetdex.tools import io_helpers
+
+__version__ = '$Id$'
 
 
 class FVector(object):
@@ -259,31 +260,20 @@ class MArray(object):
 
 def interpCheby2D_7(x, y, p):
 
-    if isinstance(x, (tuple, list)):
-        x = np.asarray(x)
-    if isinstance(y, (tuple, list)):
-        y = np.asarray(y)
+    T0x, T1x, T2x, T3x, T4x, T5x, T6x, T7x = chebvander(x, 7).T
+    T0y, T1y, T2y, T3y, T4y, T5y, T6y, T7y = chebvander(y, 7).T
 
-    T2x = 2. * x**2 - 1.
-    T3x = 4. * x**3 - 3. * x
-    T4x = 8. * x**4 - 8. * x**2 + 1.
-    T5x = 16. * x**5 - 20. * x**3 + 5. * x
-    T6x = 32. * x**6 - 48. * x**4 + 18. * x**2 - 1.
-    T7x = 64. * x**7 - 112. * x**5 + 56. * x**3 - 7. * x
-    T2y = 2. * y**2 - 1.
-    T3y = 4. * y**3 - 3. * y
-    T4y = 8. * y**4 - 8. * y**2 + 1.
-    T5y = 16. * y**5 - 20. * y**3 + 5. * y
-    T6y = 32. * y**6 - 48. * y**4 + 18. * y**2 - 1
-    T7y = 64. * y**7 - 112. * y**5 + 56. * y**3 - 7 * y
+    return (p[0]*T7x + p[1]*T6x + p[2]*T5x + p[3]*T4x + p[4]*T3x + p[5]*T2x +
+            p[6]*T1x +
+            p[7]*T7y + p[8]*T6y + p[9]*T5y + p[10]*T4y + p[11]*T3y + p[12]*T2y
+            + p[13]*T1y +
+            p[14]*T6x*T1y + p[15]*T1x*T6y + p[16]*T5x*T2y +
+            p[17]*T2x*T5y + p[18]*T4x*T3y + p[19]*T3x*T4y + p[20]*T5x*y +
+            p[21]*T1x*T5y + p[22]*T4x*T2y + p[23]*T2x*T4y + p[24]*T3x*T3y +
+            p[25]*T4x*T1y + p[26]*T1x*T4y + p[27]*T3x*T2y + p[28]*T2x*T3y +
+            p[29]*T3x*T1y + p[30]*T1x*T3y + p[31]*T2x*T2y + p[32]*T2x*T1y +
+            p[33]*T1x*T2y + p[34]*T1x*T1y + p[35])
 
-    return p[0]*T7x + p[1]*T6x + p[2]*T5x + p[3]*T4x + p[4]*T3x + p[5]*T2x + p[6]*x + \
-        p[7]*T7y + p[8]*T6y + p[9]*T5y + p[10]*T4y + p[11]*T3y + p[12]*T2y + p[13]*y + \
-        p[14]*T6x*y + p[15]*x*T6y + p[16]*T5x*T2y + p[17]*T2x*T5y + p[18]*T4x*T3y + p[19]*T3x*T4y + \
-        p[20]*T5x*y + p[21]*x*T5y + p[22]*T4x*T2y + p[23]*T2x*T4y + p[24]*T3x*T3y + \
-        p[25]*T4x*y + p[26]*x*T4y + p[27]*T3x*T2y + p[28]*T2x*T3y + \
-        p[29]*T3x*y + p[30]*x*T3y + p[31]*T2x*T2y + \
-        p[32]*T2x*y + p[33]*x*T2y + p[34]*x*y + p[35]
 
 def matrixCheby2D_7(x, y):
 
@@ -304,11 +294,9 @@ def matrixCheby2D_7(x, y):
     T5y = 16. * y**5 - 20. * y**3 + 5. * y
     T6y = 32. * y**6 - 48. * y**4 + 18. * y**2 - 1
     T7y = 64. * y**7 - 112. * y**5 + 56. * y**3 - 7 * y
-    
-    return np.vstack((T7x, T6x, T5x, T4x, T3x, T2x, x, T7y, T6y, T5y, 
-                      T4y, T3y, T2y, y, T6x*y, x*T6y, T5x*T2y, T2x*T5y,
-                      T4x*T3y, T3x*T4y, T5x*y, x*T5y, T4x*T2y, T2x*T4y, 
-                      T3x*T3y, T4x*y, x*T4y, T3x*T2y, T2x*T3y, T3x*y, 
-                      x*T3y, T2x*T2y, T2x*y, x*T2y, x*y, np.ones(x.shape))).T
-                             
-    
+
+    return np.vstack((T7x, T6x, T5x, T4x, T3x, T2x, x, T7y, T6y, T5y, T4y, T3y,
+                      T2y, y, T6x*y, x*T6y, T5x*T2y, T2x*T5y, T4x*T3y, T3x*T4y,
+                      T5x*y, x*T5y, T4x*T2y, T2x*T4y, T3x*T3y, T4x*y, x*T4y,
+                      T3x*T2y, T2x*T3y, T3x*y, x*T3y, T2x*T2y, T2x*y, x*T2y,
+                      x*y, np.ones(x.shape))).T
