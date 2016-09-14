@@ -1,3 +1,17 @@
+2016-09-14 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/ltl/chebyshev.py: move here the Chebyshev implementations, use
+	  numpy and use matrixCheby2D_7 in interCheby2D_7 
+    * pyhetdex/cure/distortion.py: adapt to this
+    * pyhetdex/cure/fibermodel.py: same
+    * pyhetdex/ltl/marray.py: leave and deprecate the old interface
+    * ReleaseNotes.md: update release notes
+    * doc/source/ltl.rst: add chebyshev to documentation
+    * tests/test_cure/test_distortion.py: use the new Chebyshev
+    * tests/test_cure/test_fibermodel.py: adapt the tolerance
+    * tests/test_ltl/test_chebyshev.py: test Chebyshev
+    * tests/test_ltl/test_marray.py: test the warnings
+
 2016-09-07 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: bump version number

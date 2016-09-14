@@ -2,6 +2,8 @@
 
 ## Development version @ trunk
 
+* pyhetdex.ltl.chebyshev: added; matrixCheby2D_7 function added (gregz)
+
 ## Version 0.9.0
 
 * pyhetdex.cure.distortion: Added write routine and tests

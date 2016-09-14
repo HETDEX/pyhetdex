@@ -187,12 +187,12 @@ class TestDistortion(object):
             pytest.skip()
 
     def test_cheb(self, dist):
-        import pyhetdex.ltl.marray as ma
+        import pyhetdex.ltl.chebyshev as cheby
         x = (dist._scal_x(100), dist._scal_x(1000))
         y = [dist._scal_f(20), dist._scal_f(220)]
         if dist.version == 14:
-            assert np.isclose(ma.interpCheby2D_7(x, y, dist.fy_par_.data),
+            assert np.isclose(cheby.interpCheby2D_7(x, y, dist.fy_par_.data),
                               np.array([18.6529, 217.801])).all()
         else:
-            assert np.isclose(ma.interpCheby2D_7(x, y, dist.fy_par_.data),
+            assert np.isclose(cheby.interpCheby2D_7(x, y, dist.fy_par_.data),
                               np.array([14.9945, 212.873])).all()

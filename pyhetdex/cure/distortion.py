@@ -1,6 +1,7 @@
 from __future__ import absolute_import, print_function
 
 import pyhetdex.ltl.marray as ma
+import pyhetdex.ltl.chebyshev as cheby
 from pyhetdex.tools import io_helpers
 
 import datetime
@@ -249,4 +250,4 @@ class Distortion_14(object):
         return (np.abs(a-v)).argmin()
 
     def interp(self, x, y, par):
-        return ma.interpCheby2D_7(x, y, par)
+        return cheby.interpCheby2D_7(x, y, par)

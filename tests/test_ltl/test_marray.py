@@ -157,3 +157,13 @@ class TestFVectorMArray(object):
 
         outname = tmpdir.mkdir(cls_type).join('test_'+cls_type+'_'+typ+'.dat')
         write(outname, cls_type, typ, data)
+
+
+def test_matrixCheby2D_7_warn():
+    with pytest.warns(UserWarning):
+        ma.matrixCheby2D_7(1, 1)
+
+
+def test_interpCheby2D_7_warn():
+    with pytest.warns(UserWarning):
+        ma.interpCheby2D_7(1, 1, np.ones(36))

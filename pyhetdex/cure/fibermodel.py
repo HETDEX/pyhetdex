@@ -1,12 +1,13 @@
-from __future__ import absolute_import, print_function
-
-__version__ = '$Id'
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import pyhetdex.ltl.marray as ma
+import pyhetdex.ltl.chebyshev as cheby
 from pyhetdex.tools import io_helpers
-
 from pyhetdex.cure.gaussian import gauss1D_H
 from pyhetdex.cure.bspline import BSpline
+
+__version__ = '$Id'
 
 
 class FiberModelBase(object):
@@ -93,7 +94,6 @@ class FiberModel_16(object):
             self.h3_par_.read(in_)
             self.h3_errors_.read(in_)
             size = float(io_helpers.skip_commentlines(in_))
-            # print('Reading %d amplitudes' % size)
             i = 0
             while i < size:
                 amp = ma.FVector()
@@ -144,7 +144,6 @@ class FiberModel_18(object):
             self.h3_par_.read(in_)
             self.h3_errors_.read(in_)
             size = float(io_helpers.skip_commentlines(in_))
-            # print('Reading %d amplitudes' % size)
             i = 0
             while i < size:
                 amp = ma.FVector()
@@ -199,7 +198,6 @@ class FiberModel_19(object):
             self.exp_par_.read(in_)
             self.exp_errors_.read(in_)
             size = float(io_helpers.skip_commentlines(in_))
-            # print('Reading %d amplitudes' % size)
             i = 0
             while i < size:
                 amp = ma.FVector()
@@ -258,7 +256,6 @@ class FiberModel_21(object):
                 val = float(io_helpers.skip_commentlines(in_))
                 self.powerlaw_wings.append(val)
             size = float(io_helpers.skip_commentlines(in_))
-            # print('Reading %d amplitudes' % size)
             i = 0
             while i < size:
                 amp = ma.FVector()
@@ -321,7 +318,6 @@ class FiberModel_22(object):
                 val = float(io_helpers.skip_commentlines(in_))
                 self.powerlaw_wings.append(val)
             size = int(io_helpers.skip_commentlines(in_))
-            # print('Reading %d amplitudes' % size)
             i = 0
             while i < size:
                 amp = BSpline()
@@ -343,7 +339,6 @@ class FiberModel_22(object):
             self.get_xy_sigma(x, y), self.get_xy_exp(x, y)
 
     def get_single_fiberflux(self, x, y, D):
-        print(self.get_params(x, y, D))
         _, H2, H3, amp, y0, sigma, exp = self.get_params(x, y, D)
         if abs(y-y0) > self._max_fiber_dist:
             return 0.0
@@ -360,7 +355,6 @@ class FiberModel_22(object):
             return self.profile.eval(y, amp, y0, sigma, H2, H3, exp)
 
     def get_single_fiberprofile(self, x, y, D):
-        print(self.get_params(x, y, D))
         _, H2, H3, amp, y0, sigma, exp = self.get_params(x, y, D)
         if abs(y-y0) > self._max_fiber_dist:
             return 0.0
@@ -421,4 +415,4 @@ class FiberModel_22(object):
         return (w - self.minw) / (self.maxw - self.minw)
 
     def interp(self, x, y, par):
-        return ma.interpCheby2D_7(x, y, par)
+        return cheby.interpCheby2D_7(x, y, par)

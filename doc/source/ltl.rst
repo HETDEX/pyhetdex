@@ -10,3 +10,9 @@
    :private-members:
    :show-inheritance:
   
+.. automodule:: pyhetdex.ltl.chebyshev
+   :member-order: groupwise
+   :members:
+   :undoc-members:
+   :private-members:
+   :show-inheritance:

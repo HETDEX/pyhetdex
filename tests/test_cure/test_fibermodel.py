@@ -18,7 +18,7 @@ def fmod(datadir, request):
     'return a fiber model'
     return fib.FiberModel(datadir.join(request.param).strpath)
 
-testprecision = 1.e-5
+testprecision = 1.e-4
 
 
 class TestFibermodel(object):
