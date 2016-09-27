@@ -30,7 +30,7 @@ def fits_image(datadir):
     ('line_detection', "line_detect", "085", None),
     ('line_detection', "line_detect", None, "detect(.*)_line.dat"),
     ])
-@pytest.mark.parametrize("outname", ['test.csv', 'test.fits'])
+@pytest.mark.parametrize("outname", ['test.csv', 'test.fits', 'test.txt'])
 def test_add_ra_dec_cmd(tmpdir, request, fplane_file, cat, typ, ihmp, regex,
                         outname):
     """Test the add_ra_dec command runs for a variety of inputs """

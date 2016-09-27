@@ -189,12 +189,12 @@ def add_ra_dec(args=None):
     # the write method for csv output, but such a 
     # variable breaks the fits output!
     extn = op.splitext(opts.fout)[1]
-    if extn == '.fits':
-        table_out.write(opts.fout)
+    if extn == '.csv':
+        table_out.write(opts.fout, comment='#')
     elif extn == '.txt':
         table_out.write(opts.fout, format='ascii')
     else:
-        table_out.write(opts.fout, comment='#')
+        table_out.write(opts.fout)
 
 
 def add_wcs(args=None):
