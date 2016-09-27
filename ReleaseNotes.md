@@ -3,6 +3,7 @@
 ## Development version @ trunk
 
 * pyhetdex.ltl.chebyshev: added; matrixCheby2D_7 function added (gregz)
+* Made modifications to add_ra_dec based on Karl/Gregs feedback
 
 ## Version 0.9.0
 

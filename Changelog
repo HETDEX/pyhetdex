@@ -1,3 +1,10 @@
+2016-09-27 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * ReleaseNotes.md: update
+    * pyhetdex/coordinates/astrometry.py: port changes from ^/branches/selection_function_devel
+    * pyhetdex/coordinates/tangent_projection_astropy.py: same
+    * pyhetdex/tools/read_catalogues.py: same
+
 2016-09-14 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/ltl/chebyshev.py: move here the Chebyshev implementations, use

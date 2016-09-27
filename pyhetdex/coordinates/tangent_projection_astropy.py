@@ -35,7 +35,7 @@ class TangentPlane(object):
     w : :class:`~astropy.wcs.WCS`
         a WCS object to store the tangent plane info
     """
-    def __init__(self, ra0, dec0, rot, x_scale=1, y_scale=1):
+    def __init__(self, ra0, dec0, rot, x_scale=-1., y_scale=1.):
 
         ARCSECPERDEG = 1.0/3600.0
 

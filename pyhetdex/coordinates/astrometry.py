@@ -17,77 +17,10 @@ from numpy import cos, sin, deg2rad, rad2deg
 from astropy.io.fits import getheader, getdata, PrimaryHDU
 from astropy.table import Table, vstack, hstack
 from astropy.coordinates import SkyCoord, FK5
+from pyhetdex.tools.read_catalogues import *
 from pyhetdex.het.fplane import FPlane
 from pyhetdex.coordinates.tangent_projection_astropy import TangentPlane
 from pyhetdex.coordinates.transformations import hms2decimal, dms2decimal
-
-def read_line_detect(fn):
-    """ 
-    Read in a line file from detect
-         
-    Parameters
-    ----------
-    fn : str
-        the filename to read
-
-    Returns
-    -------
-    x, y : array
-        the x, y coordinates from the file
-    table : astropy.table.Table
-        the rest of the table
-    """ 
-    table = Table.read(fn, format='ascii', names= (
-                    'NR','ID','XS','YS','l','z','dataflux','modflux','fluxfrac','sigma','chi2','chi2s',
-                    'chi2w','gammq','gammq_s','eqw', 'cont'), comment='#')
-    
-    return table['XS'], table['YS'], table
-  
-
-def read_cont_detect(fn):
-    """ 
-    Read in a cont file from detect
-         
-    Parameters
-    ----------
-    fn : str
-        the filename to read
-
-    Returns
-    -------
-    x, y : array
-        the x, y coordinates from the file
-    table : astropy.table.Table
-        the rest of the table
-    """
-    table = Table.read(fn, format='ascii', names= (
-                        'ID','icx','icy','<sigma>','fwhm_xy','a','b','pa','ir1',',ka',
-                        'kb','xmin','xmax','ymin','ymax','zmin','zmax'), comment='#')
-
-    return table['icx'], table['icy'], table
-
-def read_daophot(fn):
-    """ 
-    Read in a DAOPHOT ALLSTAR file from
-    a run on a collapsed cube/apimage file
-         
-    Parameters
-    ----------
-    fn : str
-        the filename to read
-
-    Returns
-    -------
-    x, y : array
-        the x, y coordinates from the file
-    table : astropy.table.Table
-        the rest of the table
-    """
-    table = Table.read(fn, format='ascii', data_start=2, names=['ID', 'icy', 'icx', 'mag', 'mag_std', 'sky', 'niter', 'CHI', 'SHARP'])
-
-    # transform to system where 0,0 is at center of IFU
-    return table['icx'] - 24.5, table['icy'] - 24.5, table
-
 
 def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
     """
@@ -133,9 +66,12 @@ def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
 
         print(s.ra.deg + TELRA, s.dec.deg + TELDEC, pa)
         tp = TangentPlane(s.ra.deg + TELRA, s.dec.deg + TELDEC, pa, x_scale=xscale, y_scale=yscale)
-    else:     
+    else:
+        # Carry out required changes to astrometry
+        rot = 360.0 - (opts.astrometry[2] + 90. + 1.8)
+
         # Set up astrometry from user supplied options
-        tp = TangentPlane(opts.astrometry[0], opts.astrometry[1], opts.astrometry[2])
+        tp = TangentPlane(opts.astrometry[0], opts.astrometry[1], rot)
 
     return tp
  
@@ -210,6 +146,9 @@ def add_ra_dec(args=None):
         read_func = read_cont_detect
     elif 'daophot_allstar' in opts.ftype: 
         read_func = read_daophot
+    else: 
+        print("Error: unrecognised ftype option. Please choose line_detect, cont_detect or daophot_allstar")
+        sys.exit(1)
 
     # Loop over the files, adding ra, dec
     tables = []
@@ -222,30 +161,38 @@ def add_ra_dec(args=None):
 
         ifu = fplane.by_ifuslot(ihmp)
 
-        x += ifu.x
-        y += ifu.y
+        # remember to flip x,y
+        xfp = x + ifu.y
+        yfp = y + ifu.x
  
-        ra, dec = tp.xy2raDec(x, y)
+        ra, dec = tp.xy2raDec(xfp, yfp)
 
         table['ra'] = ra
         table['dec'] = dec 
         table['ifuslot'] = ihmp
+        table['xfplane'] = xfp
+        table['yfplane'] = yfp
+
         tables.append(table) 
+
+    if len(tables) < 1:
+        print("Error: No entries in catalogue(s)")
+        sys.exit(1)       
 
     # output the combined table
     table_out = vstack(tables)
 
-    if len(table_out) < 1:
-        print("Error: No entries in catalogue(s)")
-        sys.exit(1)       
 
     print("Writing output to {:s}".format(opts.fout))
 
     # annoyingly have to specify comment variable for 
     # the write method for csv output, but such a 
     # variable breaks the fits output!
-    if '.fits' in opts.fout:
+    extn = op.splitext(opts.fout)[1]
+    if extn == '.fits':
         table_out.write(opts.fout)
+    elif extn == '.txt':
+        table_out.write(opts.fout, format='ascii')
     else:
         table_out.write(opts.fout, comment='#')
 
