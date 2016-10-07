@@ -3,7 +3,12 @@
 ## Development version @ trunk
 
 * pyhetdex.ltl.chebyshev: added; matrixCheby2D_7 function added (gregz)
-* Made modifications to add_ra_dec based on Karl/Gregs feedback
+* Made modifications to add_ra_dec based on Karl/Greg's feedback
+
+## Development version @ branches/conf_get_list
+
+* pyhetdex.tools.configuration: ConfigParse.get_list don't cast forcefully
+  anymore (issue #1620). Not backward compatible
 
 ## Version 0.9.0
 

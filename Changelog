@@ -1,3 +1,10 @@
+2016-10-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: change the ConfigParser.get_list to solve
+	  issue #1620
+    * tests/test_tools/test_configuration.py: test the new implementation
+    * ReleaseNotes.md: update
+
 2016-09-27 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/coordinates/astrometry.py: fixed bug where .fit extension in fout would cause failure

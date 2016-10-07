@@ -61,7 +61,6 @@ valueA
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import ast
 import itertools
 import re
 
@@ -99,6 +98,34 @@ class ConfigParser(confp.ConfigParser):
                                              BasicInterpolation())
             confp.ConfigParser.__init__(self, *args, **kwargs)
             self.default_section = confp.DEFAULTSECT
+
+        try:  # Python 2
+            self.BOOLEAN_STATES = self._boolean_states
+        except AttributeError:  # better pythons
+            self.BOOLEAN_STATES = self.BOOLEAN_STATES
+
+    def _to_boolean(self, value):
+        '''Convert a string to a boolean compatible to ConfigParser standards
+
+        Parameters
+        ----------
+        value : string
+            input value
+
+        Returns
+        -------
+        bool
+            converted value
+
+        Raises
+        ------
+        ValueError
+            if the conversion fails
+        '''
+        try:
+            return self.BOOLEAN_STATES[value.lower()]
+        except KeyError:
+            raise ValueError('Not a boolean: %s' % value)
 
     def get_list_of_list(self, section, option, use_default=False):
         """
@@ -162,10 +189,11 @@ class ConfigParser(confp.ConfigParser):
         value = [list(map(float, i.split('-'))) for i in value]
         return value
 
-    def get_list(self, section, option, use_default=False):
-        """
-        A convenience method which coerces the option in the specified section
-        to a list. If the options is empty returns the empty list ``[]``.
+    def get_list(self, section, option, use_default=False, cast_to=str):
+        """A convenience method which converts the option in the specified section
+        from a comma separated list to a python list.
+
+        If the options is empty returns the empty list ``[]``.
 
         Examples
         --------
@@ -177,14 +205,12 @@ class ConfigParser(confp.ConfigParser):
         >>> # cat settings.cfg:
         >>> # [section]
         >>> # wranges_iq = 3500, 4500, 5500
-        >>> # literal_list = ['a', 'b', 'c']
         >>> conf = ConfigParser()
-        >>> conf.read_dict({"section": {"wranges_iq": "3500, 4500, 5500",
-        ...                             "literal_list": "['a', 'b', 'c']"}})
+        >>> conf.read_dict({"section": {"wranges_iq": "3500, 4500, 5500"}})
         >>> conf.get_list("section", "wranges_iq")
+        ['3500', '4500', '5500']
+        >>> conf.get_list("section", "wranges_iq", cast_to=int)
         [3500, 4500, 5500]
-        >>> conf.get_list("section", "literal_list")
-        ['a', 'b', 'c']
         >>> conf.get_list("section", "not_exist")
         ... # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
@@ -199,8 +225,12 @@ class ConfigParser(confp.ConfigParser):
             name of the section
         option : string
             name of the option
-        use_default : bool
+        use_default : bool, optional
             whether default to ``[]``
+        cast_to : type, optional
+            convert each element to the given type; default convert to string.
+            The ``bool`` case is treated especially to comply with the
+            ConfigParser standards.
 
         Returns
         -------
@@ -221,25 +251,12 @@ class ConfigParser(confp.ConfigParser):
                 raise
 
         if not value.strip():
-            return []
-        try:
-            value = ast.literal_eval(value)
-        except (ValueError, SyntaxError):
-            # ValueError: malformed string
-            # SyntaxError: with e.g. file path
-            # e.g. "a, b, c" which is valid cannot be converted into a list of
-            # strings. So if this happens simply split the value on commas,
-            # strip and return it
-            value = value.split(',')
-            value = [v.strip() for v in value]
-
-        if isinstance(value, six.string_types):
-            value = [value]
+            value = []
         else:
-            try:
-                value = list(value)
-            except TypeError:
-                value = [value]
+            if cast_to == bool:
+                cast_to = self._to_boolean
+            value = [cast_to(v.strip()) for v in value.split(',')]
+
         return value
 
     def read_dict(self, dictionary, source='<dict>'):
@@ -337,7 +354,7 @@ class ConfigParser(confp.ConfigParser):
         except TypeError:
             # XXX does it break when underlying container state changed?
             return itertools.chain((self.default_section,),
-                                    self._sections.keys())
+                                   self._sections.keys())
 
 
 class SectionProxy():
@@ -492,8 +509,9 @@ class BasicInterpolation(Interpolation):
             elif c == "(":
                 m = self._KEYCRE.match(rest)
                 if m is None:
-                    raise confp.InterpolationSyntaxError(option, section,
-                            "bad interpolation variable reference %r" % rest)
+                    msg = ("bad interpolation variable reference"
+                           " {}".format(rest))
+                    raise confp.InterpolationSyntaxError(option, section, msg)
                 var = parser.optionxform(m.group(1))
                 rest = rest[m.end():]
                 try:
@@ -563,8 +581,9 @@ class ExtendedInterpolation(Interpolation):
             elif c == "{":
                 m = self._KEYCRE.match(rest)
                 if m is None:
-                    raise confp.InterpolationSyntaxError(option, section,
-                            "bad interpolation variable reference %r" % rest)
+                    msg = ("bad interpolation variable reference"
+                           " {}".format(rest))
+                    raise confp.InterpolationSyntaxError(option, section, msg)
                 path = m.group(1).split(':')
                 rest = rest[m.end():]
                 sect = section

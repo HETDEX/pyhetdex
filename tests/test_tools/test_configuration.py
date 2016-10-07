@@ -4,11 +4,11 @@ from __future__ import (absolute_import, division, print_function,
 
 import re
 
+import pytest
 import six
 from six.moves import configparser as confp
-import pyhetdex.tools.configuration as pyhconf
-import pytest
 
+import pyhetdex.tools.configuration as pyhconf
 if six.PY2:
     from pyhetdex.tools.configuration import (BasicInterpolation,
                                               ExtendedInterpolation,
@@ -17,7 +17,47 @@ else:
     from configparser import (BasicInterpolation, ExtendedInterpolation,
                               SectionProxy)
 
+parametrize = pytest.mark.parametrize
+xfail_value = pytest.mark.xfail(raises=ValueError,
+                                reason='Fail to cast a value')
 
+
+@parametrize('value, cast_to, recovered',
+             [('', str, []), ('', int, []),
+              ('a, b , c  ', str, ['a', 'b', 'c']),
+              xfail_value(('a, b , c  ', int, ['a', 'b', 'c'])),
+              ('1, 2 , 3  ', int, [1, 2, 3]),
+              ('1, 2 , 3  ', float, [1., 2., 3.]),
+              ('1, yes, true, on', bool, [True, ] * 4),
+              ('0, no, false, off', bool, [False, ] * 4),
+              xfail_value(('nobool, no, ', bool, [False, ] * 2)),
+              ])
+def test_get_list(value, cast_to, recovered):
+    '''Test getting lists from the configuration'''
+    section, option = 'section', 'option'
+    c = pyhconf.ConfigParser()
+    c.read_dict({section: {option: value}})
+
+    output = c.get_list(section, option, cast_to=cast_to)
+
+    assert output == recovered
+
+
+@parametrize('use_default',
+             [True, pytest.mark.xfail(raises=confp.NoOptionError,
+                                      reason='Missing option')(False)])
+def test_get_list_nooption(use_default):
+    '''Test that the default is correctly returned'''
+    section, option = 'section', 'option'
+    c = pyhconf.ConfigParser()
+    c.read_dict({section: {option: ''}})
+
+    output = c.get_list(section, 'other_option', use_default=use_default)
+
+    assert output == []
+
+
+@pytest.mark.skip
 class TestConf(object):
     "Test the configuration"
 
