@@ -127,10 +127,11 @@ class ConfigParser(confp.ConfigParser):
         except KeyError:
             raise ValueError('Not a boolean: %s' % value)
 
-    def get_list_of_list(self, section, option, use_default=False):
+    def get_list_of_list(self, section, option, use_default=False,
+                         cast_to=str):
         """
-        A convenience method which coerces the option in the specified section
-        to a list of lists. If the options is empty returns ``[[None, None]]``
+        A convenience method which coerces option in the specified section
+        to a list of lists. If the options is empty returns ``[[None, None]]``.
 
         Examples
         --------
@@ -144,6 +145,8 @@ class ConfigParser(confp.ConfigParser):
         >>> conf = ConfigParser()
         >>> conf.read_dict({"section": {"wranges_bkg": "3500-4500,4500-5500"}})
         >>> conf.get_list_of_list("section", "wranges_bkg")
+        [['3500', '4500'], ['4500', '5500']]
+        >>> conf.get_list_of_list("section", "wranges_bkg", cast_to=float)
         [[3500.0, 4500.0], [4500.0, 5500.0]]
         >>> conf.get_list_of_list("section", "not_exist")
         ... # doctest: +IGNORE_EXCEPTION_DETAIL
@@ -155,13 +158,16 @@ class ConfigParser(confp.ConfigParser):
 
         Parameters
         ----------
-
         section : string
             name of the section
         option : string
             name of the option
         use_default : bool
             whether default to ``[[None, None]]``
+        cast_to : type, optional
+            convert each element to the given type; default convert to string.
+            The ``bool`` case is treated especially to comply with the
+            ConfigParser standards.
 
         Returns
         -------
@@ -182,11 +188,12 @@ class ConfigParser(confp.ConfigParser):
                 raise
 
         if not value.strip():
-            return [[None, None]]
-
-        value = value.split(',')  # divide the various groups
-        # split each of the '-' separated couples and convert to float
-        value = [list(map(float, i.split('-'))) for i in value]
+            value = [[None, None]]
+        else:
+            if cast_to == bool:
+                cast_to = self._to_boolean
+            value = [[cast_to(i.strip()) for i in v.split('-')]
+                     for v in value.split(',')]
         return value
 
     def get_list(self, section, option, use_default=False, cast_to=str):

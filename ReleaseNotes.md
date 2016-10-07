@@ -7,8 +7,8 @@
 
 ## Development version @ branches/conf_get_list
 
-* pyhetdex.tools.configuration: ConfigParse.get_list don't cast forcefully
-  anymore (issue #1620). Not backward compatible
+* pyhetdex.tools.configuration: ConfigParse.{get_list,get_list_of_list}: don't
+  cast forcefully anymore (issue #1620, #1621). Not backward compatible
 
 ## Version 0.9.0
 
