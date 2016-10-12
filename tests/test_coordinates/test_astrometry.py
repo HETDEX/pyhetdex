@@ -7,7 +7,7 @@ from __future__ import (absolute_import, division, print_function,
 import os
 import pytest
 
-from pyhetdex.coordinates.astrometry import add_ra_dec, add_wcs
+from pyhetdex.coordinates.astrometry import add_ra_dec, add_wcs, xy_to_ra_dec
 
 
 @pytest.fixture
@@ -50,6 +50,24 @@ def test_add_ra_dec_cmd(tmpdir, request, fplane_file, cat, typ, ihmp, regex,
     add_ra_dec(args=argv)
     # Check output file written
     assert os.path.isfile(out)
+
+def test_xy_to_ra_dec_cmd(capsys, fplane_file):
+    """Test the add_ra_dec command runs for a variety of inputs """
+
+    # create the arguments
+    argv = ['--fplane', fplane_file.strpath]
+    argv += ['--ihmp', '073']
+
+    argv += ['--astrometry', '205.547', '28.376', '254.6']
+    argv += ['20.969', '-23.712']
+
+    xy_to_ra_dec(args=argv)
+
+    out, err = capsys.readouterr()
+
+    # Check output file written (values for old fplane)
+    assert out.strip().split()[0] == '205.485148'
+    assert out.strip().split()[1] == '28.398915'
 
 
 def test_add_wcs(tmpdir, fplane_file, fits_image):

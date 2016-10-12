@@ -1,3 +1,10 @@
+2016-10-12 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: added xy_to_ra_dec
+    * setup.py: added commnad line entry point for above
+    * tests/test_coordinates/test_astrometry.py: added tests for above 
+    * doc/source/astrometry_tools.rst: added documentation for above
+
 2016-09-27 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/coordinates/astrometry.py: fixed bug where .fit extension in fout would cause failure

@@ -4,6 +4,12 @@
 
 * pyhetdex.ltl.chebyshev: added; matrixCheby2D_7 function added (gregz)
 * Made modifications to add_ra_dec based on Karl/Gregs feedback
+* Added xy_to_ra_dec function that reads in-IFU positions and returns ra, dec
+
+## Development version @ branches/selection_function_devel
+
+* Changes to the selection function model
+* Modified code to read in three fiber-extracted noise files, rather than a datacube
 
 ## Version 0.9.0
 

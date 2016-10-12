@@ -50,6 +50,8 @@ entry_points = {'console_scripts':
                  'pyhetdex.coordinates.astrometry:add_ra_dec',
                  'add_wcs ='
                  'pyhetdex.coordinates.astrometry:add_wcs',
+                 'xy_to_ra_dec ='
+                 'pyhetdex.coordinates.astrometry:xy_to_ra_dec'
                  ]}
 
 setup(
