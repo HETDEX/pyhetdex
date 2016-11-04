@@ -1,3 +1,8 @@
+2016-11-04 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/tools/astro/zscale.rst: added
+    * doc/source/tools/astro/index.rst: add the above to the index
+
 2016-10-12 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/coordinates/astrometry.py: added xy_to_ra_dec
