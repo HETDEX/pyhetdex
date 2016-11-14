@@ -13,7 +13,7 @@ import glob
 import sys
 import argparse
 import astropy.units as units
-from numpy import cos, sin, deg2rad, rad2deg
+from numpy import cos, sin, deg2rad, rad2deg, float64
 from astropy.io.fits import getheader, getdata, PrimaryHDU
 from astropy.table import Table, vstack, hstack
 from astropy.coordinates import SkyCoord, FK5
@@ -74,7 +74,48 @@ def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
         tp = TangentPlane(opts.astrometry[0], opts.astrometry[1], rot)
 
     return tp
+
+def xy_to_ra_dec(args=None):
+    """
+
+    Convert between x y within an IFU and ra, dec
+
+    """   
+
+    parser = argparse.ArgumentParser(description="Convert between in-IFU x, y and on-sky ra, dec.")
+    parser.add_argument('pos', type=float64, nargs=2, help="Position in IFU (w.r.t. to IFU position in fplane file, i.e. the IFU center)")
+    parser.add_argument('--fplane', default='fplane.txt', help='Focal plane file')
  
+    # astrometry options
+    group_astro = parser.add_mutually_exclusive_group()
+    group_astro.add_argument('--astrometry', nargs=3, type=float64, help='RA DEC and PA of the focal plane center (degrees)')
+    group_astro.add_argument('--image', help='An image, with a header to grab ra, dec and PA from (DONT USE THIS)')
+
+    # IHMP identification
+    parser.add_argument('--ihmp', nargs=1, help='IFU slot of desired IFU')
+
+    opts = parser.parse_args(args)
+
+    # Verify user input
+    if not (opts.image or opts.astrometry):
+        print("""Error: Either pass an image with TELRA, TELDEC, PARANGLE and MJD in the header, 
+                 or manually specify raccen, deccen and PA with the astrometry option""") 
+        sys.exit(1)
+
+    fplane = FPlane(opts.fplane)
+    tp = ihmp_astrometry(opts) 
+
+    ifu = fplane.by_ifuslot(opts.ihmp[0])
+
+    # remember to flip x,y
+    xfp = opts.pos[0] + ifu.y
+    yfp = opts.pos[1] + ifu.x 
+
+    ra, dec = tp.xy2raDec(xfp, yfp)
+
+    print("{:9.6f} {:9.6f}".format(float64(ra), float64(dec)))
+
+
 def add_ra_dec(args=None):
     """
 
@@ -105,7 +146,7 @@ def add_ra_dec(args=None):
     # Verify user input
     if not (opts.image or opts.astrometry):
         print("""Error: Either pass an image with TELRA, TELDEC, PARANGLE and MJD in the header, 
-                 or manually specify raccen, deccen and PA with the astro option""") 
+                 or manually specify raccen, deccen and PA with the astrometry option""") 
         sys.exit(1)
 
     # Create IHMP/IFU slot list

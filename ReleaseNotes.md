@@ -4,11 +4,17 @@
 
 * pyhetdex.ltl.chebyshev: added; matrixCheby2D_7 function added (gregz)
 * Made modifications to add_ra_dec based on Karl/Greg's feedback
+* Added xy_to_ra_dec function that reads in-IFU positions and returns ra, dec
 
 ## Development version @ branches/conf_get_list
 
 * pyhetdex.tools.configuration: ConfigParse.{get_list,get_list_of_list}: don't
   cast forcefully anymore (issue #1620, #1621). Not backward compatible
+
+## Development version @ branches/selection_function_devel
+
+* Changes to the selection function model
+* Modified code to read in three fiber-extracted noise files, rather than a datacube
 
 ## Version 0.9.0
 

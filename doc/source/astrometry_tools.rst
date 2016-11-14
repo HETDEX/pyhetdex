@@ -96,6 +96,43 @@ a final example with a different input file type::
                detect_084_20160512T055309.7_line.dat detect_074_20160512T055309.7_line.dat
 
 
+Convert between x, y on IFU to ra, dec on command line
+------------------------------------------------------
+
+The command line tool ``xy_to_ra_dec`` accepts astrometry info (using the ``--astrometry`` option in the same way as 
+in ``add_ra_dec``), reads in a position - with respect to the center of the IFU - and prints
+the ra, dec to standard output. Note positions from ds9 or daophot might be with respect the the bottom 
+left of the IFU, not necessarily the center of the IFU or its position as defined in the fplane file.
+
+Here is the help info::
+
+    usage: xy_to_ra_dec [-h] [--fplane FPLANE]
+                    [--astrometry ASTROMETRY ASTROMETRY ASTROMETRY | --image IMAGE]
+                    [--ihmp IHMP]
+                    pos pos
+
+    Convert between in-IFU x, y and on-sky ra, dec.
+    
+    positional arguments:
+      pos                   Position in IFU (w.r.t. to IFU position in fplane
+                            file, i.e. the IFU center)
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      --fplane FPLANE       Focal plane file
+      --astrometry ASTROMETRY ASTROMETRY ASTROMETRY
+                            RA DEC and PA of the focal plane center (degrees)
+      --image IMAGE         An image, with a header to grab ra, dec and PA from
+                            (DONT USE THIS)
+      --ihmp IHMP           IFU slot of desired IFU
+ 
+
+
+Here is an example::
+
+    xy_to_ra_dec --fplane fplane.txt --astrometry 205.547 28.376 254.6  --ihmp 073  20.969 -23.712
+
+
 
 Add WCS to a fits image
 -----------------------
