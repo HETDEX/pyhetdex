@@ -4,11 +4,11 @@ from __future__ import (absolute_import, division, print_function,
 
 import re
 
+import pytest
 import six
 from six.moves import configparser as confp
-import pyhetdex.tools.configuration as pyhconf
-import pytest
 
+import pyhetdex.tools.configuration as pyhconf
 if six.PY2:
     from pyhetdex.tools.configuration import (BasicInterpolation,
                                               ExtendedInterpolation,
@@ -17,102 +17,80 @@ else:
     from configparser import (BasicInterpolation, ExtendedInterpolation,
                               SectionProxy)
 
+parametrize = pytest.mark.parametrize
+xfail_value = pytest.mark.xfail(raises=ValueError,
+                                reason='Fail to cast a value')
 
-class TestConf(object):
-    "Test the configuration"
 
-    @classmethod
-    def setup_class(cls):
-        # configuration defaults
-        conf = {"listolist": {"lists": "3500-4500,4500-5500"},
-                "list": {"float_list": "3500, 4500, 5500",
-                         "literal_list": "['a', 'b', 'c']",
-                         "literal_list2": "a, b, c",
-                         },
-                "empty": {"empty_list": " ",
-                          "literal_empty_list": "[]",
-                          },
-                "one": {'list': "3500",
-                        'listolist': "3500-4500", },
-                }
-        cls.lists_exp = [[3500, 4500], [4500, 5500]]
-        cls.float_list_exp = [3500, 4500, 5500]
-        cls.literal_list_exp = ['a', 'b', 'c']
-        cls.empty_list_exp = []
-        cls.empty_list_of_list_exp = [[None, None]]
-        # initialise the parser
-        c = pyhconf.ConfigParser()
-        c.read_dict(conf)
-        cls.c = c
-        return cls
+@parametrize('value, cast_to, recovered',
+             [('', str, []), ('', int, []),
+              ('a, b , c  ', str, ['a', 'b', 'c']),
+              xfail_value(('a, b , c  ', int, ['a', 'b', 'c'])),
+              ('1, 2 , 3  ', int, [1, 2, 3]),
+              ('1, 2 , 3  ', float, [1., 2., 3.]),
+              ('1, yes, true, on', bool, [True, ] * 4),
+              ('0, no, false, off', bool, [False, ] * 4),
+              xfail_value(('nobool, no, ', bool, [False, ] * 2)),
+              ])
+def test_get_list(value, cast_to, recovered):
+    '''Test getting lists from the configuration'''
+    section, option = 'section', 'option'
+    c = pyhconf.ConfigParser()
+    c.read_dict({section: {option: value}})
 
-    def test_empty_list(self):
-        "empty list"
-        emptyl = self.c.get_list('empty', 'empty_list')
-        assert emptyl == self.empty_list_exp
+    output = c.get_list(section, option, cast_to=cast_to)
 
-    def test_literal_empty_list(self):
-        "literal empty list"
-        emptyl = self.c.get_list('empty', 'literal_empty_list')
-        assert emptyl == self.empty_list_exp
+    assert output == recovered
 
-    def test_empty_list_of_list(self):
-        "empty list of lists"
-        emptyl = self.c.get_list_of_list('empty', 'empty_list')
-        assert emptyl == self.empty_list_of_list_exp
 
-    def test_list_of_list(self):
-        "list of lists"
-        lols = self.c.get_list_of_list('listolist', 'lists')
-        assert lols == self.lists_exp
+@parametrize('use_default',
+             [True, pytest.mark.xfail(raises=confp.NoOptionError,
+                                      reason='Missing option')(False)])
+def test_get_list_nooption(use_default):
+    '''Test that the default is correctly returned'''
+    section, option = 'section', 'option'
+    c = pyhconf.ConfigParser()
+    c.read_dict({section: {option: ''}})
 
-    def test_list_of_list_def(self):
-        "list of lists, use default"
-        lols = self.c.get_list_of_list('listolist', 'noexist',
-                                       use_default=True)
-        assert lols == [[None, None]]
+    output = c.get_list(section, 'other_option', use_default=use_default)
 
-    @pytest.mark.xfail(raises=confp.NoOptionError,
-                       reason='Non existing option')
-    def test_list_of_list_fail(self):
-        "list of lists, use default"
-        self.c.get_list_of_list('listolist', 'noexist')
+    assert output == []
 
-    def test_list_float(self):
-        "list of numbers"
-        l = self.c.get_list('list', 'float_list')
-        assert l == self.float_list_exp
 
-    def test_list_literals(self):
-        "list of literals"
-        l = self.c.get_list('list', 'literal_list')
-        assert l == self.literal_list_exp
+@parametrize('value, cast_to, recovered',
+             [('', str, [[None, None]]), ('', int, [[None, None]]),
+              ('a-b , c-d  ', str, [['a', 'b'], ['c', 'd']]),
+              xfail_value(('a-b , c-d  ', int, [])),
+              ('1 - 2 , 3 -4 ', int, [[1, 2], [3, 4]]),
+              ('1 - 2 , 3 -4 ', float, [[1., 2.], [3., 4.]]),
+              ('1- yes, true- on', bool, [[True, True], ] * 2),
+              ('0- no, false- off', bool, [[False, False], ] * 2),
+              xfail_value(('nobool, no, ', bool, [])),
+              ])
+def test_get_list_of_list(value, cast_to, recovered):
+    '''Test getting lists from the configuration'''
+    section, option = 'section', 'option'
+    c = pyhconf.ConfigParser()
+    c.read_dict({section: {option: value}})
 
-    def test_list_literals2(self):
-        "list of literals, as comma separated values"
-        l = self.c.get_list('list', 'literal_list2')
-        assert l == self.literal_list_exp
+    output = c.get_list_of_list(section, option, cast_to=cast_to)
 
-    def test_list_def(self):
-        "list of numbers, use default"
-        l = self.c.get_list('list', 'noexist', use_default=True)
-        assert l == []
+    assert output == recovered
 
-    @pytest.mark.xfail(raises=confp.NoOptionError,
-                       reason='Non existing option')
-    def test_list_fail(self):
-        "list of lists, use default"
-        self.c.get_list('list', 'noexist')
 
-    def test_list_one_element(self):
-        """List of one element, without commas"""
-        l = self.c.get_list('one', 'list')
-        assert l == [3500]
+@parametrize('use_default',
+             [True, pytest.mark.xfail(raises=confp.NoOptionError,
+                                      reason='Missing option')(False)])
+def test_get_list_of_list_nooption(use_default):
+    '''Test that the default is correctly returned'''
+    section, option = 'section', 'option'
+    c = pyhconf.ConfigParser()
+    c.read_dict({section: {option: ''}})
 
-    def test_listolist_one_element(self):
-        """List of lists of one element, without commas"""
-        l = self.c.get_list_of_list('one', 'listolist')
-        assert l == [[3500, 4500]]
+    output = c.get_list_of_list(section, 'other_option',
+                                use_default=use_default)
+
+    assert output == [[None, None]]
 
 
 class TestExtendedInterpolation(object):
