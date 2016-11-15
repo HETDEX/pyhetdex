@@ -332,7 +332,7 @@ class DitherCreator(object):
         s = "# basename          modelbase           ditherx dithery\
                 seeing norm airmass\n"
         line = "{:s} {:s} {:f} {:f} {:4.3f} {:5.4f} {:5.4f}\n"
-        for dither, bn, mb, dx, dy in zip(it.count(), basenames, modelbases,
+        for dither, bn, mb, dx, dy in zip(it.count(start=1), basenames, modelbases,
                                           dxs, dys):
             seeing = self.shot.fwhm(ifu.x, ifu.y, dither)
             norm = self.shot.normalisation(ifu.x, ifu.y, dither)
@@ -383,6 +383,9 @@ def argument_parser(argv=None):
                         not provided use some sensible default value for image
                         quality and normalisation. WARNING: at the moment not
                         used""")
+    parser.add_argument('--fwhm', type=float, help="""The FWHM of the shot in 
+                        arcseconds (only for the constant FWHM model)""",
+                        default=1.6)
     parser.add_argument('-O', '--order-by', help="""If given, order the
                         ``basenames`` files by the value of the header keyword
                         '%(dest)s'""")
@@ -418,7 +421,7 @@ def create_dither_file(argv=None):
     args = argument_parser(argv=argv)
 
     # create the shot object
-    shot = tel.Shot()
+    shot = tel.Shot(fwhm_fallback=args.fwhm)
 
     # create the dither
     if args.ditherpos_file:

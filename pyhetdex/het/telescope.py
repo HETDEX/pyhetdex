@@ -75,7 +75,7 @@ class Shot(object):
         x, y : float
             position in the focal plane in arcseconds
         dither : int
-            the dither number
+            the dither number (starting from 1)
         """
         return self.fwhm_model(x, y, dither)
 
@@ -103,7 +103,7 @@ class Shot(object):
         x,y : float
             position in the focal plane in arcseconds
         dither : int
-            the dither number
+            the dither number (starting from 1)
         """
         return self.illumination_model(x, y, dither)
 
@@ -129,7 +129,7 @@ class Shot(object):
         Parameters
         ----------
         dither : int
-            the dither number
+            the dither number (starting from 1)
         """
         return self.transparency_model(0, 0, dither)
 
@@ -141,7 +141,7 @@ class Shot(object):
         x, y : float
             position in the focal plane in arcseconds
         dither : int
-            the dither number
+            the dither number (starting from 1)
         """
         return (self.illumination(x, y, dither) *
                 self.transparency(dither))

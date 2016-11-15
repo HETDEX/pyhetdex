@@ -1,3 +1,11 @@
+2016-11-15 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+       * pyhetdex/het/dither.py: Fixed bug which would result in normalisation being
+         assigned to the wrong dither (Francesco found out where the bug was). Also
+         now accepts FWHM flag
+       * pyhetdex/het/telescope.py: added a note about the dithers starting at 1 to
+         the comments of various functions
+
 2016-11-14 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* : merge ^/branches/conf_get_list into ^/trunk
