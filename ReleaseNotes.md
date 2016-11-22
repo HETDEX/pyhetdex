@@ -13,6 +13,10 @@
 * Changes to the selection function model
 * Modified code to read in three fiber-extracted noise files, rather than a datacube
 
+## Development version @ branches/fplane_updates
+
+* fplane parser: skip IFU by SLOTID (issue #1617)
+
 ## Version 0.9.0
 
 * pyhetdex.cure.distortion: Added write routine and tests

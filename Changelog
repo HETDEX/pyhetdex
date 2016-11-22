@@ -1,3 +1,10 @@
+2016-11-22 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: add kwargs with the id to consider as missing; add
+	  possibility to skip specific SLOTIDs (issue #1617)
+    * tests/test_het/test_fplane.py: update the tests
+    * ReleaseNotes.md: update accordingly
+
 2016-11-15 Daniel Farrow <dfarrow@mpe.mpg.de>
 
        * pyhetdex/het/dither.py: Fixed bug which would result in normalisation being

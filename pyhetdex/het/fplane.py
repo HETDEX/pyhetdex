@@ -83,8 +83,18 @@ class FPlane(object):
     ----------
     fplane_file : string
         name of the file containing the ids and position of the IFUs
-    ifu_class : :class:`IFU` instance (or anything else)
+    ifu_class : :class:`IFU` instance (or anything else), optional
         class definition containing the IFU information.
+    empty_specid, empty_ifuid : string, optional
+        if the entries for the SPECID (fourth column) or IFUID (sixt column)
+        are as specified, they are replaced by a two digit negative number or a
+        two digit number following a 'N'. The number is increased any time one
+        of the two conditions is met. Use it with caution as the SPECID and
+        IFUID are used as dictionary keywords and should not be duplicated to
+        avoid losing IFUs
+    exclude_ifuslot : list of string, optional
+        list of ifu slot ids to exclude when loading the fplane file. The ids
+        must much exactly the string in the first column of the file
 
     Attributes
     ----------
@@ -94,14 +104,16 @@ class FPlane(object):
     ihmpids
     specids
     """
-    def __init__(self, fplane_file, ifu_class=IFU):
+    def __init__(self, fplane_file, ifu_class=IFU, empty_specid='00',
+                 empty_ifuid='000', exclude_ifuslot=[]):
         self._fplane_file = fplane_file
         self._IFU = ifu_class
         self._ifus_by_id = {}
         self._ifus_by_slot = {}
         self._ifus_by_spec = {}
 
-        self._load_fplane(fplane_file)
+        self._load_fplane(fplane_file, empty_specid, empty_ifuid,
+                          exclude_ifuslot)
 
     @property
     def ifus(self):
@@ -271,13 +283,15 @@ class FPlane(object):
 
         return ifu(id_)
 
-    def _load_fplane(self, fname):
+    def _load_fplane(self, fname, empty_specid, empty_ifuid, exclude_ifuslot):
         """Load the focal plane file and creates the :class:`IFU` instances
 
         Parameters
         ----------
         fname : string
             name of the focal plane file
+        empty_specid, empty_ifuid, exclude_ifuslot :
+            see :class:`FPlane`
         """
         missing = 1
         with open(fname, mode='r') as f:
@@ -287,9 +301,17 @@ class FPlane(object):
                 line = l.strip("\n").strip()
                 params = [i.strip() for i in line.split()]
 
-                if params[5] == '000':
-                    params[5] = 'N%02d' % missing
+                if params[0] in exclude_ifuslot:
+                    continue
+
+                changed = False
+                if params[3] == empty_specid:
                     params[3] = '-%02d' % missing
+                    changed = True
+                if params[5] == empty_ifuid:
+                    params[5] = 'N%02d' % missing
+                    changed = True
+                if changed:
                     missing += 1
                 self.add_ifu(params)
 
