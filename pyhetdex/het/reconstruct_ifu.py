@@ -490,10 +490,7 @@ class QuickReconstructedIFU(object):
     @pscale.setter
     def pscale(self, pixscale):
         self._pscale = pixscale
-        try:
-            del self.img
-        except AttributeError:
-            pass
+        self._create_empty_image()
 
     def reconstruct(self, files, subtract_overscan=True):
         """Read the files and create a reconstructed image.
@@ -595,6 +592,12 @@ class QuickReconstructedIFU(object):
                                    " it")
 
     def load(self, filename):
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("always")
+            warnings.warn('The "load" method has been deprecated and'
+                          ' will be removed in a future release',
+                          DeprecationWarning)
         hdu = fits.open(filename, memmap=False,
                         do_not_scale_image_data=True)
         self.img = hdu[0].data
@@ -636,7 +639,6 @@ class QuickReconstructedIFU(object):
         ny = int((self.maxy - self.miny) / self.pscale)
         self.img = np.zeros((nx, ny))
         self.isEmpty = True
-        # self.weight = np.ones((nx, ny))
 
 
 def argument_parser(argv=None):
