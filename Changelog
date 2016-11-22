@@ -1,3 +1,10 @@
+2016-11-22 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/reconstruct_ifu.py: reorganize __init__ in smaller functions,
+	  make sure missing or not set DITHER keyword is handled (issue #1674)
+    * tests/test_het/test_reconstructions.py: test it
+    * ReleaseNotes.md: updated
+
 2016-11-15 Daniel Farrow <dfarrow@mpe.mpg.de>
 
        * pyhetdex/het/dither.py: Fixed bug which would result in normalisation being

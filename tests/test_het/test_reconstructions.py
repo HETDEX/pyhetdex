@@ -4,6 +4,7 @@ Test the reconstruction of the IFU head
 from __future__ import (absolute_import, division, print_function)
 # , unicode_literals)
 
+from astropy.io import fits
 import pytest
 
 from pyhetdex.het import dither, ifu_centers
@@ -232,6 +233,35 @@ class TestQuickReconstruction(object):
                                           dist_r=dr)
 
         rimg.reconstruct(infile, subtract_overscan=False)
+
+    def test_wrong_dither_number(self, tmpdir, datadir, compare_fits,
+                                 ifucenter_file):
+        '''If the dither number is not 1, 2, 3 set it to the first one'''
+        infiles = [datadir.join(i).strpath for i in inputfilenames]
+        tmpfiles = [tmpdir.join(i).strpath for i in inputfilenames]
+        dl = datadir.join(dist_l).strpath
+        dr = datadir.join(dist_r).strpath
+        # copy the input files to tmpdir changing or removing the dither header
+        # keyword
+        for i, (ifile, tfile) in enumerate(zip(infiles, tmpfiles)):
+            with fits.open(ifile, memmap=False) as f:
+                if i % 2 == 0:
+                    f[0].header['DITHER'] = -99999
+                else:
+                    f[0].header.remove('DITHER')
+                f.writeto(tfile)
+
+        rimg = rifu.QuickReconstructedIFU(ifucenter_file.strpath, dist_r=dr,
+                                          dist_l=dl)
+
+        actual = tmpdir.join('qrecon.fits').strpath
+
+        rimg.reconstruct(tmpfiles)
+        rimg.write(actual)
+
+        expected = datadir.join('reconstructed.fits').strpath
+
+        assert compare_fits(expected, actual)
 
     def test_arg_missing_ifucen(self):
         with pytest.raises(SystemExit):

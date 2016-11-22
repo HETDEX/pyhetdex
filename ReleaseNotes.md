@@ -13,6 +13,10 @@
 * Changes to the selection function model
 * Modified code to read in three fiber-extracted noise files, rather than a datacube
 
+## Development version @ branches/recon_updates
+
+* fix case when DITHER header key is not present or not set (issue #1674)
+
 ## Version 0.9.0
 
 * pyhetdex.cure.distortion: Added write routine and tests
