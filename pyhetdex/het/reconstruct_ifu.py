@@ -513,6 +513,8 @@ class QuickReconstructedIFU(object):
         ifuid = None
         self._create_empty_image()
 
+        recon_img = self.img.copy()
+
         for img in files:  # Loop over all input file
             f_offset = 0  # Python arrays start at 0, FITS files at 1...
             with fits.open(img, memmap=False,
@@ -569,10 +571,11 @@ class QuickReconstructedIFU(object):
 
                     if self.x_idx[ccdpos][dither][f] and \
                        self.y_idx[ccdpos][dither][f]:
-                        self.img[[self.x_idx[ccdpos][dither][f],
+                        recon_img[[self.x_idx[ccdpos][dither][f],
                                   self.y_idx[ccdpos][dither][f]]] += flx
-
+        self.img = recon_img.copy()
         self.isEmpty = False
+        return recon_img
 
     def write(self, filename):
         """Write the reconstructed image to file ``filename`` as using the fits
@@ -591,7 +594,7 @@ class QuickReconstructedIFU(object):
                                    " method to create the image before saving"
                                    " it")
 
-    def load(self, filename):
+    def load(self, filename):  # pragma: no cover
         import warnings
         with warnings.catch_warnings():
             warnings.simplefilter("always")

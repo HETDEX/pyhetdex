@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function)
 # , unicode_literals)
 
 from astropy.io import fits
+import numpy as np
 import pytest
 
 from pyhetdex.het import dither, ifu_centers
@@ -135,12 +136,14 @@ class TestQuickReconstruction(object):
 
         actual = tmpdir.join('qrecon.fits').strpath
 
-        rimg.reconstruct(infiles)
+        image = rimg.reconstruct(infiles)
         rimg.write(actual)
 
         expected = datadir.join('reconstructed.fits').strpath
 
         assert compare_fits(expected, actual)
+        assert np.array_equal(image, rimg.img)
+        assert image is not rimg.img
 
     def test_pscale_setter(self, datadir, tmpdir, ifucenter_file):
         dl = datadir.join(dist_l).strpath

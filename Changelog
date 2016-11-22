@@ -1,5 +1,13 @@
 2016-11-22 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/het/reconstruct_ifu.py: each call to reconstruct, create a new
+	  empty image, fill it, copy it into self.img and returns it (issue #1667)
+    * tests/test_het/test_reconstructions.py: test it
+    * doc/source/het/reconstruct_ifu.rst: exclude the deprecated method from the
+	  documentation
+
+2016-11-22 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/reconstruct_ifu.py: deprecate load method
 
 2016-11-22 Francesco Montesano <montefra@mpe.mpg.de>

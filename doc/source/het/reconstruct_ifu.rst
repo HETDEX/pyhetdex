@@ -4,8 +4,9 @@
 ======================================================
 
 .. automodule:: pyhetdex.het.reconstruct_ifu
-   :member-order: groupwise
-   :members:
-   :undoc-members:
-   :private-members:
-   :show-inheritance:
+    :member-order: groupwise
+    :members:
+    :undoc-members:
+    :private-members:
+    :show-inheritance:
+    :exclude-members: load
