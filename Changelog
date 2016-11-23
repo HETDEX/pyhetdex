@@ -1,3 +1,9 @@
+2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: parent argument parsers and PEP8 
+    * pyhetdex/tools/read_catalogues.py: PEP8
+    * tests/test_coordinates/test_astrometry.py: same
+
 2016-11-15 Daniel Farrow <dfarrow@mpe.mpg.de>
 
        * pyhetdex/het/dither.py: Fixed bug which would result in normalisation being
