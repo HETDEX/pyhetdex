@@ -13,6 +13,10 @@
 * Changes to the selection function model
 * Modified code to read in three fiber-extracted noise files, rather than a datacube
 
+## Development version @ branches/selection_function_devel
+
+* copy tangent_projection_astropy into tangent_projection (#1636)
+
 ## Version 0.9.0
 
 * pyhetdex.cure.distortion: Added write routine and tests

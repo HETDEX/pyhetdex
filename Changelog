@@ -1,5 +1,18 @@
 2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/coordinates/tangent_projection.py: move the content with
+	  {}_astropy.py one
+    * pyhetdex/coordinates/tangent_projection_astropy.py: import the
+	  tangent_projection for backward compatibility and deprecate it
+    * tests/test_coordinates/test_tangent_projection.py: astropy goes from 0 to
+	  360
+    * doc/source/coordinates.rst: remove tangent_projection_astropy
+	  documentation
+    * setup.cfg: ignore tangent_projection_astropy
+    * ReleaseNotes.md: update
+
+2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/coordinates/astrometry.py: parent argument parsers and PEP8 
     * pyhetdex/tools/read_catalogues.py: PEP8
     * tests/test_coordinates/test_astrometry.py: same
