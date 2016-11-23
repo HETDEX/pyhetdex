@@ -7,6 +7,5 @@
     :maxdepth: 2
 
     zscale
-    iq_fit
     sky
     dss_image

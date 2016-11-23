@@ -16,5 +16,6 @@ with warnings.catch_warnings():
     warnings.simplefilter("always")
     warnings.warn('The "{}" module has been deprecated and'
                   ' will be removed in a future release. Use'
-                  ' "pyhetdex.coordinates.tangent_projection" instead',
+                  ' "pyhetdex.coordinates.tangent_projection"'
+                  ' instead'.format(__name__),
                   DeprecationWarning)

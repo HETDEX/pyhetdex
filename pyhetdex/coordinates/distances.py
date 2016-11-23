@@ -19,8 +19,17 @@ and
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import warnings
+
 import numpy as np
 
+with warnings.catch_warnings():
+    warnings.simplefilter("always")
+    warnings.warn('The "{}" module has been deprecated and'
+                  ' will be removed in a future release.'
+                  ' Please contact the developers if you have reasons to keep'
+                  ' it'.format(__name__),
+                  DeprecationWarning)
 
 # -----------------------------------------------------------------------------
 def angular_separation_deg(ra1, dec1, ra2, dec2):

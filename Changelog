@@ -1,5 +1,21 @@
 2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/coordinates/distances.py: deprecate
+    * pyhetdex/coordinates/tangent_projection_astropy.py: same
+    * pyhetdex/coordinates/transformations.py: same
+    * pyhetdex/coordinates/wcs.py: same
+    * pyhetdex/tools/astro/iq_fit.py: same
+    * setup.cfg: coverage ignore them
+    * tests/test_coordinates/test_distances.py: remove
+    * tests/test_coordinates/test_transformations.py: same
+    * tests/test_coordinates/test_wcs.py: same
+    * tests/test_tools/test_iq_fit.py: same
+    * doc/source/coordinates.rst: update documentation
+    * doc/source/tools/astro/index.rst: same
+    * doc/source/tools/astro/iq_fit.rst: same
+
+2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/coordinates/tangent_projection.py: move the content with
 	  {}_astropy.py one
     * pyhetdex/coordinates/tangent_projection_astropy.py: import the
