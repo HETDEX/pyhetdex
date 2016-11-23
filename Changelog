@@ -1,3 +1,9 @@
+2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: add possibility to skip empty IFUs
+    * tests/test_het/test_fplane.py: test it
+    * ReleaseNotes.md: update
+
 2016-11-22 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/fplane.py: add kwargs with the id to consider as missing; add

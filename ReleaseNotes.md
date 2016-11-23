@@ -15,7 +15,8 @@
 
 ## Development version @ branches/fplane_updates
 
-* fplane parser: skip IFU by SLOTID (issue #1617)
+* fplane parser: skip IFU by SLOTID (issue #1617) or when the SPECID/IFUID is
+  marked as empty (issue #1618)
 
 ## Version 0.9.0
 

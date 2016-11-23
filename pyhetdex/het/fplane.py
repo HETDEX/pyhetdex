@@ -95,6 +95,8 @@ class FPlane(object):
     exclude_ifuslot : list of string, optional
         list of ifu slot ids to exclude when loading the fplane file. The ids
         must much exactly the string in the first column of the file
+    skip_empty : bool, optional
+        if ``True`` skip one ifu if the specid/ifuid is marked as empty
 
     Attributes
     ----------
@@ -105,7 +107,7 @@ class FPlane(object):
     specids
     """
     def __init__(self, fplane_file, ifu_class=IFU, empty_specid='00',
-                 empty_ifuid='000', exclude_ifuslot=[]):
+                 empty_ifuid='000', exclude_ifuslot=[], skip_empty=False):
         self._fplane_file = fplane_file
         self._IFU = ifu_class
         self._ifus_by_id = {}
@@ -113,7 +115,7 @@ class FPlane(object):
         self._ifus_by_spec = {}
 
         self._load_fplane(fplane_file, empty_specid, empty_ifuid,
-                          exclude_ifuslot)
+                          exclude_ifuslot, skip_empty)
 
     @property
     def ifus(self):
@@ -283,14 +285,15 @@ class FPlane(object):
 
         return ifu(id_)
 
-    def _load_fplane(self, fname, empty_specid, empty_ifuid, exclude_ifuslot):
+    def _load_fplane(self, fname, empty_specid, empty_ifuid, exclude_ifuslot,
+                     skip_empty):
         """Load the focal plane file and creates the :class:`IFU` instances
 
         Parameters
         ----------
         fname : string
             name of the focal plane file
-        empty_specid, empty_ifuid, exclude_ifuslot :
+        empty_specid, empty_ifuid, exclude_ifuslot, skip_empty :
             see :class:`FPlane`
         """
         missing = 1
@@ -308,9 +311,13 @@ class FPlane(object):
                 if params[3] == empty_specid:
                     params[3] = '-%02d' % missing
                     changed = True
+                    if skip_empty:
+                        continue
                 if params[5] == empty_ifuid:
                     params[5] = 'N%02d' % missing
                     changed = True
+                    if skip_empty:
+                        continue
                 if changed:
                     missing += 1
                 self.add_ifu(params)

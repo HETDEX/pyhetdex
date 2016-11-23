@@ -189,6 +189,18 @@ def test_skip_ifuslot(fplane_file, skip_id, n_ifus):
     assert len(fplane.ifus) == n_ifus
 
 
+@parametrize('skip_empty, n_ifus', [(False, 2), (True, 1)])
+@parametrize('empty_specid, empty_ifuid, ',
+             [('00', '000'), ('other', '000'), ('00', 'other')])
+def test_skip_empty(fplane_file, empty_specid, empty_ifuid, skip_empty,
+                    n_ifus):
+    '''Test skipping one of the IFUs if the SPECID or the IFUID is empty'''
+    fplane = fp.FPlane(fplane_file.strpath, empty_specid=empty_specid,
+                       empty_ifuid=empty_ifuid, skip_empty=skip_empty)
+
+    assert len(fplane.ifus) == n_ifus
+
+
 def test_custom_IFU(datadir):
     "Basic customisation of the IFU object"
     class _MyIFU(fp.IFU):
