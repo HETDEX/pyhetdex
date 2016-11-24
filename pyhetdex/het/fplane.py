@@ -103,7 +103,6 @@ class FPlane(object):
     ifus
     difus
     ifuids
-    ihmpids
     specids
     """
     def __init__(self, fplane_file, ifu_class=IFU, empty_specid='00',
@@ -120,17 +119,17 @@ class FPlane(object):
     @property
     def ifus(self):
         """list of :class:`IFU` instances"""
-        return self._ifus_by_id.values()
+        return list(self._ifus_by_id.values())
 
     @property
     def ifuids(self):
         """list of ifu ids"""
-        return self._ifus_by_id.keys()
+        return list(self._ifus_by_id.keys())
 
     @property
     def ifuslots(self):
         """list of slot ids"""
-        return self._ifus_by_slot.keys()
+        return list(self._ifus_by_slot.keys())
 
     @property
     def ihmpids(self):
@@ -145,12 +144,12 @@ class FPlane(object):
             warnings.simplefilter("default")
             warnings.warn("``ihmpids`` is deprecated, please use ``ifuslots``"
                           " instead", DeprecationWarning)
-        return self._ifus_by_slot.keys()
+        return list(self._ifus_by_slot.keys())
 
     @property
     def specids(self):
         """list of spec ids"""
-        return self._ifus_by_spec.keys()
+        return list(self._ifus_by_spec.keys())
 
     @property
     def difus(self):

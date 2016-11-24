@@ -17,6 +17,7 @@
 
 * fplane parser: skip IFU by SLOTID (issue #1617) or when the SPECID/IFUID is
   marked as empty (issue #1618)
+* fplane parser: fix properties according to their documentation (issue #1640)
 
 ## Version 0.9.0
 

@@ -1,3 +1,10 @@
+2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/het/fplane.py: explicitly convert properties return values to
+	  list (issue #1640)
+    * ReleaseNotes.md: update accordingly
+    * doc/source/het/fplane.rst: ignore deprecated functionalities
+
 2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/fplane.py: add possibility to skip empty IFUs
