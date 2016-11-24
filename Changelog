@@ -1,5 +1,11 @@
 2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * ReleaseNotes.md: update
+    * pyhetdex/het/throughput.py: mark as "use at your own risk"
+    * pyhetdex/tools/astro/dss_image.py: mark as "use at your own risk"
+
+2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
     * setup.py: r244 requires astropy>=1.2
     * ReleaseNotes.md: update with #1637
 

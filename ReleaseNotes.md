@@ -16,7 +16,7 @@
 ## Development version @ branches/branches/deprecations
 
 * copy tangent_projection_astropy into tangent_projection (#1636)
-* deprecate some module (#1637)
+* deprecate some module and mark others as not tested/possibly changing (#1637)
 
 ## Version 0.9.0
 
