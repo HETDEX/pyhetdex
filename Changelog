@@ -1,5 +1,10 @@
 2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * setup.py: r244 requires astropy>=1.2
+    * ReleaseNotes.md: update with #1637
+
+2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/tools/astro/zscale.py: deprecate in favour of astropy version
     * setup.cfg: coverage ignore it
     * doc/source/tools/astro/zscale.rst: remove it
