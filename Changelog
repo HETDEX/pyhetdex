@@ -1,3 +1,11 @@
+2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/astro/zscale.py: deprecate in favour of astropy version
+    * setup.cfg: coverage ignore it
+    * doc/source/tools/astro/zscale.rst: remove it
+    * doc/source/tools/astro/index.rst: remove from index
+    * tox.ini: raise the coverage limit
+
 2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/coordinates/distances.py: deprecate

@@ -6,6 +6,5 @@
 .. toctree::
     :maxdepth: 2
 
-    zscale
     sky
     dss_image
