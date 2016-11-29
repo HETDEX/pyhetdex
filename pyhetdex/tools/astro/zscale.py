@@ -13,10 +13,8 @@ with warnings.catch_warnings():
                   ' >>> from astropy.visualization import ZScaleInterval\n'
                   ' >>> zscale = ZScaleInterval()\n'
                   ' >>> zmin, zmax = zscale.get_limits(image)\n'
-                  ' or\n'
-                  ' >>> from astropy.visualization.zscale import zscale\n'
-                  ' >>> zmin, zmax = zscale(image)'
-                  ''.format(__name__),
+                  'See astropy.visualization documentation for more'
+                  ' information'.format(__name__),
                   DeprecationWarning)
 
 MAX_REJECT = 0.5

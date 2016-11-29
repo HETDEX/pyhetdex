@@ -1,3 +1,8 @@
+2016-11-29 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/astro/zscale.py: update warning according to
+	  https://github.com/astropy/astropy/issues/5499
+
 2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
 
     * ReleaseNotes.md: update
