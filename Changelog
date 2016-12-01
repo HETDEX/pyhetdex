@@ -1,3 +1,7 @@
+2016-12-01 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: fix documentation
+
 2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* pyhetdex/het/fplane.py: explicitly convert properties return values to

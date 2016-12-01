@@ -48,8 +48,8 @@ class IFU(object):
 
     Attributes
     ----------
-    ifuid, x, y, xid, yspecid : as before
-    xid, yid : string or int
+    ifuid, x, y, specid, specslot, ifuid, ifurot, platescl : as before
+    xid, yid : int
         x (column) and y (row) id of the ifu in the ifu head mounting plate
         (IHMP), generated from the ifuslot
     """
