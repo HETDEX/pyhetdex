@@ -48,8 +48,8 @@ class IFU(object):
 
     Attributes
     ----------
-    ifuid, x, y, xid, yspecid : as before
-    xid, yid : string or int
+    ifuid, x, y, specid, specslot, ifuid, ifurot, platescl : as before
+    xid, yid : int
         x (column) and y (row) id of the ifu in the ifu head mounting plate
         (IHMP), generated from the ifuslot
     """
@@ -83,40 +83,53 @@ class FPlane(object):
     ----------
     fplane_file : string
         name of the file containing the ids and position of the IFUs
-    ifu_class : :class:`IFU` instance (or anything else)
+    ifu_class : :class:`IFU` instance (or anything else), optional
         class definition containing the IFU information.
+    empty_specid, empty_ifuid : string, optional
+        if the entries for the SPECID (fourth column) or IFUID (sixt column)
+        are as specified, they are replaced by a two digit negative number or a
+        two digit number following a 'N'. The number is increased any time one
+        of the two conditions is met. Use it with caution as the SPECID and
+        IFUID are used as dictionary keywords and should not be duplicated to
+        avoid losing IFUs
+    exclude_ifuslot : list of string, optional
+        list of ifu slot ids to exclude when loading the fplane file. The ids
+        must much exactly the string in the first column of the file
+    skip_empty : bool, optional
+        if ``True`` skip one ifu if the specid/ifuid is marked as empty
 
     Attributes
     ----------
     ifus
     difus
     ifuids
-    ihmpids
     specids
     """
-    def __init__(self, fplane_file, ifu_class=IFU):
+    def __init__(self, fplane_file, ifu_class=IFU, empty_specid='00',
+                 empty_ifuid='000', exclude_ifuslot=[], skip_empty=False):
         self._fplane_file = fplane_file
         self._IFU = ifu_class
         self._ifus_by_id = {}
         self._ifus_by_slot = {}
         self._ifus_by_spec = {}
 
-        self._load_fplane(fplane_file)
+        self._load_fplane(fplane_file, empty_specid, empty_ifuid,
+                          exclude_ifuslot, skip_empty)
 
     @property
     def ifus(self):
         """list of :class:`IFU` instances"""
-        return self._ifus_by_id.values()
+        return list(self._ifus_by_id.values())
 
     @property
     def ifuids(self):
         """list of ifu ids"""
-        return self._ifus_by_id.keys()
+        return list(self._ifus_by_id.keys())
 
     @property
     def ifuslots(self):
         """list of slot ids"""
-        return self._ifus_by_slot.keys()
+        return list(self._ifus_by_slot.keys())
 
     @property
     def ihmpids(self):
@@ -131,12 +144,12 @@ class FPlane(object):
             warnings.simplefilter("default")
             warnings.warn("``ihmpids`` is deprecated, please use ``ifuslots``"
                           " instead", DeprecationWarning)
-        return self._ifus_by_slot.keys()
+        return list(self._ifus_by_slot.keys())
 
     @property
     def specids(self):
         """list of spec ids"""
-        return self._ifus_by_spec.keys()
+        return list(self._ifus_by_spec.keys())
 
     @property
     def difus(self):
@@ -271,13 +284,16 @@ class FPlane(object):
 
         return ifu(id_)
 
-    def _load_fplane(self, fname):
+    def _load_fplane(self, fname, empty_specid, empty_ifuid, exclude_ifuslot,
+                     skip_empty):
         """Load the focal plane file and creates the :class:`IFU` instances
 
         Parameters
         ----------
         fname : string
             name of the focal plane file
+        empty_specid, empty_ifuid, exclude_ifuslot, skip_empty :
+            see :class:`FPlane`
         """
         missing = 1
         with open(fname, mode='r') as f:
@@ -287,9 +303,21 @@ class FPlane(object):
                 line = l.strip("\n").strip()
                 params = [i.strip() for i in line.split()]
 
-                if params[5] == '000':
-                    params[5] = 'N%02d' % missing
+                if params[0] in exclude_ifuslot:
+                    continue
+
+                changed = False
+                if params[3] == empty_specid:
                     params[3] = '-%02d' % missing
+                    changed = True
+                    if skip_empty:
+                        continue
+                if params[5] == empty_ifuid:
+                    params[5] = 'N%02d' % missing
+                    changed = True
+                    if skip_empty:
+                        continue
+                if changed:
                     missing += 1
                 self.add_ifu(params)
 

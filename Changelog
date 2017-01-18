@@ -1,5 +1,37 @@
 2017-01-18 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* : merge ^/branches/fplane_updates into ^/trunk
+
+2017-01-18 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/trunk into ^/branches/fplane_updates
+
+2016-12-01 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: fix documentation
+
+2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/het/fplane.py: explicitly convert properties return values to
+	  list (issue #1640)
+    * ReleaseNotes.md: update accordingly
+    * doc/source/het/fplane.rst: ignore deprecated functionalities
+
+2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: add possibility to skip empty IFUs
+    * tests/test_het/test_fplane.py: test it
+    * ReleaseNotes.md: update
+
+2016-11-22 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: add kwargs with the id to consider as missing; add
+	  possibility to skip specific SLOTIDs (issue #1617)
+    * tests/test_het/test_fplane.py: update the tests
+    * ReleaseNotes.md: update accordingly
+
+2017-01-18 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* : merge ^/branches/deprecations/ into ^/trunk
 
 2016-11-29 Francesco Montesano <montefra@mpe.mpg.de>

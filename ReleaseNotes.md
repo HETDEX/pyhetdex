@@ -9,7 +9,9 @@
   cast forcefully anymore (issue #1620, #1621). Not backward compatible
 * copy tangent_projection_astropy into tangent_projection (#1636)
 * deprecate some module and mark others as not tested/possibly changing (#1637)
-
+* fplane parser: skip IFU by SLOTID (issue #1617) or when the SPECID/IFUID is
+  marked as empty (issue #1618)
+* fplane parser: fix properties according to their documentation (issue #1640)
 
 ## Development version @ branches/selection_function_devel
 
