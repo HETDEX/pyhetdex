@@ -46,6 +46,11 @@ from pyhetdex.tools.files import file_tools as ft
 from pyhetdex.coordinates import wcs as pyhwcs
 
 
+warnings.warn('The module "{}" is currently non tested and might be discarded'
+              ' or heavily modified in future releases.'
+              ' Use it at your own risk.'.format(__name__))
+
+
 def wcs2pix(ra, dec, ra0, dec0, scale=1.698, im_size=848, CD=None):
     """Convert world coordinates scale to pixels
 

@@ -1,16 +1,13 @@
-"""Tangent projection transformation
+"""Tangent projection transformation: a wrapper around :class:`astropy.wcs.WCS`
 
-.. moduleauthor:: Maximilian Fabricius <>
-
-:meth:`~TangentPlane.raDec2xy` and :meth:`~TangentPlane.xy2raDec` implementations are
-taken from sections 3.1.1 and 3.1.2 of [1]_
+.. moduleauthor:: Daniel Farrow <dfarrow@mpe.mpg.de>
 
 Examples
 --------
 
 .. testsetup:: *
 
-    from pyhetdex.coordinates.tangent_projection import TangentPlane 
+    from pyhetdex.coordinates.tangent_projection import TangentPlane
 
 Example of use of this module::
 
@@ -22,161 +19,93 @@ Example of use of this module::
     >>> tp = TangentPlane(ra0=ra0, dec0=dec0, rot=rot, x_scale= -1, y_scale=1)
     >>> ra, dec = tp.xy2raDec(x_in, y_in)
     >>> x_out, y_out = tp.raDec2xy(ra, dec)
-    >>> print(round(ra, 10), round(dec, 10))
-    -0.0081216788 69.999999815
-    >>> print(round(x_out, 10), round(y_out, 10))
+    >>> ra -= 360
+    >>> print((ra).round(8), dec.round(8))
+    -0.00812168 69.99999981
+    >>> print(x_out.round(8), y_out.round(8))
     10.0 0.0
     >>> print(abs(x_out - x_in) < 1e-10, abs(y_out - y_in) < 1e-10)
     True True
     >>> # Naive calculation
     >>> import numpy as np
-    >>> print(round(-1. * (ra - ra0) * 3600. * np.cos(np.deg2rad(dec0)), 10))
-    9.999999933
-    >>> print(round((dec - dec0) * 3600., 10))
-    -0.0006660073
-
-.. todo::
-    check the module and its the documentation
-
-References
-----------
-.. [1] Eric W. Greisen, AIPS Memo 27, Non-linear Coordinate Systems in *AIPS*,
-  Reissue of November 1983 version, 1993,
-  ftp://ftp.aoc.nrao.edu/pub/software/aips/TEXT/PUBL/AIPSMEMO27.PS
-
-Attributes
-----------
-DEGPERRAD : float
-    Degrees per radians
+    >>> print(round(-1. * (ra - ra0) * 3600. * np.cos(np.deg2rad(dec0)), 8))
+    9.99999993
+    >>> print(round((dec - dec0) * 3600., 8))
+    -0.00066601
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import numpy as np
-
-
-DEGPERRAD = 57.295779513082323
+from numpy import cos, sin, deg2rad
+from astropy import wcs
 
 
 class TangentPlane(object):
-    """Contains the necessary information to translate from on-sky RA and DEC
-    coordinates on the tangent plane.
+    """Class to do tangent plane and inverse tangent plane transformations
+
+    Creates a WCS object for tangent plane projections by creating a FITS
+    header and feeding it to astropy
 
     Parameters
     ----------
     ra0, dec0 : float
-        ra and dec coordinate that correspond to ``x=0`` and ``y=0`` in the
-        tangent plane
+        tangent point, i.e. x=0, y=0 in tangent plane (in deg.)
     rot : float
-        Rotation measured East of North such that a
-        galaxy with a +10 Deg position angle on sky would be aligned with
-        the y-axis in tangent plane is rotated by +10 Deg.
+        rotation angle, clockwise from North (in deg.)
     x_scale, y_scale  : float, optional
         plate scale (arcsec per pixel).
 
-    Notes
-    -----
-        All the above parameters are saved into the corresponding attributes
-
-        When ``x_scale=-1`` and ``y_scale=1`` the tangent plane is
-        perfect in arcseconds.
+    Attributes
+    ----------
+    w : :class:`~astropy.wcs.WCS`
+        a WCS object to store the tangent plane info
     """
-
     def __init__(self, ra0, dec0, rot, x_scale=-1., y_scale=1.):
-        self.ra0 = ra0
-        self.dec0 = dec0
-        self.rot = rot
-        self.x_scale = x_scale
-        self.y_scale = y_scale
+        ARCSECPERDEG = 1.0/3600.0
 
-    def raDec2xy(self, ra_in, dec_in):
-        """Direct tangent transform
+        # make a WCS object with appropriate FITS headers
+        self.wcs = wcs.WCS(naxis=2)
+        self.wcs.wcs.crpix = [0.0, 0.0]  # central "pixel"
+        self.wcs.wcs.crval = [ra0, dec0]  # tangent point
+        self.wcs.wcs.ctype = ['RA---TAN', 'DEC--TAN']
+        # pixel scale in deg.
+        self.wcs.wcs.cdelt = [ARCSECPERDEG * x_scale, ARCSECPERDEG * y_scale]
 
-        Calculate x and y coordinates for positions in the IFUAstrom coordinate
-        frame.
+        # Deal with PA rotation by adding rotation matrix to header
+        rrot = deg2rad(rot)
+        # clockwise rotation matrix
+        self.wcs.wcs.pc = [[cos(rrot), sin(rrot)], [-1.0*sin(rrot), cos(rrot)]]
+
+    def raDec2xy(self, ra, dec):
+        """
+        Return the x, y position in the tangent
+        plane for a given ra, dec
 
         Parameters
         ----------
-        ra_in, dec_in : nd-array
-            ra and dec coordinate in degrees
+        ra, dec : float or array
+            the input position (in degrees)
 
         Returns
         -------
-        x_out, y_out : nd-arrays
-            x and y coordinates (in IFUAstrom coordinates, i.e. arcsec).
+        x, y : array
+            the x and y position in arcseconds
         """
-        ra0, dec0 = self.ra0, self.dec0
-        rot = self.rot
-        x_scale = self.x_scale / 3600. / DEGPERRAD  # RAD per Pixel
-        y_scale = self.y_scale / 3600. / DEGPERRAD  # RAD per Pixel
+        return self.wcs.wcs_world2pix(ra, dec, 1)
 
-        rra0 = np.deg2rad(ra0)
-        rdec0 = np.deg2rad(dec0)
-        rrot = np.deg2rad(rot)
-
-        rra_in = np.deg2rad(ra_in)
-        rdec_in = np.deg2rad(dec_in)
-
-        # AIPS Memo 27, 3.1.1
-        xhat = np.cos(rdec_in) * np.sin(rra_in - rra0)
-        xhat /= (np.sin(rdec_in) * np.sin(rdec0) +
-                 np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
-        yhat = np.sin(rdec_in) * np.cos(rdec0)
-        yhat -= np.cos(rdec_in) * np.sin(rdec0) * np.cos(rra_in - rra0)
-        yhat /= (np.sin(rdec_in) * np.sin(rdec0) +
-                 np.cos(rdec_in) * np.cos(rdec0) * np.cos(rra_in - rra0))
-
-        if x_scale < 0.:
-            xhat = -1 * xhat
-        # counter-clockwise rotation
-        xrot = xhat * np.cos(rrot) - yhat * np.sin(rrot)
-        yrot = xhat * np.sin(rrot) + yhat * np.cos(rrot)
-
-        # scaling
-        x = xrot / np.abs(x_scale)
-        y = yrot / y_scale
-
-        return x, y
-
-    def xy2raDec(self, x_in, y_in):
-        """inverse tangent transform
-
-        Calculates RA and DEC coordinates for positions in the IFUAstrom
-        coordinate frame.
+    def xy2raDec(self, x, y):
+        """
+        Return the ra, dec position in the tangent
+        plane for a given x, y
 
         Parameters
         ----------
-        x_in, y_in : nd-array
-            x and y coordinate in arcseconds
+        x, y : floats or arrays
+            the input position (in arcseconds)
 
         Returns
         -------
-        ra_out, dec_out : nd-arrays
-            RA/DEC coordinates in degree
+        ra, dec : array
+            the ra and dec position in degrees
         """
-        ra0, dec0 = self.ra0, self.dec0
-        rot = self.rot
-        x_scale = self.x_scale / 3600. / DEGPERRAD  # RAD per pixel
-        y_scale = self.y_scale / 3600. / DEGPERRAD  # RAD per pixel
-
-        rra0 = np.deg2rad(ra0)
-        rdec0 = np.deg2rad(dec0)
-        rrot = np.deg2rad(rot)
-
-        # scaling
-        xrot = x_in * np.abs(x_scale)
-        yrot = y_in * y_scale
-
-        # clock-wise rotation
-        xhat = xrot * np.cos(rrot) + yrot * np.sin(rrot)
-        yhat = -xrot * np.sin(rrot) + yrot * np.cos(rrot)
-        if x_scale < 0.:
-            xhat = -1*xhat
-
-        # AIPS Memo 27, 3.1.2
-        rra_out = rra0 + np.arctan(xhat/(np.cos(rdec0) - yhat * np.sin(rdec0)))
-        rdec_out = np.arctan(np.cos(rra_out - rra0) * (yhat * np.cos(rdec0) +
-                                                       np.sin(rdec0)) /
-                             (np.cos(rdec0) - yhat * np.sin(rdec0)))
-
-        return np.rad2deg(rra_out), np.rad2deg(rdec_out)
+        return self.wcs.wcs_pix2world(x, y, 1)

@@ -1,3 +1,7 @@
+2017-01-18 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/trunk into ^/branches/fplane_updates
+
 2016-12-01 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/het/fplane.py: fix documentation
@@ -21,6 +25,69 @@
 	  possibility to skip specific SLOTIDs (issue #1617)
     * tests/test_het/test_fplane.py: update the tests
     * ReleaseNotes.md: update accordingly
+
+2017-01-18 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/branches/deprecations/ into ^/trunk
+
+2016-11-29 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/astro/zscale.py: update warning according to
+	  https://github.com/astropy/astropy/issues/5499
+
+2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * ReleaseNotes.md: update
+    * pyhetdex/het/throughput.py: mark as "use at your own risk"
+    * pyhetdex/tools/astro/dss_image.py: mark as "use at your own risk"
+
+2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: r244 requires astropy>=1.2
+    * ReleaseNotes.md: update with #1637
+
+2016-11-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/astro/zscale.py: deprecate in favour of astropy version
+    * setup.cfg: coverage ignore it
+    * doc/source/tools/astro/zscale.rst: remove it
+    * doc/source/tools/astro/index.rst: remove from index
+    * tox.ini: raise the coverage limit
+
+2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/distances.py: deprecate
+    * pyhetdex/coordinates/tangent_projection_astropy.py: same
+    * pyhetdex/coordinates/transformations.py: same
+    * pyhetdex/coordinates/wcs.py: same
+    * pyhetdex/tools/astro/iq_fit.py: same
+    * setup.cfg: coverage ignore them
+    * tests/test_coordinates/test_distances.py: remove
+    * tests/test_coordinates/test_transformations.py: same
+    * tests/test_coordinates/test_wcs.py: same
+    * tests/test_tools/test_iq_fit.py: same
+    * doc/source/coordinates.rst: update documentation
+    * doc/source/tools/astro/index.rst: same
+    * doc/source/tools/astro/iq_fit.rst: same
+
+2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/tangent_projection.py: move the content with
+	  {}_astropy.py one
+    * pyhetdex/coordinates/tangent_projection_astropy.py: import the
+	  tangent_projection for backward compatibility and deprecate it
+    * tests/test_coordinates/test_tangent_projection.py: astropy goes from 0 to
+	  360
+    * doc/source/coordinates.rst: remove tangent_projection_astropy
+	  documentation
+    * setup.cfg: ignore tangent_projection_astropy
+    * ReleaseNotes.md: update
+
+2016-11-23 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: parent argument parsers and PEP8 
+    * pyhetdex/tools/read_catalogues.py: PEP8
+    * tests/test_coordinates/test_astrometry.py: same
 
 2016-11-15 Daniel Farrow <dfarrow@mpe.mpg.de>
 
