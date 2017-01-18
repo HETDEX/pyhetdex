@@ -12,6 +12,7 @@
 * fplane parser: skip IFU by SLOTID (issue #1617) or when the SPECID/IFUID is
   marked as empty (issue #1618)
 * fplane parser: fix properties according to their documentation (issue #1640)
+* fix case when DITHER header key is not present or not set (issue #1674)
 
 ## Development version @ branches/selection_function_devel
 
