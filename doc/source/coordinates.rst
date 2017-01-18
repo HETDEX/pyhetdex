@@ -13,42 +13,6 @@
    :undoc-members:
    :private-members:
 
-:py:mod:`tangent_projection_astropy` -- Astropy-based Tangent projection
-========================================================================
-
-.. automodule:: pyhetdex.coordinates.tangent_projection_astropy
-   :member-order: groupwise
-   :members:
-   :undoc-members:
-   :private-members:
-  
-:py:mod:`transformations` -- Celestial coordinate transformations
-=================================================================
-
-.. automodule:: pyhetdex.coordinates.transformations
-   :member-order: groupwise
-   :members:
-   :undoc-members:
-   :private-members:
-
-:py:mod:`wcs` -- World coordinate system
-========================================
-
-.. automodule:: pyhetdex.coordinates.wcs
-   :member-order: groupwise
-   :members:
-   :undoc-members:
-   :private-members:
-
-:py:mod:`distances` -- Angular coordinate distances
-===================================================
-
-.. automodule:: pyhetdex.coordinates.distances
-   :member-order: groupwise
-   :members:
-   :undoc-members:
-   :private-members:
-
 :py:mod:`astrometry` -- Routines to add Astrometry Information
 ==============================================================
 
@@ -57,5 +21,3 @@
    :members:
    :undoc-members:
    :private-members:
-
-

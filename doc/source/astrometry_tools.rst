@@ -172,17 +172,3 @@ assumes no transformations or rotations have been applied to the raw data. Here 
 example::
 
     add_wcs --fplane fplanetmp.txt --astrometry 205.543395821 28.3792133418 257.654951 CuFepses20160604T063029.1_085_sci.fits 085
-
-  
-
-
-
-
-
-
-
-
-
-
-
- 

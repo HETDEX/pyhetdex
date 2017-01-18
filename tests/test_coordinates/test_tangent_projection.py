@@ -1,5 +1,5 @@
 """
-Test pyhetdex/astrometry/astrometry.py
+Test pyhetdex/astrometry/tangent_projection.py
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -55,8 +55,8 @@ def test_tan_inv(ifuastrom, x_y_in, ra_dec_exp):
     "Test the inverse transform"
     ra, dec = ifuastrom.xy2raDec(*x_y_in)
     exp_ra, exp_dec = ra_dec_exp
-    assert round(exp_ra - ra, 10) == 0
-    assert round(exp_dec - dec, 10) == 0
+    assert round(exp_ra - ra, 10) % 360 == 0
+    assert round(exp_dec - dec, 10) % 360 == 0
 
 
 def test_tan_dirinv(ifuastrom, ra_dec_in):

@@ -1,7 +1,21 @@
 from __future__ import division  # confidence high
 
+import warnings
+
 import math
 import numpy
+
+with warnings.catch_warnings():
+    warnings.simplefilter("always")
+    warnings.warn('The "{0}" module has been deprecated and'
+                  ' will be removed in a future release.'
+                  ' Please replace calls to "{0}.zscale" with\n'
+                  ' >>> from astropy.visualization import ZScaleInterval\n'
+                  ' >>> zscale = ZScaleInterval()\n'
+                  ' >>> zmin, zmax = zscale.get_limits(image)\n'
+                  'See astropy.visualization documentation for more'
+                  ' information'.format(__name__),
+                  DeprecationWarning)
 
 MAX_REJECT = 0.5
 MIN_NPIXELS = 5

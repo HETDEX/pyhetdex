@@ -17,7 +17,13 @@ telescope configuration
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import warnings
 import numpy as np
+
+
+warnings.warn('The module "{}" is currently non tested and might be discarded'
+              ' or heavily modified in future releases.'
+              ' Use it at your own risk.'.format(__name__))
 
 
 class ThroughputServer(object):

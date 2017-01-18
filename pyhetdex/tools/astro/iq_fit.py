@@ -13,12 +13,23 @@ distribution integrated over the fibers of the reconstructed IFU image.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import warnings
+
 from astropy.modeling.functional_models import Moffat2D
 import astropy.modeling.fitting as apf
 
 import numpy as np
 
 import pyhetdex.het.reconstruct_ifu as precon
+
+
+with warnings.catch_warnings():
+    warnings.simplefilter("always")
+    warnings.warn('The "{}" module has been deprecated and'
+                  ' will be removed in a future release.'
+                  ' Please contact the developers if you have reasons to keep'
+                  ' it'.format(__name__),
+                  DeprecationWarning)
 
 
 # ==== Helper functions ==== #
