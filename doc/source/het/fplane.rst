@@ -65,3 +65,4 @@ Implementation
    :members:
    :undoc-members:
    :private-members:
+   :exclude-members: ihmpids, by_ihmpid 

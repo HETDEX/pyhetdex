@@ -51,6 +51,7 @@ def test_add_ra_dec_cmd(tmpdir, request, fplane_file, cat, typ, ihmp, regex,
     # Check output file written
     assert os.path.isfile(out)
 
+
 def test_xy_to_ra_dec_cmd(capsys, fplane_file):
     """Test the add_ra_dec command runs for a variety of inputs """
 
