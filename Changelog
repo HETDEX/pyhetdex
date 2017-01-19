@@ -1,3 +1,8 @@
+2017-01-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* doc/source/tools/six_ext.rst: update documentation; solves issue #988
+    * pyhetdex/tools/six_ext.py: same
+
 2017-01-18 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* : merge ^/branches/recon_updates into ^/trunk
