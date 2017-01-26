@@ -389,7 +389,7 @@ class FiberModel_22(object):
                                      D.map_xy_fibernum(x, y))
 
     def get_wf_amplitude(self, w, f):
-        return self.amplitudes[f-1].evaluate(self._scal_w(w))
+        return self.amplitudes[int(f)-1].evaluate(self._scal_w(w))
 
     def get_xy_sigma(self, x, y):
         return self.interp(self._scal_x(x), self._scal_y(y),

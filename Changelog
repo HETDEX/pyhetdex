@@ -1,5 +1,10 @@
 2017-01-26 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/cure/fibermodel.py: cast list index to integer to comply with
+	  numpy >=1.12. Fixes issue #1769
+
+2017-01-26 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/reconstruct_ifu.py: transpose the quick recon image; fixes
 	  issue #1557
     * tests/test_het/test_reconstructions.py: update the tests and add the
