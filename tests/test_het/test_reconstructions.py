@@ -11,6 +11,8 @@ import pytest
 from pyhetdex.het import dither, ifu_centers
 import pyhetdex.het.reconstruct_ifu as rifu
 
+parametrize = pytest.mark.parametrize
+
 
 @pytest.fixture
 def ifucen(ifucenter_file):
@@ -109,22 +111,21 @@ def test_recon_fib_missmatch(ifucenter_missf, dither_fast):
 dist_l = 'distortion_L.dist'
 dist_r = 'distortion_R.dist'
 
-inputfilenames = ['20151025T122555_103LL_sci.fits',
-                  '20151025T122555_103LU_sci.fits',
-                  '20151025T122555_103RL_sci.fits',
-                  '20151025T122555_103RU_sci.fits']
-
 inputfilenames_l = ['20151025T122555_103LL_sci.fits',
                     '20151025T122555_103LU_sci.fits']
 
 inputfilenames_r = ['20151025T122555_103RL_sci.fits',
                     '20151025T122555_103RU_sci.fits']
 
+inputfilenames = inputfilenames_l + inputfilenames_r
+
 
 class TestQuickReconstruction(object):
     "Test various ways to do the reconstruction"
 
-    def test_init(self, datadir, tmpdir, ifucenter_file, compare_fits):
+    @parametrize('do_not_scale_image_data', [True, False])
+    def test_init(self, datadir, tmpdir, ifucenter_file, compare_fits,
+                  do_not_scale_image_data):
         "Quick Reconstruction from existing ifu center and dither objects"
 
         infiles = [datadir.join(i).strpath for i in inputfilenames]
@@ -136,7 +137,8 @@ class TestQuickReconstruction(object):
 
         actual = tmpdir.join('qrecon.fits').strpath
 
-        image = rimg.reconstruct(infiles)
+        image = rimg.reconstruct(infiles,
+                               do_not_scale_image_data=do_not_scale_image_data)
         rimg.write(actual)
 
         expected = datadir.join('reconstructed.fits').strpath

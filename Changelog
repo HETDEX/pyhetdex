@@ -1,3 +1,11 @@
+2017-01-26 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/reconstruct_ifu.py: transpose the quick recon image; fixes
+	  issue #1557
+    * tests/test_het/test_reconstructions.py: update the tests and add the
+	  do_not_rescale_image_data key
+    * tests/data/reconstructed.fits: transpose the file
+
 2017-01-19 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* doc/source/tools/six_ext.rst: update documentation; solves issue #988

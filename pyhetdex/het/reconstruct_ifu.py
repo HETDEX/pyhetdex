@@ -492,7 +492,8 @@ class QuickReconstructedIFU(object):
         self._pscale = pixscale
         self._create_empty_image()
 
-    def reconstruct(self, files, subtract_overscan=True):
+    def reconstruct(self, files, subtract_overscan=True,
+                    do_not_scale_image_data=False):
         """Read the files and create a reconstructed image.
 
         Parameters
@@ -503,6 +504,9 @@ class QuickReconstructedIFU(object):
             If the overscan region is still present in the image,
             subtract the bias level, calculated from the overscan
             region of the image.
+        do_not_scale_image_data : bool
+            If True, image data is not scaled using BSCALE/BZERO values when
+            read.
 
         Returns
         -------
@@ -517,9 +521,9 @@ class QuickReconstructedIFU(object):
 
         for img in files:  # Loop over all input file
             f_offset = 0  # Python arrays start at 0, FITS files at 1...
-            with fits.open(img, memmap=False,
-                           do_not_scale_image_data=True) as hdu:
-
+            kwargs = dict(memmap=False,
+                          do_not_scale_image_data=do_not_scale_image_data)
+            with fits.open(img, **kwargs) as hdu:
                 h = hdu[0].header
                 data = hdu[0].data.transpose()
 
@@ -552,7 +556,7 @@ class QuickReconstructedIFU(object):
                 if dither not in self._dithers:
                     dither = self._dithers[0]
 
-                center_x = np.round(data.shape[0]/2)
+                center_x = int(np.round(data.shape[0]/2))
 
                 for f in self.ifu_center.fib_number[ccdpos]:
                     # fib = f+1
@@ -562,6 +566,13 @@ class QuickReconstructedIFU(object):
                     if fy < 0 or fy > data.shape[1]:
                         continue
 
+                    # Take the 3 pixels around the centre of the fibre profile
+                    # and add the fractional part for the next pixel rows.
+                    # If the fibre centre would be in the middle of the central
+                    # pixel, 50% of each of the outer rows would be added. As
+                    # the centre is shifted with respect to the middle, the
+                    # relative percentages of the outer rows change
+                    # accordingly.
                     flx = np.sum(data[center_x-20:center_x + 20,
                                       fy-1:fy+2]) + \
                         np.sum(data[center_x-20:center_x + 20,
@@ -573,6 +584,7 @@ class QuickReconstructedIFU(object):
                        self.y_idx[ccdpos][dither][f]:
                         recon_img[[self.x_idx[ccdpos][dither][f],
                                   self.y_idx[ccdpos][dither][f]]] += flx
+        recon_img = recon_img.transpose()
         self.img = recon_img.copy()
         self.isEmpty = False
         return recon_img
