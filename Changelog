@@ -1,3 +1,8 @@
+2017-02-02 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * ReleaseNotes.md: prepare for v0.10 release
+	* setup.py: same
+
 2017-01-26 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/cure/fibermodel.py: cast list index to integer to comply with

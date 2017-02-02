@@ -57,7 +57,7 @@ entry_points = {'console_scripts':
 setup(
     # package description and version
     name="pyhetdex",
-    version="0.9.0-post",
+    version="0.10.0",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",

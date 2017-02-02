@@ -2,6 +2,13 @@
 
 ## Development version @ trunk
 
+## Development version @ branches/selection_function_devel
+
+* Changes to the selection function model
+* Modified code to read in three fiber-extracted noise files, rather than a datacube
+
+## Version 0.10.0
+
 * pyhetdex.ltl.chebyshev: added; matrixCheby2D_7 function added (gregz)
 * Made modifications to add_ra_dec based on Karl/Greg's feedback
 * Added xy_to_ra_dec function that reads in-IFU positions and returns ra, dec
@@ -13,11 +20,7 @@
   marked as empty (issue #1618)
 * fplane parser: fix properties according to their documentation (issue #1640)
 * fix case when DITHER header key is not present or not set (issue #1674)
-
-## Development version @ branches/selection_function_devel
-
-* Changes to the selection function model
-* Modified code to read in three fiber-extracted noise files, rather than a datacube
+* cast list index to integer to comply with numpy >=1.12 (issue #1769)
 
 ## Version 0.9.0
 
