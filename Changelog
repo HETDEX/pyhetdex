@@ -1,3 +1,8 @@
+2017-03-01  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/het/overview_plot.py: Added, create inspection plots,
+	used by curewise ingestion.
+
 2017-02-02 Francesco Montesano <montefra@mpe.mpg.de>
 
     * ReleaseNotes.md: prepare for v0.10 release
@@ -370,7 +375,7 @@
 2016-07-11  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/cure/fibermodel.py: Added compability for version 22
-	fibermodels, started adding evaluation functions.
+	fibermodels, started adding evaluation func
 
 2016-07-07 Daniel Farrow <dfarrow@mpe.mpg.de>
 
