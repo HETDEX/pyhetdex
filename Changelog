@@ -1,3 +1,11 @@
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tox.ini: add py3.6. Resolves Issue #1843
+    * pyhetdex/tools/files/file_tools.py: skip doctests output
+    * tests/test_tools/test_file_tools.py: python 3.6 warns if flags are at the
+	  end of an expression and updated fnmatch.translate accordingly. Make the
+	  tests compatible with python >= 3.6 and <3.6
+
 2017-03-01  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/het/overview_plot.py: Added, create inspection plots,
