@@ -1,5 +1,11 @@
 2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* pyhetdex/het/reconstruct_ifu.py: remove deprecated
+	  QuickReconstructedIFU.load method. Resolves issue #1676
+    * doc/source/het/reconstruct_ifu.rst: same
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/fplane.py: remove deprecated attributes. Resolves issue #1641
     * doc/source/het/fplane.rst: update doc accordingly
     * tests/test_het/test_fplane.py: update tests accordingly

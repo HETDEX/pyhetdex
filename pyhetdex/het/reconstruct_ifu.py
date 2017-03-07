@@ -606,19 +606,6 @@ class QuickReconstructedIFU(object):
                                    " method to create the image before saving"
                                    " it")
 
-    def load(self, filename):  # pragma: no cover
-        import warnings
-        with warnings.catch_warnings():
-            warnings.simplefilter("always")
-            warnings.warn('The "load" method has been deprecated and'
-                          ' will be removed in a future release',
-                          DeprecationWarning)
-        hdu = fits.open(filename, memmap=False,
-                        do_not_scale_image_data=True)
-        self.img = hdu[0].data
-        hdu.close()
-        self.isEmpty = False
-
     def _section_to_list(self, sec):
         """
         Convert a header section string of the form [x1:x2,y1:y2]
