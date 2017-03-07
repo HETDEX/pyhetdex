@@ -43,12 +43,14 @@ from six import StringIO
 
 
 from pyhetdex.tools.files import file_tools as ft
-from pyhetdex.coordinates import wcs as pyhwcs
+# from pyhetdex.coordinates import wcs as pyhwcs
 
 
-warnings.warn('The module "{}" is currently non tested and might be discarded'
+warnings.warn('The module "{}" is currently broken and might be discarded'
               ' or heavily modified in future releases.'
-              ' Use it at your own risk.'.format(__name__))
+              ' If you need/want to use it, please step in and fix it.'
+              ' Remember tests and documentation are not that'
+              ' optional.'.format(__name__))
 
 
 def wcs2pix(ra, dec, ra0, dec0, scale=1.698, im_size=848, CD=None):

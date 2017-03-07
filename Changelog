@@ -1,5 +1,15 @@
 2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/coordinates/distances.py: removed
+    * pyhetdex/coordinates/wcs.py: removed
+    * pyhetdex/tools/astro/dss_image.py: comment wcs import and add update
+	  warning
+    * pyhetdex/tools/astro/iq_fit.py: removed
+    * pyhetdex/tools/astro/zscale.py: removed
+	* setup.cfg: update accordingly
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/coordinates/tangent_projection_astropy.py: remove it as per issue
 	  #1677
     * setup.cfg: remove the above module
