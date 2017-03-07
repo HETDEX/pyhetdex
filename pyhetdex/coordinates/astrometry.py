@@ -18,7 +18,7 @@ from astropy.table import vstack
 from astropy.coordinates import SkyCoord, FK5
 import pyhetdex.tools.read_catalogues as rc
 from pyhetdex.het.fplane import FPlane
-from pyhetdex.coordinates.tangent_projection_astropy import TangentPlane
+from pyhetdex.coordinates.tangent_projection import TangentPlane
 from pyhetdex.coordinates.transformations import hms2decimal, dms2decimal
 
 
@@ -48,7 +48,7 @@ def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
 
     Returns
     -------
-    tp : pyhetdex.coordinates.tangent_projection_astropy.TangentPlane
+    tp : pyhetdex.coordinates.tangent_projection.TangentPlane
         tangent plane object to use for astrometry
     """
     if opts.image:

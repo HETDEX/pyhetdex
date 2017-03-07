@@ -1,5 +1,12 @@
 2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/coordinates/tangent_projection_astropy.py: remove it as per issue
+	  #1677
+    * setup.cfg: remove the above module
+    * pyhetdex/coordinates/astrometry.py: update
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* pyhetdex/het/reconstruct_ifu.py: remove deprecated
 	  QuickReconstructedIFU.load method. Resolves issue #1676
     * doc/source/het/reconstruct_ifu.rst: same
