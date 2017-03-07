@@ -132,21 +132,6 @@ class FPlane(object):
         return list(self._ifus_by_slot.keys())
 
     @property
-    def ihmpids(self):
-        """list of slot ids
-
-        .. warning::
-
-            Deprecated name. Use :attr:`ifuslots`
-        """
-        import warnings
-        with warnings.catch_warnings():
-            warnings.simplefilter("default")
-            warnings.warn("``ihmpids`` is deprecated, please use ``ifuslots``"
-                          " instead", DeprecationWarning)
-        return list(self._ifus_by_slot.keys())
-
-    @property
     def specids(self):
         """list of spec ids"""
         return list(self._ifus_by_spec.keys())
@@ -209,32 +194,6 @@ class FPlane(object):
         except KeyError as e:
             six.raise_from(NoIFUError(e), e)
 
-    def by_ihmpid(self, ihmpid):
-        """Returns the ifu with ``ihmpid``
-
-        .. warning::
-
-            Deprecated. Use :meth:`by_ifuslot`.
-
-        Parameters
-        ----------
-        ihmpid : string
-            id of the ihmp seat
-
-        Returns
-        -------
-        :class:`IFU` instance
-        """
-        import warnings
-        with warnings.catch_warnings():
-            warnings.simplefilter("default")
-            warnings.warn("``ihmpids`` is deprecated, please use ``ifuslots``"
-                          " instead", DeprecationWarning)
-        try:
-            return self._ifus_by_slot[ihmpid]
-        except KeyError as e:
-            six.raise_from(NoIFUError(e), e)
-
     def by_specid(self, specid):
         """Returns the ifu with ``specid``
 
@@ -269,13 +228,6 @@ class FPlane(object):
         if idtype == 'ifuid':
             ifu = self.by_ifuid
         elif idtype == 'ifuslot':
-            ifu = self.by_ifuslot
-        elif idtype == 'ihmpid':
-            import warnings
-            with warnings.catch_warnings():
-                warnings.simplefilter("default")
-                warnings.warn("``ihmpid`` is deprecated, please use "
-                              "``ifuslot`` instead", DeprecationWarning)
             ifu = self.by_ifuslot
         elif idtype == 'specid':
             ifu = self.by_specid

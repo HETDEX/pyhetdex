@@ -1,5 +1,11 @@
 2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/het/fplane.py: remove deprecated attributes. Resolves issue #1641
+    * doc/source/het/fplane.rst: update doc accordingly
+    * tests/test_het/test_fplane.py: update tests accordingly
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/doc/sphinxext/todo.py: removed
     * pyhetdex/doc/sphinxext/__init__.py: deprecate the module
     * doc/source/doc.rst: remove todo from the documentation

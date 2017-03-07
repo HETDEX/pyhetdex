@@ -73,17 +73,6 @@ def test_ifuslot_type():
         fp.IFU(2, 1, 1, 1, 1, '111', 0, 0)
 
 
-def test_ihmpid(fplane, n_lines):
-    """Test the size of the ifu dictionary"""
-    with pytest.warns(DeprecationWarning):
-        assert len(fplane.ihmpids) == n_lines
-    with pytest.warns(DeprecationWarning):
-        ifu = fplane.by_ihmpid('001')
-        assert ifu.ifuid == '004'
-        with pytest.raises(KeyError):
-            fplane.by_ihmpid('200')
-
-
 def test_ifuid(fplane):
     """Test the by_ifuid function"""
     ifu = fplane.by_ifuid('004')
@@ -122,9 +111,6 @@ def test_byid(fplane):
     assert ifu.ifuslot == '001'
     ifu = fplane.by_id('001', 'ifuslot')
     assert ifu.ifuid == '004'
-    with pytest.warns(DeprecationWarning):
-        ifu = fplane.by_id('001', 'ihmpid')
-        assert ifu.ifuid == '004'
     ifu = fplane.by_id(2, 'specid')
     assert ifu.ifuslot == '001'
     with pytest.raises(fp.UnknownIDTypeError):
