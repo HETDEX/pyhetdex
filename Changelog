@@ -1,3 +1,10 @@
+2017-03-08 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/transformations.py: remove the package
+    * pyhetdex/coordinates/astrometry.py: use astropy for the coordinate
+	  transformation
+    * ReleaseNotes.md: update
+
 2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/coordinates/distances.py: removed

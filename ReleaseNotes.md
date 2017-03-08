@@ -2,6 +2,10 @@
 
 ## Development version @ trunk
 
+## Development version @ branches/remove_deprecate
+
+* Remove modules deprecated in v0.10.0 (issues #1641, #1676, #1677, #1349)
+
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model
