@@ -21,3 +21,18 @@ def test_wl_to_index(ws, result):
         h.set(k, v)
     out = ft.wavelength_to_index(h, ws)
     assert out == result
+
+
+@pytest.mark.parametrize('r, result',
+                         [('1:100,2:200', [1, 100, 2, 200]),
+                          ('[2:200,3:300]', [2, 200, 3, 300])])
+def test_fits_region(r, result):
+    "parse fits region string"
+    out = ft.parse_fits_region(r)
+    assert out == result
+
+
+def test_fits_region_error():
+    "invalid inputstring"
+    with pytest.raises(ValueError):
+        ft.parse_fits_region('ThisIsATest')

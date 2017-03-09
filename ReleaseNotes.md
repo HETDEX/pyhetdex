@@ -5,7 +5,9 @@
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model
-* Modified code to read in three fiber-extracted noise files, rather than a datacube
+* Modified code to read in three fiber-extracted noise files, rather
+  than a datacube
+* Added routine to create an overview plot for one exposure
 
 ## Version 0.10.0
 

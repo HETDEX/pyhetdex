@@ -1,6 +1,18 @@
+2017-03-09  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* tests/test_tools/test_fits_tools.py: Added test for region parser
+	* tests/test_het/test_overview_plot.py: Added test set
+	* tests/test_tools/test_io_helpers.py: Added test for missing
+	comment lines
+	* pyhetdex/tools/io_helpers.py: Fix handling if no comment lines
+	in file
+	* pyhetdex/tools/files/file_tools.py: Added routine to parse fits
+	region string
+	* pyhetdex/het/overview_plot.py: Subtract overscan before plotting
+
 2017-03-09 Daniel Farrow <dfarrow@mpe.mpg.de>
 
-        * pyhetdex/coordinates/astrometry.py: Added tool to compute 
+        * pyhetdex/coordinates/astrometry.py: Added tool to compute
          in IFU x,y from ra, dec
         * setup.py: command line tool for above
         * tests/data/061706_074_ra_dec.csv: Test data for above
