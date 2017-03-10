@@ -13,7 +13,7 @@ python 3:
 * the possibility to use `extended interpolation
   <https://docs.python.org/3.4/library/configparser.html#configparser.ExtendedInterpolation>`_
 * mapping protocol as described `here
-  <https://docs.python.org/3.5/library/configparser.html#mapping-protocol-access>`_.
+  <https://docs.python.org/3/library/configparser.html#mapping-protocol-access>`_.
 
 Examples
 --------
@@ -68,6 +68,81 @@ import six
 import six.moves.configparser as confp
 
 
+def override_conf(conf, args, prefix='setting', sep='__', nones=[None, []]):
+    """Overrides entries in ``conf`` with values in ``args``.
+
+    The function collects all the attributes of ``args`` of the form:
+    ``prefix<sep>section<sep>option``. For each one, if its value is not in
+    ``nones``, replace the ``option`` in the ``section`` of the configuration
+    object with the corresponding value in ``args``; the value is cast to a
+    string. The ``section`` and ``option`` must exist in ``conf``.
+
+    Examples
+    --------
+    >>> from argparse import Namespace
+    >>> c = ConfigParser()
+    >>> c.read_dict({'sec1': {'opt1': 'val1'}})
+    >>> print(c['sec1']['opt1'])
+    val1
+    >>> c = override_conf(c, Namespace(setting__sec1__opt1=None))
+    >>> print(c['sec1']['opt1'])
+    val1
+    >>> c = override_conf(c, Namespace(setting__sec1__opt1='val2'))
+    >>> print(c['sec1']['opt1'])
+    val2
+
+    Parameters
+    ----------
+    conf : :class:`configparser.ConfigParser` or child instance
+        configuration object. It must support the `mapping protocol
+        <https://docs.python.org/3/library/configparser.html#mapping-protocol-access>`_
+    args : object
+        object containing the attributes used for overriding the configuration
+    prefix : string, optional
+        prefix used to find the attributes in ``args`` that are considered for
+        the override
+    sep : string, optional
+        the string that separate ``prefix``, the section name and the option
+        name
+    nones : list, optional
+        if the value of the option is in this list, do not insert it in
+        ``conf``
+
+    Returns
+    -------
+    conf : :class:`~pyhetdex.tools.configuration.ConfigParser`
+        updated configuration object
+    """
+    _prefix = prefix + sep
+    for attr in dir(args):
+        # skip if the prefix is not present
+        if not attr.startswith(_prefix):
+            continue
+        # try to split the attribute name, if it fails skip the attribute
+        try:
+            _, section, option = attr.split(sep)
+        except ValueError:
+            continue
+
+        value = getattr(args, attr)
+        # If the value is in nones, skip
+        if value in nones:
+            continue
+        if isinstance(value, list):
+            # if it's a list join it as a list of strings
+            value = ', '.join([str(v) for v in value])
+        else:
+            value = str(value)
+
+        try:
+            conf.get(section, option)
+            conf.set(section, option, value)
+        except (confp.NoSectionError, confp.NoOptionError):
+            continue
+
+    return conf
+
+
 # =============================================================================
 # Custom configuration parser. Provides extra get methods to parse and store
 # complex options
@@ -91,7 +166,8 @@ class ConfigParser(confp.ConfigParser):
     def __init__(self, *args, **kwargs):
         try:  # python 3
             super(ConfigParser, self).__init__(*args, **kwargs)
-        except TypeError:  # python 2: ConfigParser is old style
+        except TypeError:
+            # python 2: ConfigParser is old style class (thus the TypeError)
             # get the interpolation and default to the BasicInterpolation:
             # should work as the standard python 2 one
             self._interpolation = kwargs.pop('interpolation',
@@ -288,6 +364,8 @@ class ConfigParser(confp.ConfigParser):
         try:  # python >= 3.2
             super(ConfigParser, self).read_dict(dictionary, source=source)
         except (AttributeError, TypeError):  # otherwise
+            # python 2: ConfigParser is old style class (thus the TypeError)
+            # python 3.{0,1} doesn't have read_dict
             elements_added = set()
             for section, keys in dictionary.items():
                 section = str(section)
@@ -318,8 +396,8 @@ class ConfigParser(confp.ConfigParser):
         try:
             return super(ConfigParser, self).__getitem__(key)
         except TypeError:
-            # python 2: ConfigParser is old style and doesn't have mapping
-            # style access
+            # python 2: ConfigParser is old style class (thus the TypeError)
+            # and doesn't have mapping style access
             if key != self.default_section and not self.has_section(key):
                 raise KeyError(key)
             return SectionProxy(self, key)
@@ -328,6 +406,7 @@ class ConfigParser(confp.ConfigParser):
         try:
             super(ConfigParser, self).__setitem__(key, value)
         except TypeError:
+            # python 2: ConfigParser is old style class (thus the TypeError)
             # To conform with the mapping protocol, overwrites existing values
             # in the section.
             self.remove_section(key)
@@ -337,6 +416,7 @@ class ConfigParser(confp.ConfigParser):
         try:
             super(ConfigParser, self).__delitem__(key)
         except TypeError:
+            # python 2: ConfigParser is old style class (thus the TypeError)
             if key == self.default_section:
                 raise ValueError("Cannot remove the default section.")
             if not self.has_section(key):
@@ -347,18 +427,21 @@ class ConfigParser(confp.ConfigParser):
         try:
             return super(ConfigParser, self).__contains__(key)
         except TypeError:
+            # python 2: ConfigParser is old style class (thus the TypeError)
             return key == self.default_section or self.has_section(key)
 
     def __len__(self):
         try:
             return super(ConfigParser, self).__len__()
         except TypeError:
+            # python 2: ConfigParser is old style class (thus the TypeError)
             return len(self._sections) + 1  # the default section
 
     def __iter__(self):
         try:
             return super(ConfigParser, self).__iter__()
         except TypeError:
+            # python 2: ConfigParser is old style class (thus the TypeError)
             # XXX does it break when underlying container state changed?
             return itertools.chain((self.default_section,),
                                    self._sections.keys())
@@ -622,6 +705,7 @@ class ExtendedInterpolation(Interpolation):
                     option, section,
                     "'$' must be followed by '$' or '{', "
                     "found: %r" % (rest,))
+
 
 # Register interpolators in six.moves
 # === attributes

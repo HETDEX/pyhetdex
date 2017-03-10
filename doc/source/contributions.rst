@@ -139,7 +139,7 @@ are marked as ``todo`` and they fail. It is possible to skip them invoking::
 
 or::
 
-    tox -- "-m 'not todo'"
+    tox -- -m "not todo"
 
 A code coverage report is also created thanks to the `pytest-cov
 <https://pypi.python.org/pypi/pytest-cov>`_ plugin and can be visualized opening

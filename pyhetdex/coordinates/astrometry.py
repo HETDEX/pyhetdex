@@ -12,9 +12,9 @@ import os.path as op
 import sys
 import argparse
 import astropy.units as units
-from numpy import float64
+from numpy import float64, fabs
 from astropy.io.fits import getheader, getdata, PrimaryHDU
-from astropy.table import vstack
+from astropy.table import Table, vstack, hstack
 from astropy.coordinates import SkyCoord, FK5
 import pyhetdex.tools.read_catalogues as rc
 from pyhetdex.het.fplane import FPlane
@@ -85,6 +85,115 @@ def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
         tp = TangentPlane(opts.astrometry[0], opts.astrometry[1], rot)
 
     return tp
+
+
+def ra_dec_to_xy(ra, dec, fplane, tp):
+    """
+    Given ras and a decs, return a table 
+    of x, y of the nearest IFU,
+    x and y in the focal plane and IFU slot
+    of nearest IFU 
+
+    Parameters
+    ----------
+    ra, dec : float arrays
+        ra and dec on objects in decmal degrees
+    fplane : pyhetdex.het.fplane:FPlane class
+        an instance of the focal plane class
+    tp : pyhetdex.coordinates.tangent_projection:TangentPlane
+        a tangent plane that converts ra, dec to the 
+        appropriate x,y in axes aligned with the IFU axes
+
+    Returns
+    -------
+    table : astropy.table:Table
+        an astropy table containing the positions in the IFUs
+    """
+
+    """
+    Get x, y in arcseconds in the focal plane (using the IFU coordinates, i.e. 
+    flipped wrt to the fplane file)
+    """
+    x, y = tp.raDec2xy(ra, dec)
+
+    # fill in output with dummy values
+    table = Table([[999.0]*len(ra), [999.0]*len(ra), [999]*len(ra)], names=['xifu', 'yifu', 'ifuslot'])
+ 
+    # loop over IFUs computing coordinates
+    tables = []
+    for ifu in fplane.ifus:
+
+        # remember to swap x and y for this (inverse of the x,y to ra, dec)
+        xt  = x - ifu.y
+        yt  = y - ifu.x
+        
+        # Find out table if an object is in IFU (set this a bit larger to avoid edge effects)
+        indices = (fabs(x - ifu.y) < 30) & (fabs(y - ifu.x) < 30)
+       
+        (table['xifu'])[indices] = xt[indices] 
+        (table['yifu'])[indices] = yt[indices]
+        (table['ifuslot'])[indices] = ifu.ifuslot
+
+    return table
+
+
+def add_ifu_xy(args=None):
+    """ 
+    Convert ra, dec to x, y in an IFU.
+   
+    Parameters
+    ----------
+    args : list of strings, optional
+        command line
+    """
+    parser = argparse.ArgumentParser(description="Convert between ra, dec"
+                                     " to IFU x, y. Note that currently anything within"
+                                     " +/- 30 arcseconds of the IFU is output. If IFUs"
+                                     " overlap the detection will only be output for one of them",
+                                     parents=[astro_parent, ])
+
+    parser.add_argument('file', type=str,
+                        help="A csv or fits file with ra and dec columns")
+
+    parser.add_argument('fout', type=str,
+                        help="A csv or fits file to output to (including extension: .fits or .csv)")
+
+    parser.add_argument('--ra-name', type=str, help="The label of the ra column in the input",
+                        default='ra')
+
+    parser.add_argument('--dec-name', type=str, help="The label of the dec column in the input",
+                        default='dec')
+
+    parser.add_argument('--fplane', default='fplane.txt',
+                        help='Focal plane file')
+
+
+    opts = parser.parse_args(args)
+
+    # Verify user input
+    if not (opts.image or opts.astrometry):
+        print("""Error: Either pass an image with TELRA, TELDEC, PARANGLE and
+              MJD in the header, or manually specify raccen, deccen and PA with
+              the astrometry option""")
+        sys.exit(1)
+
+    # set up astrometry
+    fplane = FPlane(opts.fplane)
+    tp = ihmp_astrometry(opts)
+
+    # read in catalogue
+    table_in = Table.read(opts.file)
+    ra = table_in[opts.ra_name]
+    dec = table_in[opts.dec_name]
+
+    # find positions
+    table_out = ra_dec_to_xy(ra, dec, fplane, tp)
+
+    # save data
+    table_final = hstack([table_in, table_out])
+
+    table_final.write(opts.fout)
+
 
 
 def xy_to_ra_dec(args=None):
