@@ -1,3 +1,18 @@
+2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/branches/conf_override into ^/trunk
+
+2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/trunk into ^/branches/conf_override
+
+2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: add method to override the configuration
+	  using, e.g., command line options. Solves issue #1849
+    * tests/test_tools/test_configuration.py: test it
+    * doc/source/tools/config.rst: add it to the documentation
+
 2017-03-09  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* tests/test_tools/test_fits_tools.py: Added test for region parser

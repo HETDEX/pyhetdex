@@ -2,6 +2,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from argparse import Namespace
 import re
 
 import pytest
@@ -20,6 +21,35 @@ else:
 parametrize = pytest.mark.parametrize
 xfail_value = pytest.mark.xfail(raises=ValueError,
                                 reason='Fail to cast a value')
+
+
+@parametrize('attr, val, modified, expected',
+             [('other', 'test', False, ''),
+              ('setting__sec2', 'test', False, ''),
+              ('setting__sec1__opt1', None, False, ''),
+              ('setting__sec1__opt1', [], False, ''),
+              ('setting__sec1__opt1', 'test', True, 'test'),
+              ('setting__sec1__opt1', 42, True, '42'),
+              ('setting__sec1__opt1', [42, 43], True, '42, 43'),
+              ('setting__sec1__opt2', 'test', False, ''),
+              ('setting__sec2__opt1', 'test', False, ''),
+              ])
+def test_override_conf(attr, val, modified, expected):
+    '''Configuration override'''
+    c = pyhconf.ConfigParser()
+    c.read_dict({'sec1': {'opt1': 'val1'}})
+
+    args = Namespace(**{attr: val})
+
+    c = pyhconf.override_conf(c, args)
+
+    assert len(c) == 2
+    assert len(c['sec1']) == 1
+
+    new_val = c['sec1']['opt1']
+    assert (new_val == 'val1') != modified
+    if modified:
+        assert new_val == expected
 
 
 @parametrize('value, cast_to, recovered',
