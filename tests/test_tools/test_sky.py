@@ -53,7 +53,7 @@ def reffiles(fname_template):
 @pytest.mark.parametrize('wmin', wls[:-1])
 @pytest.mark.parametrize('wmax', wls[1:])
 @pytest.mark.parametrize('width', [10, 20, 30])
-def test_sky_sub(fname, outfiles, reffiles, wmin, wmax, width):
+def test_sky_sub(clear_tmpdir, fname, outfiles, reffiles, wmin, wmax, width):
     "do the actual sky subtraction and test"
     if wmin == wmax:
         pytest.skip("wmin == wmax")
@@ -83,7 +83,7 @@ def fits_difference(fname1, fname2):
 
 @pytest.mark.parametrize('wmin', wls[:-1])
 @pytest.mark.parametrize('wmax', wls[1:])
-def test_sky_bkg(fname, wmin, wmax):
+def test_sky_bkg(clear_tmpdir, fname, wmin, wmax):
     "Test the sky background estimation"
     if wmin == wmax:
         pytest.skip("wmin == wmax")

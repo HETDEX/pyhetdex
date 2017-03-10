@@ -11,10 +11,17 @@ try:  # python 3
     from subprocess import DEVNULL
 except ImportError:  # python 2
     DEVNULL = open(os.devnull, 'wb')
+import sys
 
 import pytest
 
 import pyhetdex.tools.files.file_tools as ft
+
+
+skip_greater_py36 = pytest.mark.skipif(sys.version_info >= (3, 6),
+                                       reason='Valid for python >= 3.6')
+skip_smaller_py36 = pytest.mark.skipif(sys.version_info < (3, 6),
+                                       reason='Valid for python < 3.6')
 
 
 @pytest.mark.parametrize('infname, prefix, outfname',
@@ -32,11 +39,20 @@ def test_prefix_filename(infname, prefix, outfname):
 
 @pytest.mark.parametrize('re_compile', [False, True])
 @pytest.mark.parametrize('wildcard, regex, is_regex',
-                         (["[0-9]*fits", r'[0-9].*fits\Z(?ms)', False],
+                         (skip_greater_py36(['[0-9]*fits',
+                                             r'[0-9].*fits\Z(?ms)', False]),
+                          skip_smaller_py36(['[0-9]*fits',
+                                             r'(?s:[0-9].*fits)\Z', False]),
                           [None, r'a^', False],
                           [None, r'a^', True],
-                          [["[0-3]*fits", "[5-9]*fits"],
-                           r'[0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)', False],
+                          skip_greater_py36([["[0-3]*fits", "[5-9]*fits"],
+                                             r'[0-3].*fits\Z(?ms)|'
+                                             r'[5-9].*fits\Z(?ms)',
+                                             False]),
+                          skip_smaller_py36([["[0-3]*fits", "[5-9]*fits"],
+                                             r'(?s:[0-3].*fits)\Z|'
+                                             r'(?s:[5-9].*fits)\Z',
+                                             False]),
                           [r'(?:e\.)?jpes[0-9].*fits',
                            r'(?:e\.)?jpes[0-9].*fits', True],
                           [[r'.*some\d{2}.?', r'thing\d{2}.?'],

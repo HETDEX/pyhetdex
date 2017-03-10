@@ -239,8 +239,8 @@ class TestQuickReconstruction(object):
 
         rimg.reconstruct(infile, subtract_overscan=False)
 
-    def test_wrong_dither_number(self, tmpdir, datadir, compare_fits,
-                                 ifucenter_file):
+    def test_wrong_dither_number(self, tmpdir, clear_tmpdir, datadir,
+                                 compare_fits, ifucenter_file):
         '''If the dither number is not 1, 2, 3 set it to the first one'''
         infiles = [datadir.join(i).strpath for i in inputfilenames]
         tmpfiles = [tmpdir.join(i).strpath for i in inputfilenames]
