@@ -1,5 +1,13 @@
 2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * tests/conftest.py: add fixture to remove tmpdir
+    * tests/test_coordinates/test_astrometry.py: use it in tests using large
+	  files
+    * tests/test_het/test_reconstructions.py: same
+    * tests/test_tools/test_sky.py: same
+
+2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+
     * : merge ^/trunk into ^/branches/test_pyversions
 
 2017-03-08 Francesco Montesano <montefra@mpe.mpg.de>
