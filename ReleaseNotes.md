@@ -2,6 +2,10 @@
 
 ## Development version @ trunk
 
+## Development version @ branches/conf_override
+
+* Override configurations from the, e.g., the command line (issue #1849)
+
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model

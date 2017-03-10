@@ -1,3 +1,10 @@
+2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: add method to override the configuration
+	  using, e.g., command line options. Solves issue #1849
+    * tests/test_tools/test_configuration.py: test it
+    * doc/source/tools/config.rst: add it to the documentation
+
 2017-03-01  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/het/overview_plot.py: Added, create inspection plots,
