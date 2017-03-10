@@ -24,6 +24,21 @@ def testfile(request, tmpdir):
         yield fin
 
 
+@pytest.yield_fixture
+def testfile_nocomments(request, tmpdir):
+    '''Create a test file without comment lines
+    and returns a file object to read it'''
+    fname = tmpdir.mkdir('io').join('test.txt')
+    with fname.open('w') as fout:
+        # fout = fname.open('w')
+        fout.write('Test <123>\n')
+        fout.write('[ 1 2 3 ]\n')
+        # fout.close()
+
+    with fname.open() as fin:
+        yield fin
+
+
 @pytest.fixture(scope='module')
 def testlist():
     'return a list of integers'
@@ -49,6 +64,9 @@ class TestIOHelpers(object):
 
     def test_skip_comment(self, testfile):
         assert ioh.skip_commentlines(testfile) == 'Test <123>\n'
+
+    def test_skip_comment_no_comment(self, testfile_nocomments):
+        assert ioh.skip_commentlines(testfile_nocomments) == 'Test <123>\n'
 
     def test_duplicates(self, testlist):
         assert ioh.duplicates(testlist) == [1, 2]

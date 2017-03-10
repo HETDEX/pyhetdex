@@ -133,6 +133,51 @@ Here is an example::
     xy_to_ra_dec --fplane fplane.txt --astrometry 205.547 28.376 254.6  --ihmp 073  20.969 -23.712
 
 
+Add in IFU x, y to a catalogue
+------------------------------
+
+The command line call ``add_ifu_xy`` will add in IFU x,y coordinates (assuming the IFU center is at 0,0) to a catalogue. The columns
+of the output file called ``xifu``, ``yifu`` and ``ifuslot`` store the x and y positions in the IFU specified by ``ifuslot``.
+Allowed input/output catalogue types include .csv files and .fits files. This code associates anything with +/- 30 arcseconds
+of an IFU to that IFU. If an object center is in multiple IFUs it only outputs it for one of them, but this can't occur in
+HETDEX unless the dither size becomes comparable to the distance between IFUs. Objects not in an IFU are given the dummy IFU
+slot 999, as well as an x, y positions with the dummy value 999.0. Here is the full help info::
+
+   usage: add_ifu_xy [-h]
+                  [--astrometry ASTROMETRY ASTROMETRY ASTROMETRY | --image IMAGE]
+                  [--ra-name RA_NAME] [--dec-name DEC_NAME] [--fplane FPLANE]
+                  file fout
+
+   Convert between ra, dec to IFU x, y. Note that currently anything within +/-
+   30 arcseconds of the IFU is output. If IFUs overlap the detection will only be
+   output for one of them
+   
+   positional arguments:
+     file                  A csv or fits file with ra and dec columns
+     fout                  A csv or fits file to output to (including extension:
+                           .fits or .csv)
+   
+   optional arguments:
+     -h, --help            show this help message and exit
+     --astrometry ASTROMETRY ASTROMETRY ASTROMETRY
+                           RA DEC and PA of the focal plane center (degrees)
+     --image IMAGE         An image, with a header to grab ra, dec and PA from
+                           (DONT USE THIS)
+     --ra-name RA_NAME     The label of the ra column in the input
+     --dec-name DEC_NAME   The label of the dec column in the input
+     --fplane FPLANE       Focal plane file
+
+Using the ``--ra-name`` and ``--dec-name`` flags you can specify the names of the columns containing ra, dec. The default input column names are 
+``ra`` and ``dec``. For comma-separated files (csv) the column names are read from the first line like this (note no comment character like '#' is expected)::
+
+   ID,mag,mag_std,sky,niter,CHI,SHARP,ra,dec,ifuslot,xfplane,yfplane
+   1,17.591,0.051,57.577,4.0,0.52,-0.008,205.52507279787594,28.411966761669696,074,35.458,126.543
+
+
+Here is an example call::
+
+   add_ifu_xy --astrometry 167.0 45.0 89.0 --fplane fplane.txt input.csv output.csv
+
 
 Add WCS to a fits image
 -----------------------
