@@ -1,8 +1,12 @@
-2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+2017-03-16 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tox.ini: create sdist to use devel version in other tests
+
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
 
     * : merge ^/branches/test_pyversions into ^/trunk
 
-2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tests/conftest.py: add fixture to remove tmpdir
     * tests/test_coordinates/test_astrometry.py: use it in tests using large
@@ -10,7 +14,7 @@
     * tests/test_het/test_reconstructions.py: same
     * tests/test_tools/test_sky.py: same
 
-2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
 
     * : merge ^/trunk into ^/branches/test_pyversions
 
@@ -27,15 +31,15 @@
 	  end of an expression and updated fnmatch.translate accordingly. Make the
 	  tests compatible with python >= 3.6 and <3.6
 
-2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
 
     * : merge ^/branches/conf_override into ^/trunk
 
-2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
 
     * : merge ^/trunk into ^/branches/conf_override
 
-2017-02-10 Francesco Montesano <montefra@mpe.mpg.de>
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/configuration.py: add method to override the configuration
 	  using, e.g., command line options. Solves issue #1849
