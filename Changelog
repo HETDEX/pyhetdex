@@ -1,3 +1,9 @@
+2017-03-17 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: expose ifu dictionaries. Resolves Issue #1864
+    * tests/test_het/test_fplane.py: test the changes
+    * tox.ini: create the distfile only when making the docs
+
 2017-03-16 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tox.ini: create sdist to use devel version in other tests
