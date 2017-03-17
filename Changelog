@@ -1,5 +1,14 @@
 2017-03-17 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * tox.ini: show warnings
+    * pyhetdex/het/overview_plot.py: make sure to close the files
+    * pyhetdex/het/reconstruct_ifu.py: use overwrite instead of clobber
+    * tests/test_het/test_dither.py: use getfixturevalue
+    * tests/test_ltl/test_marray.py: move raises to decorator to allow closing
+	  files
+
+2017-03-17 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/fplane.py: expose ifu dictionaries. Resolves Issue #1864
     * tests/test_het/test_fplane.py: test the changes
     * tox.ini: create the distfile only when making the docs

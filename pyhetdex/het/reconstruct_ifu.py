@@ -600,7 +600,7 @@ class QuickReconstructedIFU(object):
         """
         if not self.isEmpty:
             outimg = fits.PrimaryHDU(self.img)
-            outimg.writeto(filename, clobber=True)
+            outimg.writeto(filename, overwrite=True)
         else:
             raise ReconstructError("Make sure to run the ``reconstruct``"
                                    " method to create the image before saving"

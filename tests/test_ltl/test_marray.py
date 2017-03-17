@@ -24,9 +24,8 @@ def pytest_generate_tests(metafunc):
 def write(outname, cls_type, typ, data):
     out = clsmap[cls_type]()
     out.data = np.array(data, dtype=dtypemap[typ])
-    outfile = outname.open('w')
-    out.write(outfile)
-    outfile.close()
+    with outname.open('w') as outfile:
+        out.write(outfile)
 
 
 def read(cls_type, fname):
@@ -80,9 +79,9 @@ class TestFVectorMArray(object):
         assert read(cls_type, datadir.join('test'+cls_type+'_int.dat').strpath)
 
     def test_read_ios(self, datadir, cls_type):
-        in_ = datadir.join('test'+cls_type+'_int.dat').open()
-        i = clsmap[cls_type]()
-        i.read(in_)
+        with datadir.join('test'+cls_type+'_int.dat').open() as in_:
+            i = clsmap[cls_type]()
+            i.read(in_)
 
     def test_read_ltl(self, datadir, cls_type, typ, data):
 
@@ -118,40 +117,40 @@ class TestFVectorMArray(object):
     def test_wrong_dtype2(self, tmpdir, cls_type):
         t = clsmap[cls_type]()
         t._data = np.array([1, 2], dtype=bool)
-        of = tmpdir.mkdir(cls_type).join('test.dat').open('w')
-        with pytest.raises(Exception):
-            t.write(of)
+        with tmpdir.mkdir(cls_type).join('test.dat').open('w') as of:
+            with pytest.raises(Exception):
+                t.write(of)
 
+    @pytest.mark.xfail(raises=TypeError, reason='')
     def test_wrong_class(self, datadir, cls_type, ftype):
-        with pytest.raises(TypeError):
-            assert read(cls_type,
-                        datadir.join('test'+ftype+'_int.dat').strpath)
+        assert read(cls_type,
+                    datadir.join('test'+ftype+'_int.dat').strpath)
 
+    @pytest.mark.xfail(raises=TypeError, reason='')
     def test_wrong_rtype(self, datadir, cls_type):
-        with pytest.raises(TypeError):
-            assert read(cls_type,
-                        datadir.join('test'+cls_type+'_char.dat').strpath)
+        assert read(cls_type,
+                    datadir.join('test'+cls_type+'_char.dat').strpath)
 
     def test_T_type(self, datadir, cls_type):
         assert read(cls_type,
                     datadir.join('test'+cls_type+'_T.dat').strpath)
 
+    @pytest.mark.xfail(raises=Exception, reason='')
     def test_short_data(self, datadir, cls_type):
-        with pytest.raises(Exception):
-            assert read(cls_type,
-                        datadir.join('test'+cls_type+'_int_short.dat').strpath)
+        assert read(cls_type,
+                    datadir.join('test'+cls_type+'_int_short.dat').strpath)
 
+    @pytest.mark.xfail(raises=Exception, reason='')
     def test_stride(self, datadir, cls_type):
-        with pytest.raises(Exception):
-            assert read(cls_type,
-                        datadir.join('test'+cls_type +
-                                     '_int_stride.dat').strpath)
+        assert read(cls_type,
+                    datadir.join('test'+cls_type +
+                                 '_int_stride.dat').strpath)
 
     def test_empty_write(self, tmpdir, cls_type):
         t = clsmap[cls_type]()
-        of = tmpdir.mkdir(cls_type).join('test.dat').open('w')
-        with pytest.raises(Exception):
-            t.write(of)
+        with tmpdir.mkdir(cls_type).join('test.dat').open('w') as of:
+            with pytest.raises(Exception):
+                t.write(of)
 
     def test_long_write(self, tmpdir, cls_type, typ, data):
 
