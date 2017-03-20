@@ -1,3 +1,11 @@
+2017-03-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: PEP8
+    * pyhetdex/tools/astro/sky.py: fix astropy warnings
+    * pyhetdex/tools/datacube2rgb.py: fix case of slice with constant values; PEP8
+    * pyhetdex/tools/read_catalogues.py: fix headers according to fits standards
+    * tests/test_coordinates/test_astrometry.py: fix pytest warnings
+
 2017-03-17 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tox.ini: show warnings

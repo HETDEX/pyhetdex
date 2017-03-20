@@ -64,7 +64,7 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
         # take the median along the fibers within the give wavelength range
         median_data = np.median(data[:, imin:imax], axis=1)
         # and get the inverse of the mask from the sigma clipping
-        clip_mask = np.logical_not(sigma_clip(median_data, sig=sig,
+        clip_mask = np.logical_not(sigma_clip(median_data, sigma=sig,
                                               iters=iters,
                                               cenfunc=np.ma.median).mask)
 
@@ -76,11 +76,11 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
 
         # save the sky subtracted file
         hdulist[0].data = data - sky
-        hdulist.writeto(prefix_filename(fname, prefix), clobber=True)
+        hdulist.writeto(prefix_filename(fname, prefix), overwrite=True)
 
         if output_both:  # save the sky file
             hdulist[0].data = sky
-            hdulist.writeto(prefix_filename(fname, skyprefix), clobber=True)
+            hdulist.writeto(prefix_filename(fname, skyprefix), overwrite=True)
 
 
 # estimate the sky background from fiber extracted files
@@ -166,7 +166,7 @@ def hdu_fe_sky_background(data, header, sig=2.5, iters=None, wmin=None,
 
     if sig is not None:
         median_data = np.median(data, axis=1)
-        clip_mask = np.logical_not(sigma_clip(median_data, sig=sig,
+        clip_mask = np.logical_not(sigma_clip(median_data, sigma=sig,
                                               iters=iters,
                                               cenfunc=np.ma.median).mask)
         data = data[clip_mask, :]

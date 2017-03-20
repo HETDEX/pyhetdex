@@ -47,8 +47,9 @@ def fits_image(datadir):
 def test_add_ra_dec_cmd(tmpdir, request, fplane_file, cat, typ, ihmp, regex,
                         outname):
     """Test the add_ra_dec command runs for a variety of inputs """
+
     # create the arguments
-    cat = request.getfuncargvalue(cat).strpath
+    cat = request.getfixturevalue(cat).strpath
     out = tmpdir.join(outname).strpath
 
     argv = ['--fplane', fplane_file.strpath, '--fout', out]
@@ -70,7 +71,7 @@ def test_add_ra_dec_cmd(tmpdir, request, fplane_file, cat, typ, ihmp, regex,
 def test_add_ifu_xy_cmd(tmpdir, request, fplane_file, cat, outname):
 
     """ Test adding x, y to a catalogue. Use output from test_ra_dec_cmd """
-    cat_fn = request.getfuncargvalue(cat).strpath
+    cat_fn = request.getfixturevalue(cat).strpath
     out = tmpdir.join(outname).strpath
 
     argv = ['--fplane', fplane_file.strpath]

@@ -87,8 +87,8 @@ def read_cont_detect(fn):
         the rest of the table
     """
     table = Table.read(fn, format='ascii', comment='#',
-                       names=('ID', 'icx', 'icy', '<sigma>', 'fwhm_xy', 'a',
-                              'b', 'pa', 'ir1', ', ka', 'kb',  'xmin', 'xmax',
+                       names=('ID', 'icx', 'icy', 'sigma', 'fwhm_xy', 'a',
+                              'b', 'pa', 'ir1', 'ka', 'kb',  'xmin', 'xmax',
                               'ymin', 'ymax', 'zmin', 'zmax'))
 
     return table['icx'], table['icy'], table
