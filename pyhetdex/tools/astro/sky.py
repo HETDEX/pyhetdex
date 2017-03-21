@@ -13,9 +13,11 @@ The main products are:
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import astropy
 from astropy.io import fits
 from astropy.stats import sigma_clip
 import numpy as np
+from pkg_resources import parse_version
 
 from pyhetdex.tools.files.fits_tools import wavelength_to_index
 from pyhetdex.tools.files.file_tools import prefix_filename
@@ -74,13 +76,18 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
             win_mask = moving_window(clip_mask, i, width=width)
             sky[i, :] = np.median(data[win_mask, :], axis=0)
 
+        if parse_version(astropy.__version__) < parse_version('1.3'):
+            writeto_kwars = {'clobber': True}
+        else:
+            writeto_kwars = {'overwrite': True}
+
         # save the sky subtracted file
         hdulist[0].data = data - sky
-        hdulist.writeto(prefix_filename(fname, prefix), overwrite=True)
+        hdulist.writeto(prefix_filename(fname, prefix), **writeto_kwars)
 
         if output_both:  # save the sky file
             hdulist[0].data = sky
-            hdulist.writeto(prefix_filename(fname, skyprefix), overwrite=True)
+            hdulist.writeto(prefix_filename(fname, skyprefix), **writeto_kwars)
 
 
 # estimate the sky background from fiber extracted files

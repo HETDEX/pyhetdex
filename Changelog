@@ -1,3 +1,11 @@
+2017-03-21 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: set version to -pre for better version comparison
+    * tox.ini: add test for astropy==1.2
+    * pyhetdex/het/reconstruct_ifu.py: use clobber in astropy 1.2 and overwrite
+	  otherwise
+    * pyhetdex/tools/astro/sky.py: same
+
 2017-03-20 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/coordinates/astrometry.py: PEP8

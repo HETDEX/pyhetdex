@@ -7,9 +7,11 @@ from __future__ import (absolute_import, division, print_function,
 import itertools as it
 import os
 
+import astropy
 from astropy.io import fits
 import astropy.stats as stats
 import numpy as np
+from pkg_resources import parse_version
 
 from pyhetdex.tools.files.fits_tools import wavelength_to_index
 from pyhetdex.het import ifu_centers, dither as dith
@@ -599,8 +601,13 @@ class QuickReconstructedIFU(object):
             name of the output fits file
         """
         if not self.isEmpty:
+            if parse_version(astropy.__version__) < parse_version('1.3'):
+                writeto_kwars = {'clobber': True}
+            else:
+                writeto_kwars = {'overwrite': True}
+
             outimg = fits.PrimaryHDU(self.img)
-            outimg.writeto(filename, overwrite=True)
+            outimg.writeto(filename, **writeto_kwars)
         else:
             raise ReconstructError("Make sure to run the ``reconstruct``"
                                    " method to create the image before saving"
