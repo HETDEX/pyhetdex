@@ -1,3 +1,10 @@
+2017-03-24 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+   * pyhetdex/tools/create_mask.py: New tool to create masks
+   * setup.py: Added command line call to new tool
+   * tests/test_tools/test_create_mask.py: Added tests for new tool
+
+
 2017-03-21 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: set version to -pre for better version comparison
