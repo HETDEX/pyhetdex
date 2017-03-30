@@ -1,5 +1,11 @@
 # ``pyhetdex`` release notes
 
+## Development version @ branches/pyhetdex-angular-masks
+
+* Added tool to generate masks, i.e. corners of each IFU in
+  a focal plane for a list of shots
+
+
 ## Development version @ trunk
 
 * Added routine to create an overview plot for one exposure

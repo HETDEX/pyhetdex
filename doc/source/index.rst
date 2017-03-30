@@ -36,6 +36,7 @@ Command Line Tools
     datacube2rgb
     generate_randoms
     add_fluxes_to_randoms
+    create_mask
 
 .. _code_documentation:
 

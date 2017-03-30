@@ -18,7 +18,7 @@ from pyhetdex.coordinates.tangent_projection import TangentPlane
 def generate_ifu_corner_ra_decs(tp, fplane):
     """
     Generate the ra, dec of the four corners of each 
-    for a shot. Does this by evaluating the
+    IFU for a shot. Does this by evaluating the
     ra and dec at a number of points around each IFU.
 
     Parameters
@@ -66,9 +66,15 @@ def generate_ifu_corner_ra_decs(tp, fplane):
 
 def generate_mangle_polyfile(args=None):
     """
-    Generate a Mangle polygon file in vertices format
+    Command line call to generate a Mangle polygon file in vertices format
 
     Mangle reference: http://space.mit.edu/~molly/mangle/
+
+    Parameters
+    ----------
+    args : list (optional)
+        list of arguments to parse. If None, grab 
+        from command line
 
     """
   
@@ -86,7 +92,7 @@ def generate_mangle_polyfile(args=None):
 
     parser.add_argument("rot_offset", help="Rotation difference to add to PARANGLE", default=0.0, type=float)
 
-    opts = parser.parse_args()
+    opts = parser.parse_args(args=args)
 
     tables = []
 
