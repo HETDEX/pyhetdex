@@ -10,6 +10,7 @@ Astronomical tools
     :maxdepth: 2
 
     astro/index
+    generate_hetdex_mask
 
 File tools
 ==========

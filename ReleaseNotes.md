@@ -4,6 +4,8 @@
 
 * Added routine to create an overview plot for one exposure
 * Override configurations from the, e.g., the command line (issue #1849)
+* Added tool to generate masks, i.e. corners of each IFU in
+  a focal plane for a list of shots (issue #1873)
 
 ## Development version @ branches/selection_function_devel
 

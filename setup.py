@@ -53,7 +53,9 @@ entry_points = {'console_scripts':
                  'add_wcs ='
                  'pyhetdex.coordinates.astrometry:add_wcs',
                  'xy_to_ra_dec ='
-                 'pyhetdex.coordinates.astrometry:xy_to_ra_dec'
+                 'pyhetdex.coordinates.astrometry:xy_to_ra_dec',
+                 'generate_hetdex_mask='
+                 'pyhetdex.tools.create_mask:generate_mangle_polyfile'
                  ]}
 
 setup(
