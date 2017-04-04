@@ -1,5 +1,55 @@
 2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * : merge ^/branches/remove_deprecate into ^/trunk
+
+2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/trunk into ^/branches/remove_deprecate
+
+2017-03-08 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/transformations.py: remove the package
+    * pyhetdex/coordinates/astrometry.py: use astropy for the coordinate
+	  transformation
+    * ReleaseNotes.md: update
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/distances.py: removed
+    * pyhetdex/coordinates/wcs.py: removed
+    * pyhetdex/tools/astro/dss_image.py: comment wcs import and add update
+	  warning
+    * pyhetdex/tools/astro/iq_fit.py: removed
+    * pyhetdex/tools/astro/zscale.py: removed
+	* setup.cfg: update accordingly
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/tangent_projection_astropy.py: remove it as per issue
+	  #1677
+    * setup.cfg: remove the above module
+    * pyhetdex/coordinates/astrometry.py: update
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/het/reconstruct_ifu.py: remove deprecated
+	  QuickReconstructedIFU.load method. Resolves issue #1676
+    * doc/source/het/reconstruct_ifu.rst: same
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: remove deprecated attributes. Resolves issue #1641
+    * doc/source/het/fplane.rst: update doc accordingly
+    * tests/test_het/test_fplane.py: update tests accordingly
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/doc/sphinxext/todo.py: removed
+    * pyhetdex/doc/sphinxext/__init__.py: deprecate the module
+    * doc/source/doc.rst: remove todo from the documentation
+
+2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>
+
     * setup.py: bump version to 0.12.0-pre
 
 2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>

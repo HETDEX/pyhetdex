@@ -11,11 +11,3 @@
    :members:
    :undoc-members:
    :private-members:
-
-:py:mod:`doc.sphinxext` -- Custom sphinx extensions
-===================================================
-
-:py:mod:`todo` -- todo directives
----------------------------------
-
-.. automodule:: pyhetdex.doc.sphinxext.todo

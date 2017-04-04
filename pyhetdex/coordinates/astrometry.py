@@ -18,8 +18,7 @@ from astropy.table import Table, vstack, hstack
 from astropy.coordinates import SkyCoord, FK5
 import pyhetdex.tools.read_catalogues as rc
 from pyhetdex.het.fplane import FPlane
-from pyhetdex.coordinates.tangent_projection_astropy import TangentPlane
-from pyhetdex.coordinates.transformations import hms2decimal, dms2decimal
+from pyhetdex.coordinates.tangent_projection import TangentPlane
 
 
 # common parts of the argument parser
@@ -48,7 +47,7 @@ def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
 
     Returns
     -------
-    tp : pyhetdex.coordinates.tangent_projection_astropy.TangentPlane
+    tp : pyhetdex.coordinates.tangent_projection.TangentPlane
         tangent plane object to use for astrometry
     """
     if opts.image:
@@ -64,9 +63,7 @@ def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
 
         # convert from local equinox to J2000
         equinox = 2016 + (head['MJD'] - 57388)/365.24
-        ra_local_eqx = hms2decimal(rastr)
-        dec_local_eqx = dms2decimal(decstr)
-        gc = SkyCoord(ra_local_eqx*units.degree, dec_local_eqx*units.degree,
+        gc = SkyCoord(rastr, decstr, unit=(units.hourangle, units.deg),
                       frame='fk5', equinox='J{:0.4f}'.format(equinox))
         s = gc.transform_to(FK5(equinox='J2000.0'))
 
