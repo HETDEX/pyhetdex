@@ -1,6 +1,7 @@
 2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: set version to 0.11.0
+	* ReleaseNotes.md: update release notes
 
 2017-04-03 Francesco Montesano <montefra@mpe.mpg.de>
 
