@@ -39,3 +39,50 @@ def wavelength_to_index(header, wavelength):
     deltaw = header["CDELT1"]
     i = (wavelength - wmin) // deltaw
     return i
+
+
+def parse_fits_region(region):
+    """
+    Convert a FITS region string with a format [x1:x2,y1:y2], or
+    x1:x2,y1:y2 into an list.
+
+    Parameters
+    ----------
+    region : str
+        The input region string
+
+    Returns
+    -------
+    list
+        List of region parameters
+
+    Examples
+    --------
+
+    .. testsetup:: *
+
+        from pyhetdex.tools.files.fits_tools import parse_fits_region
+
+    >>> parse_fits_region('[1:100,2:200]')
+    [1, 100, 2, 200]
+    """
+
+    req_chars = [':', ',']
+
+    for c in req_chars:
+        if c not in region:
+            raise ValueError('%s does not match expected format!' % region)
+
+    region = region.strip()
+
+    if region[0] == '[':
+        region = region[1:]
+
+    if region[-1] == ']':
+        region = region[:-1]
+
+    lims = []
+    for dim in region.split(','):
+        lims += [int(l) for l in dim.split(':')]
+
+    return lims

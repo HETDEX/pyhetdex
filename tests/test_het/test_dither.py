@@ -142,7 +142,7 @@ def test_command_line_dithertool(request, tmp_dither_file, fplane_file,
     """Test the command line tool to create the dither file works"""
 
     args = ['--modelbase', ] + modelbases + ['-o', str(tmp_dither_file)]
-    args += [option, ] + request.getfuncargvalue(fixture)
+    args += [option, ] + request.getfixturevalue(fixture)
     args += ['--', '046', str(fplane_file), ] + basenames
 
     dither.create_dither_file(argv=args)

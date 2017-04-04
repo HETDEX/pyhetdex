@@ -24,6 +24,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from astropy.io import fits
 from astropy.visualization import ZScaleInterval
+from astropy.stats import sigma_clip
+
+from pyhetdex.tools.files.fits_tools import parse_fits_region
 
 
 class OverviewPlotError(Exception):
@@ -60,26 +63,39 @@ class OverviewPlot(object):
         pltarray = None
 
         for f in files:
-            hdu = fits.open(f)
-            data = hdu[0].data
-            xoff = 0
-            yoff = 0
-            if hdu[0].header['CCDPOS'] == 'R':
-                xoff = data.shape[0]
-            if hdu[0].header['CCDHALF'] == 'U':
-                yoff = data.shape[1]
+            with fits.open(f) as hdu:
+                data = hdu[0].data
+                xoff = 0
+                yoff = 0
 
-            if pltarray is None:
-                pltarray = np.zeros((data.shape[0]*2,
-                                     data.shape[1]*2))
+                biassec = parse_fits_region(hdu[0].header['BIASSEC'])
+                trimsec = parse_fits_region(hdu[0].header['TRIMSEC'])
 
-            pltarray[xoff:xoff+data.shape[0],
-                     yoff:yoff+data.shape[1]] = data
+                ovsc = data[biassec[2]-1:biassec[3]-1,
+                            biassec[0]-1:biassec[1]-1]
+                imdata = data[trimsec[2]-1:trimsec[3]-1,
+                              trimsec[0]-1:trimsec[1]-1]
+
+                imdata = imdata.astype(float)
+                imdata -= np.average(sigma_clip(ovsc, sigma=2.8))
+
+                if hdu[0].header['CCDPOS'] == 'R':
+                    xoff = imdata.shape[0]
+                if hdu[0].header['CCDHALF'] == 'U':
+                    yoff = imdata.shape[1]
+
+                if pltarray is None:
+                    pltarray = np.zeros((imdata.shape[0]*2,
+                                        imdata.shape[1]*2))
+
+                pltarray[xoff:xoff+imdata.shape[0],
+                         yoff:yoff+imdata.shape[1]] = imdata
 
             if self.zmin is None:
                 zscale = ZScaleInterval()
                 self.zmin, self.zmax = zscale.get_limits(pltarray)
 
+            sp.set_title('%s' % hdu[0].header['IFUSLOT'])
             self.lastplot = sp.imshow(pltarray, cmap='Greys',
                                       clim=(self.zmin, self.zmax),
                                       origin='lower')

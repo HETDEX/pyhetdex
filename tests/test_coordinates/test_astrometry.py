@@ -7,13 +7,26 @@ from __future__ import (absolute_import, division, print_function,
 import os
 import pytest
 
-from pyhetdex.coordinates.astrometry import add_ra_dec, add_wcs, xy_to_ra_dec
+from pyhetdex.coordinates.astrometry import (add_ra_dec, add_wcs, xy_to_ra_dec,
+                                             add_ifu_xy)
 
 
 @pytest.fixture
 def daophot_cat(datadir):
     '''Return the daophot file as a py.path.local instance'''
     return datadir.join("061706_074.als")
+
+
+@pytest.fixture
+def ra_dec_cat_csv(datadir):
+    '''Return a file with ra, dec as a py.path.local instance'''
+    return datadir.join("061706_074_ra_dec.csv")
+
+
+@pytest.fixture
+def ra_dec_cat_fits(datadir):
+    '''Return a fits file with ra, dec as a py.path.local instance'''
+    return datadir.join("061706_074_ra_dec.fits")
 
 
 @pytest.fixture
@@ -34,8 +47,9 @@ def fits_image(datadir):
 def test_add_ra_dec_cmd(tmpdir, request, fplane_file, cat, typ, ihmp, regex,
                         outname):
     """Test the add_ra_dec command runs for a variety of inputs """
+
     # create the arguments
-    cat = request.getfuncargvalue(cat).strpath
+    cat = request.getfixturevalue(cat).strpath
     out = tmpdir.join(outname).strpath
 
     argv = ['--fplane', fplane_file.strpath, '--fout', out]
@@ -48,6 +62,24 @@ def test_add_ra_dec_cmd(tmpdir, request, fplane_file, cat, typ, ihmp, regex,
              '257.654951', cat]
 
     add_ra_dec(args=argv)
+    # Check output file written
+    assert os.path.isfile(out)
+
+
+@pytest.mark.parametrize("cat", ['ra_dec_cat_csv', 'ra_dec_cat_fits'])
+@pytest.mark.parametrize("outname", ['test.csv', 'test.fits'])
+def test_add_ifu_xy_cmd(tmpdir, request, fplane_file, cat, outname):
+
+    """ Test adding x, y to a catalogue. Use output from test_ra_dec_cmd """
+    cat_fn = request.getfixturevalue(cat).strpath
+    out = tmpdir.join(outname).strpath
+
+    argv = ['--fplane', fplane_file.strpath]
+    argv += ['--astrometry', '205.543395821', '28.3792133418',
+             '257.654951', cat_fn, out]
+
+    add_ifu_xy(args=argv)
+
     # Check output file written
     assert os.path.isfile(out)
 
@@ -71,7 +103,7 @@ def test_xy_to_ra_dec_cmd(capsys, fplane_file):
     assert out.strip().split()[1] == '28.398915'
 
 
-def test_add_wcs(tmpdir, fplane_file, fits_image):
+def test_add_wcs(tmpdir, clear_tmpdir, fplane_file, fits_image):
     """ Test the add_wcs command runs and outputs a file"""
     out = tmpdir.join("test.fits").strpath
 

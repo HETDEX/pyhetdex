@@ -9,7 +9,15 @@
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model
-* Modified code to read in three fiber-extracted noise files, rather than a datacube
+* Modified code to read in three fiber-extracted noise files, rather
+  than a datacube
+
+## Version 0.11.0
+
+* Added routine to create an overview plot for one exposure
+* Override configurations from the, e.g., the command line (issue #1849)
+* Added tool to generate masks, i.e. corners of each IFU in
+  a focal plane for a list of shots (issue #1873)
 
 ## Version 0.10.0
 

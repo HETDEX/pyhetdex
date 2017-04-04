@@ -29,3 +29,9 @@ adapted to work on python 2.7.
 
 .. autoclass:: pyhetdex.tools.configuration.ExtendedInterpolation
    :show-inheritance:
+
+
+Utilities
+=========
+
+.. autofunction:: pyhetdex.tools.configuration.override_conf

@@ -46,18 +46,22 @@ entry_points = {'console_scripts':
                  'pyhetdex.randoms.generate_randoms:add_fluxes_and_snr_to_randoms_cmd',
                  'generate_randoms ='
                  'pyhetdex.randoms.generate_randoms:generate_randoms_cmd',
+                 'add_ifu_xy ='
+                 'pyhetdex.coordinates.astrometry:add_ifu_xy',
                  'add_ra_dec ='
                  'pyhetdex.coordinates.astrometry:add_ra_dec',
                  'add_wcs ='
                  'pyhetdex.coordinates.astrometry:add_wcs',
                  'xy_to_ra_dec ='
-                 'pyhetdex.coordinates.astrometry:xy_to_ra_dec'
+                 'pyhetdex.coordinates.astrometry:xy_to_ra_dec',
+                 'generate_hetdex_mask='
+                 'pyhetdex.tools.create_mask:generate_mangle_polyfile'
                  ]}
 
 setup(
     # package description and version
     name="pyhetdex",
-    version="0.10.0-post",
+    version="0.12.0-pre",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",

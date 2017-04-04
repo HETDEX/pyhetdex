@@ -101,9 +101,12 @@ class FPlane(object):
     Attributes
     ----------
     ifus
-    difus
     ifuids
+    ifuslots
     specids
+    difus_ifuid
+    difus_ifuslot
+    difus_specid
     """
     def __init__(self, fplane_file, ifu_class=IFU, empty_specid='00',
                  empty_ifuid='000', exclude_ifuslot=[], skip_empty=False):
@@ -123,23 +126,43 @@ class FPlane(object):
 
     @property
     def ifuids(self):
-        """list of ifu ids"""
+        """list of IFUIDs"""
         return list(self._ifus_by_id.keys())
 
     @property
     def ifuslots(self):
-        """list of slot ids"""
+        """list of IFUSLOTs"""
         return list(self._ifus_by_slot.keys())
 
     @property
     def specids(self):
-        """list of spec ids"""
+        """list of SPECIDs"""
         return list(self._ifus_by_spec.keys())
 
     @property
-    def difus(self):
+    def difus(self):  # pragma: no cover
         """dictionary of ifus; key: ifuid; value: :class:`IFU` instance"""
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("default")
+            warnings.warn("``difus`` is deprecated, please use ``difus_ifuid``"
+                          " instead", DeprecationWarning)
+        return self.difus_ifuid
+
+    @property
+    def difus_ifuid(self):
+        """dictionary of ifus; key: IFUID; value: :class:`IFU` instance"""
         return self._ifus_by_id
+
+    @property
+    def difus_ifuslot(self):
+        """dictionary of ifus; key: IFUSLOT; value: :class:`IFU` instance"""
+        return self._ifus_by_slot
+
+    @property
+    def difus_specid(self):
+        """dictionary of ifus; key: SPECID; value: :class:`IFU` instance"""
+        return self._ifus_by_spec
 
     def by_ifuid(self, ifuid):
         """Returns the ifu with ``ifuid``

@@ -1,3 +1,7 @@
+2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/trunk into ^/branches/remove_deprecate
+
 2017-03-08 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/coordinates/transformations.py: remove the package
@@ -39,6 +43,137 @@
     * pyhetdex/doc/sphinxext/todo.py: removed
     * pyhetdex/doc/sphinxext/__init__.py: deprecate the module
     * doc/source/doc.rst: remove todo from the documentation
+
+2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: bump version to 0.12.0-pre
+
+2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: set version to 0.11.0
+	* ReleaseNotes.md: update release notes
+
+2017-04-03 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/branches/angular_masks into ^/trunk
+
+2017-03-30 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+   * pyhetdex/tools/create_mask.py: Forgot to pass args to argparser
+   * tests/test_tools/test_create_mask.py: Fixed bugs in test
+   Adding documentation:
+   * ReleaseNotes.md
+   * doc/source/create_mask.rst
+   * doc/source/index.rst
+   * doc/source/tools/generate_hetdex_mask.rst
+   * doc/source/tools/index.rst
+
+2017-03-24 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+   * pyhetdex/tools/create_mask.py: New tool to create masks
+   * setup.py: Added command line call to new tool
+   * tests/test_tools/test_create_mask.py: Added tests for new tool
+
+2017-03-21 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * setup.py: set version to -pre for better version comparison
+    * tox.ini: add test for astropy==1.2
+    * pyhetdex/het/reconstruct_ifu.py: use clobber in astropy 1.2 and overwrite
+	  otherwise
+    * pyhetdex/tools/astro/sky.py: same
+
+2017-03-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: PEP8
+    * pyhetdex/tools/astro/sky.py: fix astropy warnings
+    * pyhetdex/tools/datacube2rgb.py: fix case of slice with constant values; PEP8
+    * pyhetdex/tools/read_catalogues.py: fix headers according to fits standards
+    * tests/test_coordinates/test_astrometry.py: fix pytest warnings
+
+2017-03-17 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tox.ini: show warnings
+    * pyhetdex/het/overview_plot.py: make sure to close the files
+    * pyhetdex/het/reconstruct_ifu.py: use overwrite instead of clobber
+    * tests/test_het/test_dither.py: use getfixturevalue
+    * tests/test_ltl/test_marray.py: move raises to decorator to allow closing
+	  files
+
+2017-03-17 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: expose ifu dictionaries. Resolves Issue #1864
+    * tests/test_het/test_fplane.py: test the changes
+    * tox.ini: create the distfile only when making the docs
+
+2017-03-16 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tox.ini: create sdist to use devel version in other tests
+
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/branches/test_pyversions into ^/trunk
+
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tests/conftest.py: add fixture to remove tmpdir
+    * tests/test_coordinates/test_astrometry.py: use it in tests using large
+	  files
+    * tests/test_het/test_reconstructions.py: same
+    * tests/test_tools/test_sky.py: same
+
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/trunk into ^/branches/test_pyversions
+
+2017-03-08 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * doc/source/contributions.rst: add pyenv information. Resolves issue #1842
+    * pytest.ini: make xfail strict by default
+
+2017-03-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tox.ini: add py3.6. Resolves Issue #1843
+    * pyhetdex/tools/files/file_tools.py: skip doctests output
+    * tests/test_tools/test_file_tools.py: python 3.6 warns if flags are at the
+	  end of an expression and updated fnmatch.translate accordingly. Make the
+	  tests compatible with python >= 3.6 and <3.6
+
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/branches/conf_override into ^/trunk
+
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/trunk into ^/branches/conf_override
+
+2017-03-10 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: add method to override the configuration
+	  using, e.g., command line options. Solves issue #1849
+    * tests/test_tools/test_configuration.py: test it
+    * doc/source/tools/config.rst: add it to the documentation
+
+2017-03-09  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* tests/test_tools/test_fits_tools.py: Added test for region parser
+	* tests/test_het/test_overview_plot.py: Added test set
+	* tests/test_tools/test_io_helpers.py: Added test for missing
+	comment lines
+	* pyhetdex/tools/io_helpers.py: Fix handling if no comment lines
+	in file
+	* pyhetdex/tools/files/file_tools.py: Added routine to parse fits
+	region string
+	* pyhetdex/het/overview_plot.py: Subtract overscan before plotting
+
+2017-03-09 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+        * pyhetdex/coordinates/astrometry.py: Added tool to compute
+         in IFU x,y from ra, dec
+        * setup.py: command line tool for above
+        * tests/data/061706_074_ra_dec.csv: Test data for above
+        * tests/data/061706_074_ra_dec.fits: Test data for above
+        * tests/test_coordinates/test_astrometry.py: test for above
+        * doc/source/astrometry_tools.rst: documentation for above
 
 2017-03-01  Jan Snigula  <snigula@mpe.mpg.de>
 

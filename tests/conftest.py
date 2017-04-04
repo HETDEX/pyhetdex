@@ -17,6 +17,14 @@ import os
 collect_ignore = ["setup.py"]
 
 
+@pytest.fixture
+def clear_tmpdir(tmpdir):
+    '''Remove ``tmpdir`` after the test is done. Useful for tests that produce
+    a lot of data'''
+    yield
+    tmpdir.remove(rec=True)
+
+
 @pytest.fixture(scope="session")
 def datadir():
     """ Return a py.path.local object for the test data directory"""

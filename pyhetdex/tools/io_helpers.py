@@ -106,7 +106,13 @@ def skip_commentlines(ios):
     -------
     line : string
     """
-    line = ios.readline().lstrip()
+    line = ios.readline()
+
+    if line == '':  # readline returns an empty string when reaching EOF
+        return line
+
+    # Clean leading spaces
+    line = line.lstrip()
     if len(line):
         if line[0] == '#':
             return skip_commentlines(ios)

@@ -129,7 +129,9 @@ def test_specids_size(fplane, n_lines):
 
 def test_size_dict(fplane, n_lines):
     """Test the size of the ifu dictionary"""
-    assert len(fplane.difus) == n_lines
+    assert len(fplane.difus_ifuid) == n_lines
+    assert len(fplane.difus_ifuslot) == n_lines
+    assert len(fplane.difus_specid) == n_lines
 
 
 def test_size_keys(fplane, n_lines):

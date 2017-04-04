@@ -84,12 +84,13 @@ def wildcards_to_regex(wildcards, re_compile=True, is_regex=False):
 
     >>> print(type(wildcards_to_regex("[0-9]*fits")))  # doctest: +ELLIPSIS
     <... '_sre.SRE_Pattern'>
-    >>> print(wildcards_to_regex("[0-9]*fits", re_compile=False))
+    >>> print(wildcards_to_regex("[0-9]*fits",
+    ...       re_compile=False))  # doctest: +SKIP
     [0-9].*fits\Z(?ms)
     >>> print(wildcards_to_regex(None, re_compile=False))
     a^
     >>> print(wildcards_to_regex(["[0-3]*fits", "[5-9]*fits"],
-    ...       re_compile=False))
+    ...       re_compile=False))  # doctest: +SKIP
     [0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)
 
     Parameters

@@ -87,10 +87,6 @@ the existing documentation for examples.
 Testing
 =======
 
-.. note::
-    Every part of the code should be tested and should run at least under python
-    2.7, 3.4 and possibly 3.5
-
 ``pyhetdex`` uses the testing framework provided by the `pytest package
 <http://pytest.org/latest/contents.html#>`_. The tests should cover every
 aspect of a function or method. If exceptions are explicitly raised, this should
@@ -104,9 +100,9 @@ it by typing::
     tox
 
 It will take care of creating virtual environments for every supported version
-of python, if it exists on the system, install ``pyhetdex``, its dependences and the
-packages necessary to run the tests and runs ``py.test``
-
+of python (2.7, 3.4, 3.5 and 3.6), if it exists on the system, install
+``pyhetdex``, its dependences and the packages necessary to run the tests and
+runs ``py.test``.
 
 You can run the tests for a specific python version using::
 
@@ -143,7 +139,7 @@ are marked as ``todo`` and they fail. It is possible to skip them invoking::
 
 or::
 
-    tox -- "-m 'not todo'"
+    tox -- -m "not todo"
 
 A code coverage report is also created thanks to the `pytest-cov
 <https://pypi.python.org/pypi/pytest-cov>`_ plugin and can be visualized opening
@@ -183,6 +179,63 @@ For other command line arguments type::
 For a list of available fixtures type::
 
     py.test --fixtures tests/
+
+``tox`` and ``pyenv``
+---------------------
+
+Many systems have a limited number of python versions installed. `pyenv
+<https://github.com/pyenv/pyenv>`_ provides ways to have multiple python
+versions that can be used by ``tox`` via the `tox-pyenv
+<https://pypi.python.org/pypi/tox-pyenv>`_ plugin.
+
+Here we outline the steps necessary to make ``tox`` use ``pyenv``:
+
+* Install ``pyenv`` following `these instructions
+  <https://github.com/pyenv/pyenv#installation>`_. We suggest to use ``brew``
+  under Mac OS X or the automatic installer. When is done, follow the
+  instructions to enables ``pyenv``.
+* Install the python versions that you need. E.g. if you have python 2.7 and
+  3.6 on you system, you can install only missing versions, e.g.::
+
+      pyenv install 3.4.6
+      pyenv install 3.5.3
+
+  Of course you can also install 2.7 and 3.6 using pyenv.
+* Install ``tox-pyenv`` in the same place where ``tox`` is installed, i.e.
+  either on the system, a virtual environment or a ``pyenv`` instance::
+
+      pip install tox-pyenv
+
+  This way ``tox`` is can use ``pyenv which`` to locate a required python
+  version
+
+* The last step consists in letting ``pyenv`` know which python versions to
+  use. If you have already set `pyenv global
+  <https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-global>_` to
+  all the version required for testing you should be done. Otherwise go to the
+  ``pyhetdex`` directory and run `pyenv local
+  <https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-local>_`::
+
+    pyenv local system 3.4.6 3.5.3
+
+  This command creates a file called ``.python-version`` that contains the
+  following three lines::
+
+    system
+    3.4.6
+    3.5.3
+
+  It will make ``pyenv which`` look for python versions in the system
+  directories as well as within the ``pyenv`` directory. 
+
+  If you did installed also other versions of python (e.g. 3.6.0 and 2.7.13)
+  under ``pyenv`` and want to use them instead of the system ones, you can
+  use::
+
+    pyenv local 3.6.0 3.4.6 3.5.3 2.7.13
+
+* Run ``tox``: now you will be able to use all the python version that tox
+  requires.
 
 Documentation
 =============
