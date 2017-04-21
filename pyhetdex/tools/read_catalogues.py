@@ -94,7 +94,7 @@ def read_cont_detect(fn):
     return table['icx'], table['icy'], table
 
 
-def read_daophot(fn):
+def read_daophot(fn, xoff=-26.2, yoff=-26.7):
     """Read in a DAOPHOT ALLSTAR file from a run on a collapsed cube/apimage
     file
 
@@ -102,6 +102,10 @@ def read_daophot(fn):
     ----------
     fn : str
         the filename to read
+    xoff, yoff : float
+        offsets to add to the x, y positions
+        in the catalogue to correct them to the
+        detect coordinate system.
 
     Returns
     -------
@@ -115,4 +119,4 @@ def read_daophot(fn):
                               'niter', 'CHI', 'SHARP'])
 
     # transform to system where 0,0 is at center of IFU
-    return table['icx'] - 24.5, table['icy'] - 24.5, table
+    return table['icx'] + xoff, table['icy'] + yoff, table

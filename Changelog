@@ -1,3 +1,9 @@
+2017-04-21 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: modified rotation of focal plane
+    * pyhetdex/tools/read_catalogues.py: modified shifts applied to daophot catalogue
+    * tests/test_coordinates/test_astrometry.py: updated test values for new rotation
+
 2017-04-04 Francesco Montesano <montefra@mpe.mpg.de>
 
     * : merge ^/branches/remove_deprecate into ^/trunk

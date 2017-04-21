@@ -76,7 +76,7 @@ def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
                           x_scale=xscale, y_scale=yscale)
     else:
         # Carry out required changes to astrometry
-        rot = 360.0 - (opts.astrometry[2] + 90. + 1.8)
+        rot = 360.0 - (opts.astrometry[2] + 90. + 1.3)
 
         # Set up astrometry from user supplied options
         tp = TangentPlane(opts.astrometry[0], opts.astrometry[1], rot)
