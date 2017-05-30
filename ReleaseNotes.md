@@ -6,6 +6,11 @@
 
 * Remove modules deprecated in v0.10.0 (issues #1641, #1676, #1677, #1349)
 
+## Development version @ branches/ra-dec-all-fibers-1962
+
+* pyhetdex.coordinates.astrometry: add option to use the IFUCen file (issue
+  #1962) and to pass dither offsets (issue #1968)
+
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model

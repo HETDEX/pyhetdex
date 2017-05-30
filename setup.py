@@ -77,8 +77,8 @@ setup(
 
     # dependences
     setup_requires=['pytest-runner', ],
-    install_requires=['six', 'numpy', 'matplotlib', 'scipy', 'astropy>=1.2, !=1.3.3',
-                      'Pillow', ],
+    install_requires=['six', 'numpy', 'matplotlib', 'scipy',
+                      'astropy>=1.2, !=1.3.3', 'Pillow', ],
     extras_require=extras_require(),
     # tests
     tests_require=extras_require('test'),
