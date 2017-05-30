@@ -1,3 +1,27 @@
+2017-05-30 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/branches/ra-dec-all-fibers-1962 into ^/trunk
+
+2017-05-30 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * ReleaseNotes.md: update
+    * setup.py: pep8
+
+2017-05-30 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: Added option to apply offset in arcseconds to coordinates 
+
+2017-05-30 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: Added new option of feeding in IFU cen files to add_ra_dec
+    * pyhetdex/tools/read_catalogues.py: Added wrapper to read IFU cen files
+    * setup.py: Set astropy version to avoid bug when testing (bug report posted to astropy team)
+    * tests/test_coordinates/test_astrometry.py: Tests for the new ifucen file input option to add_ra_dec
+
+2017-05-30 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * Created branch to work on adding ra, dec to ifu cen files
+
 2017-04-21 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/coordinates/astrometry.py: modified rotation of focal plane

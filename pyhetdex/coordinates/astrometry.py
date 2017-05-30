@@ -237,7 +237,7 @@ def xy_to_ra_dec(args=None):
 
 
 def add_ra_dec(args=None):
-    """Add ra, dec to detect and daophot catalogues
+    """Add ra, dec to detect, daophot catalogues and IFU cen files
 
     Parameters
     ----------
@@ -245,7 +245,7 @@ def add_ra_dec(args=None):
         command line
     """
     parser = argparse.ArgumentParser(description="Add ra and dec to a detect"
-                                     " or daophot ALLSTAR catalogue.",
+                                     " or daophot ALLSTAR catalogues or an ifucen file.",
                                      parents=[astro_parent, ])
     parser.add_argument('files', nargs='+',
                         help="List of files to add ra, dec to")
@@ -254,9 +254,16 @@ def add_ra_dec(args=None):
     parser.add_argument('--fout', help='Filename to write to',
                         default='catalogue_out.fits')
 
+    parser.add_argument('--dx', type=float, default=0.0, help="Offset in arcseconds to apply "
+                        " to x axis of IFU coordinates (additive)")
+
+    parser.add_argument('--dy', type=float, default=0.0, help="Offset in arcseconds to apply "
+                        " to y axis of IFU coordinates (additive)")
+
     parser.add_argument('--ftype', default='line_detect', nargs=1, help='''Type
                         of input catalogue, to add ra and dec to. Options:
-                        line_detect, cont_detect, daophot_allstar''')
+                        line_detect, cont_detect, daophot_allstar, ifucen''')
+
 
     # IHMP identification
     group_ihmp = parser.add_mutually_exclusive_group()
@@ -312,6 +319,8 @@ def add_ra_dec(args=None):
         read_func = rc.read_cont_detect
     elif 'daophot_allstar' in opts.ftype:
         read_func = rc.read_daophot
+    elif 'ifucen' in opts.ftype:
+        read_func = rc.read_ifu_cen_wrapper
     else:
         print("Error: unrecognised ftype option. Please choose line_detect,"
               " cont_detect or daophot_allstar")
@@ -329,8 +338,8 @@ def add_ra_dec(args=None):
         ifu = fplane.by_ifuslot(ihmp)
 
         # remember to flip x,y
-        xfp = x + ifu.y
-        yfp = y + ifu.x
+        xfp = x + ifu.y + opts.dy
+        yfp = y + ifu.x + opts.dx
 
         ra, dec = tp.xy2raDec(xfp, yfp)
 

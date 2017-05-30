@@ -1,6 +1,60 @@
 from __future__ import absolute_import
 
+from numpy import concatenate, array, chararray
 from astropy.table import Table
+from pyhetdex.het.ifu_centers import IFUCenter
+
+
+def read_ifu_cen_wrapper(fn):
+    """ 
+    A wrapper for het.IFUCenter that produces an
+    output compatible with the astrometry routines
+ 
+    Parameters
+    ----------
+    fn : str
+        the IFU cen file to read
+ 
+    Returns
+    -------
+    x, y : array
+        the x, y coordinates of the fibers
+    table : astropy.table.Table
+        the IFU cen file info in the form of a table
+    """ 
+
+    ifu_cen = IFUCenter(fn)
+
+
+    if ("L" in ifu_cen.xifu.keys()) and ("R" in ifu_cen.yifu.keys()):
+        x = concatenate((ifu_cen.xifu["L"], ifu_cen.xifu["R"]))
+        y = concatenate((ifu_cen.yifu["L"], ifu_cen.yifu["R"]))
+
+        channel = chararray((len(ifu_cen.xifu["L"]) + len(ifu_cen.xifu["R"])))
+        channel[:len(ifu_cen.xifu["L"])] = "L"
+        channel[len(ifu_cen.xifu["L"]):] = "R"
+
+        fib_number = concatenate((ifu_cen.fib_number["L"], ifu_cen.fib_number["R"]))
+
+    elif "R" in ifu_cen.xifu.keys():
+        x = ifu_cen.xifu["R"]
+        y = ifu_cen.xifu["R"]
+        fib_number = ifu_cen.fib_number["R"]    
+        channel = chararray((len(ifu_cen.xifu["R"])))
+        channel[:] = "R"
+
+    elif "L" in ifu_cen.xifu.keys():
+        x = ifu_cen.xifu["L"]
+        y = ifu_cen.xifu["L"]
+        fib_number = ifu_cen.fib_number["L"]    
+        channel = chararray((len(ifu_cen.xifu["L"])))
+        channel[:] = "L"
+    else:
+        raise Exception("No channels found in IFUcen file!")
+
+    return x, y, Table([channel, fib_number], names=["channel", "fib_number"])
+
+
 
 
 def read_matched_line_detect(fn):
