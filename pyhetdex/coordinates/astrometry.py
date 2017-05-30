@@ -254,6 +254,12 @@ def add_ra_dec(args=None):
     parser.add_argument('--fout', help='Filename to write to',
                         default='catalogue_out.fits')
 
+    parser.add_argument('--dx', type=float, default=0.0, help="Offset in arcseconds to apply "
+                        " to x axis of IFU coordinates (additive)")
+
+    parser.add_argument('--dy', type=float, default=0.0, help="Offset in arcseconds to apply "
+                        " to y axis of IFU coordinates (additive)")
+
     parser.add_argument('--ftype', default='line_detect', nargs=1, help='''Type
                         of input catalogue, to add ra and dec to. Options:
                         line_detect, cont_detect, daophot_allstar, ifucen''')
@@ -332,8 +338,8 @@ def add_ra_dec(args=None):
         ifu = fplane.by_ifuslot(ihmp)
 
         # remember to flip x,y
-        xfp = x + ifu.y
-        yfp = y + ifu.x
+        xfp = x + ifu.y + opts.dy
+        yfp = y + ifu.x + opts.dx
 
         ra, dec = tp.xy2raDec(xfp, yfp)
 

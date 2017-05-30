@@ -1,5 +1,9 @@
 2017-05-30 Daniel Farrow <dfarrow@mpe.mpg.de>
 
+    * pyhetdex/coordinates/astrometry.py: Added option to apply offset in arcseconds to coordinates 
+
+2017-05-30 Daniel Farrow <dfarrow@mpe.mpg.de>
+
     * pyhetdex/coordinates/astrometry.py: Added new option of feeding in IFU cen files to add_ra_dec
     * pyhetdex/tools/read_catalogues.py: Added wrapper to read IFU cen files
     * setup.py: Set astropy version to avoid bug when testing (bug report posted to astropy team)
