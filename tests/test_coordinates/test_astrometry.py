@@ -10,6 +10,16 @@ import pytest
 from pyhetdex.coordinates.astrometry import (add_ra_dec, add_wcs, xy_to_ra_dec,
                                              add_ifu_xy)
 
+@pytest.fixture
+def ifucen_file_missf(datadir):
+    '''Return an ifu cen file as a py.path.local instance'''
+    return datadir.join("IFUcen_HETDEX_missf.txt")
+
+@pytest.fixture
+def ifucen_file(datadir):
+    '''Return an ifu cen file as a py.path.local instance'''
+    return datadir.join("IFUcen_HETDEX.txt")
+
 
 @pytest.fixture
 def daophot_cat(datadir):
@@ -36,6 +46,8 @@ def fits_image(datadir):
 
 
 @pytest.mark.parametrize("cat, typ, ihmp, regex", [
+    ("ifucen_file", "ifucen", "074", None),
+    ("ifucen_file_missf", "ifucen", "074", None),
     ('daophot_cat', "daophot_allstar", "074", None),
     ('daophot_cat', "daophot_allstar", None, "061706_(.*).als"),
     ('cont_detection', "cont_detect", "046", None),
@@ -60,6 +72,8 @@ def test_add_ra_dec_cmd(tmpdir, request, fplane_file, cat, typ, ihmp, regex,
 
     argv += ['--ftype', typ, '--astrometry', '205.543395821', '28.3792133418',
              '257.654951', cat]
+
+    print(argv)
 
     add_ra_dec(args=argv)
     # Check output file written
