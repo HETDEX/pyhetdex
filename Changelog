@@ -1,3 +1,8 @@
+2017-06-06 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/coordinates/astrometry.py: Swapped the axes that the dy, dx options 
+      in add_ra_dec apply to 
+
 2017-05-30 Francesco Montesano <montefra@mpe.mpg.de>
 
     * : merge ^/branches/ra-dec-all-fibers-1962 into ^/trunk

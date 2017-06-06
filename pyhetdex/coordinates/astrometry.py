@@ -338,8 +338,8 @@ def add_ra_dec(args=None):
         ifu = fplane.by_ifuslot(ihmp)
 
         # remember to flip x,y
-        xfp = x + ifu.y + opts.dy
-        yfp = y + ifu.x + opts.dx
+        xfp = x + ifu.y + opts.dx
+        yfp = y + ifu.x + opts.dy
 
         ra, dec = tp.xy2raDec(xfp, yfp)
 
