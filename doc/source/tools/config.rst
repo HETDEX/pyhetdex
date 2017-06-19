@@ -10,7 +10,7 @@ The configuration parser
 
 .. autoclass:: pyhetdex.tools.configuration.ConfigParser
    :member-order: bysource
-   :members: get_list, get_list_of_list, read_dict, read_file
+   :members: get_list, get_list_of_list, read_dict, read_file, read_string
    :show-inheritance:
 
 Utilities

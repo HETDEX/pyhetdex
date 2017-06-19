@@ -1,5 +1,11 @@
 2017-06-19 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * tests/test_tools/test_configuration.py: make sure ConfigFile.read_string is
+	  available. Resolves issue #1953
+    * doc/source/tools/config.rst: add the method to the doc
+
+2017-06-19 Francesco Montesano <montefra@mpe.mpg.de>
+
     * tests/test_tools/test_configuration.py: make sure ConfigFile.read_file is
 	  available. Resolves issue #1951
     * doc/source/tools/config.rst: add the method to the doc

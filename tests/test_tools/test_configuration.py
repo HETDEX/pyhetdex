@@ -135,3 +135,14 @@ def test_read_file(tmpdir):
 
     assert 'general' in c
     assert c['general']['option'] == 'value'
+
+
+def test_read_string():
+    '''Make sure that ``ConfigParser.read_string`` is available in python 2'''
+    conf_str = '[general]\noption = value\n'
+
+    c = pyhconf.ConfigParser()
+    c.read_string(conf_str)
+
+    assert 'general' in c
+    assert c['general']['option'] == 'value'
