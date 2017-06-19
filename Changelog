@@ -1,3 +1,12 @@
+2017-06-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: use the backported configparser to use
+	  the python 3 implementation and remove the custom backports. Resolves
+	  issue #1979
+    * setup.py: add "configparser" dependency in python 2
+    * tests/test_tools/test_configuration.py: remove unused tests
+    * doc/source/tools/config.rst: adapt documentation
+
 2017-06-06 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/coordinates/astrometry.py: Swapped the axes that the dy, dx options 

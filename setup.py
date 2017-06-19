@@ -1,3 +1,4 @@
+import sys
 try:
     import setuptools
 except ImportError:
@@ -5,6 +6,12 @@ except ImportError:
     use_setuptools()
 
 from setuptools import setup, find_packages
+
+
+install_requires = ['six', 'numpy', 'matplotlib', 'scipy',
+                    'astropy>=1.2, !=1.3.3', 'Pillow', ]
+if sys.version_info < (3, 2):  # add backported configparser module if py < 3.2
+    install_requires.append('configparser')
 
 
 def extras_require(key=None):
@@ -77,8 +84,7 @@ setup(
 
     # dependences
     setup_requires=['pytest-runner', ],
-    install_requires=['six', 'numpy', 'matplotlib', 'scipy',
-                      'astropy>=1.2, !=1.3.3', 'Pillow', ],
+    install_requires=install_requires,
     extras_require=extras_require(),
     # tests
     tests_require=extras_require('test'),
