@@ -123,3 +123,15 @@ def test_interpolation_warning():
 
     with pytest.warns(DeprecationWarning):
         ExtendedInterpolation()
+
+
+def test_read_file(tmpdir):
+    '''Make sure that ``ConfigParser.read_file`` is available in python 2'''
+    conf_file = tmpdir.join('tmp.cfg')
+    conf_file.write('[general]\noption = value\n')
+
+    c = pyhconf.ConfigParser()
+    c.read_file(conf_file.open())
+
+    assert 'general' in c
+    assert c['general']['option'] == 'value'
