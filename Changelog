@@ -1,3 +1,9 @@
+2017-06-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/io_helpers.py: copy here from VDAT function to ask yes/no.
+	  First part of issue #1963
+    * tests/test_tools/test_io_helpers.py: test it, also under python 2
+
 2017-06-06 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/coordinates/astrometry.py: Swapped the axes that the dy, dx options 

@@ -1,6 +1,11 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+try:  # python 2 override raw_input
+    input = raw_input
+except NameError:  # python 3 is already fine
+    pass
+
 __version__ = '$Id$'
 
 
@@ -177,3 +182,40 @@ def unique(seq, idfun=None):
         seen[marker] = 1
         result.append(item)
     return result
+
+
+def ask_yes_no(message):
+    '''Ask the user ``message`` and expect ``y`` or ``n`` as answer.
+
+    The string `` (y/[n])`` is appended to the ``message``.
+    EOF (``ctrl+D``) and empty string are interpreted as ``n``
+
+    Parameters
+    ----------
+    message : string
+        message to print to screen
+
+    Returns
+    -------
+    is_yes : bool
+        whether the answer is ``y``
+    '''
+    is_yes = False
+    msg = message + ' (y/[n]) '
+    while True:
+        try:
+            answer = input(msg)
+            if not answer:
+                answer = 'n'
+            if answer.lower() == 'y':
+                is_yes = True
+                break
+            elif answer.lower() == 'n':
+                break
+            else:
+                continue
+        except EOFError:
+            print()
+            break
+
+    return is_yes

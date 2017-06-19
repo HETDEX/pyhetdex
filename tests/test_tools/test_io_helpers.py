@@ -2,8 +2,17 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import pyhetdex.tools.io_helpers as ioh
+# import builtins and input
+import sys
+
 import pytest
+import six
+
+import pyhetdex.tools.io_helpers as ioh
+
+parametrize = pytest.mark.parametrize
+
+py2_skip = pytest.mark.skipif(six.PY2, reason='Python >= 3 only')
 
 
 @pytest.yield_fixture
@@ -78,3 +87,51 @@ class TestIOHelpers(object):
         def idfun(x):
             return x
         assert ioh.unique(testlist, idfun) == [1, 2, 3]
+
+
+@parametrize('answer, is_yes, n_answers',
+             [('n', False, 1), ('', False, 1), ('y', True, 1),
+              (['n', 'y'], False, 1), (['y', ''], True, 1),
+              (['wrong', 'y'], True, 2), (['wrong', 'n'], False, 2),
+              (['wrong', ''], False, 2),
+              ])
+def test_ask_yes_no(monkeypatch, answer, is_yes, n_answers):
+    """Ask whether to overwrite a file"""
+    calls = []
+    if isinstance(answer, six.string_types):
+        answers = [answer, ]
+    else:
+        answers = answer[:]
+
+    class _Anwser(six.StringIO):
+        '''"file object" used to replace sys.stdin for the tests. It registers
+        the calls to the parent readline method'''
+        def readline(self):
+            a = six.StringIO.readline(self)
+            calls.append(a)
+            return a
+    monkeypatch.setattr(sys, 'stdin', _Anwser('\n'.join(answers) + '\n'))
+
+    is_answer_yes = ioh.ask_yes_no('a message')
+
+    assert is_answer_yes == is_yes
+    assert len(calls) == n_answers
+
+
+def test_ask_yes_no_eof(monkeypatch):
+    """Hitting ctrl-D is like no"""
+    calls = []
+
+    class _Anwser(six.StringIO):
+        '''"file object" used to replace sys.stdin for the tests. It registers
+        the calls to the parent readline method'''
+        def readline(self):
+            calls.append('')
+            a = six.StringIO.readline(self)
+            return a
+    monkeypatch.setattr(sys, 'stdin', _Anwser(''))
+
+    is_answer_yes = ioh.ask_yes_no('a message')
+
+    assert not is_answer_yes
+    assert len(calls) == 1
