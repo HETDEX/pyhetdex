@@ -14,78 +14,61 @@ import pyhetdex.tools.io_helpers as ioh
 parametrize = pytest.mark.parametrize
 
 
-@pytest.yield_fixture
-def testfile(request, tmpdir):
-    '''Create a test file and returns a file object to read it'''
-    fname = tmpdir.mkdir('io').join('test.txt')
-    with fname.open('w') as fout:
-        # fout = fname.open('w')
-        fout.write('# Comment\n')
-        fout.write('#!\n')
-        fout.write('#\n')
-        fout.write('\n')
-        fout.write('Test <123>\n')
-        fout.write('[ 1 2 3 ]\n')
-        # fout.close()
-
-    with fname.open() as fin:
-        yield fin
+@pytest.fixture
+def testfile():
+    '''Return a StringIO to mock a file object'''
+    s = six.StringIO('# Comment\n#!\n#\n\nTest <123>\n[ 1 2 3 ]\n')
+    return s
 
 
-@pytest.yield_fixture
-def testfile_nocomments(request, tmpdir):
-    '''Create a test file without comment lines
-    and returns a file object to read it'''
-    fname = tmpdir.mkdir('io').join('test.txt')
-    with fname.open('w') as fout:
-        # fout = fname.open('w')
-        fout.write('Test <123>\n')
-        fout.write('[ 1 2 3 ]\n')
-        # fout.close()
-
-    with fname.open() as fin:
-        yield fin
-
-
-@pytest.fixture(scope='module')
+@pytest.fixture
 def testlist():
     'return a list of integers'
     return [1, 1, 1, 2, 1, 3, 2, 1]
 
 
-class TestIOHelpers(object):
+def test_countlines(testfile):
+    assert ioh.count_lines(testfile) == 6
 
-    def test_countlines(self, testfile):
-        assert ioh.count_lines(testfile) == 6
 
-    def test_eat_to_char(self, testfile):
-        assert ioh.eat_to_char(testfile, '<') == '<'
+def test_eat_to_char(testfile):
+    assert ioh.eat_to_char(testfile, '<') == '<'
 
-    def test_eat_to_blockstart(self, testfile):
-        assert ioh.eat_to_blockstart(testfile) == ' '
 
-    def test_read_to_char(self, testfile):
-        assert ioh.read_to_char(testfile, '!') == '# Comment #'
+def test_eat_to_blockstart(testfile):
+    assert ioh.eat_to_blockstart(testfile) == ' '
 
-    def test_read_to_char_noskipnewline(self, testfile):
-        assert ioh.read_to_char(testfile, '!', False) == '# Comment\n#'
 
-    def test_skip_comment(self, testfile):
-        assert ioh.skip_commentlines(testfile) == 'Test <123>\n'
+def test_read_to_char(testfile):
+    assert ioh.read_to_char(testfile, '!') == '# Comment #'
 
-    def test_skip_comment_no_comment(self, testfile_nocomments):
-        assert ioh.skip_commentlines(testfile_nocomments) == 'Test <123>\n'
 
-    def test_duplicates(self, testlist):
-        assert ioh.duplicates(testlist) == [1, 2]
+def test_read_to_char_noskipnewline(testfile):
+    assert ioh.read_to_char(testfile, '!', False) == '# Comment\n#'
 
-    def test_unique(self, testlist):
-        assert ioh.unique(testlist) == [1, 2, 3]
 
-    def test_unique_with_fun(self, testlist):
-        def idfun(x):
-            return x
-        assert ioh.unique(testlist, idfun) == [1, 2, 3]
+@parametrize('lines, first_line',
+             [('#Comment\nTest <123>\n', 'Test <123>\n'),
+              ('#Comment\n\nTest <123>\nother\n', 'Test <123>\n'),
+              ('Test <123>\nother\n', 'Test <123>\n'),
+              ('#Comment\n', ''), ('', '')])
+def test_skip_comment(lines, first_line):
+    line = ioh.skip_commentlines(six.StringIO(lines))
+    assert line == first_line
+
+
+def test_duplicates(testlist):
+    assert ioh.duplicates(testlist) == [1, 2]
+
+
+def test_unique(testlist):
+    assert ioh.unique(testlist) == [1, 2, 3]
+
+
+def test_unique_with_fun(testlist):
+    def idfun(x):
+        return x
+    assert ioh.unique(testlist, idfun) == [1, 2, 3]
 
 
 @parametrize('answer, is_yes, n_answers',

@@ -1,5 +1,10 @@
 2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * tests/test_tools/test_io_helpers.py: use StringIO instead of temporary
+	  files; set coverage to 100%
+
+2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/tools/io_helpers.py: add function to write the content of a list
 	  after a header. Resolves issue #1936
     * tests/test_tools/test_io_helpers.py: test it
