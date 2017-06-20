@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import inspect
+import os
 import sys
 
 import pytest
@@ -144,7 +145,77 @@ def test_encode(in_, out_):
 
 def test_get_resource_file():
     '''Make sure that it can correctly get a file from the package'''
-    file_content = ioh.get_resource_file('pyhetdex',  'io_helpers.py')
+    file_content = ioh.get_resource_file('pyhetdex',
+                                         os.path.join('tools',
+                                                      'io_helpers.py'))
     io_helpers_source = inspect.getsource(ioh)
 
     assert file_content == io_helpers_source
+
+
+@parametrize('verbose', [True, False])
+def test_copy_resources(tmpdir, capsys, verbose):
+    '''Copy the files to destination'''
+    files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
+
+    written, non_written, backup = ioh.copy_resources('pyhetdex', files,
+                                                      tmpdir.strpath,
+                                                      verbose=verbose)
+
+    assert written == files
+    assert not non_written
+    assert not backup
+
+    out = [i.relto(tmpdir) for i in tmpdir.visit() if i.check(dir=False)]
+    assert sorted(out) == sorted(files)
+
+    stdout, stderr = capsys.readouterr()
+    assert (len(stdout) > 0) == verbose
+    assert not stderr
+
+
+@parametrize('backup', [True, False])
+@parametrize('overwrite', [True, False])
+@parametrize('is_yes', [True, False])
+def test_copy_resources_overwrite(tmpdir, monkeypatch, backup, overwrite,
+                                  is_yes):
+    '''Copy the files to destination adding options'''
+    files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
+    tmpdir.ensure('__init__.py')
+
+    monkeypatch.setattr(ioh, 'ask_yes_no', lambda _: is_yes)
+
+    has_backup = backup and (not overwrite)
+
+    written, non_written, backedup = ioh.copy_resources('pyhetdex', files,
+                                                        tmpdir.strpath,
+                                                        backup=backup,
+                                                        force=overwrite)
+
+    assert (written == files) == (backup or overwrite or is_yes)
+    assert (len(non_written) == 0) == (backup or overwrite or is_yes)
+    assert (len(backedup) == 1) == has_backup
+
+    out = [i.relto(tmpdir) for i in tmpdir.visit() if i.check(dir=False)]
+    expected = 3 if has_backup else 2
+    assert len(out) == expected
+
+
+def test_copy_resources_replace(tmpdir):
+    '''Copy the files to destination modifying the file'''
+    files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
+
+    def replace(fcontent):
+        '''replace NameError with __42__'''
+        return fcontent.replace('NameError', '__42__')
+
+    written, non_written, backedup = ioh.copy_resources('pyhetdex', files,
+                                                        tmpdir.strpath,
+                                                        replace_func=replace)
+
+    init = tmpdir.join('__init__.py').read()
+    assert '__42__' not in init
+
+    io_helper = tmpdir.join('tools', 'io_helpers.py').read()
+    assert '__42__' in io_helper
+    assert 'NameError' not in io_helper

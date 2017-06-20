@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import os
 import pkg_resources
 import six
 
@@ -261,5 +262,116 @@ def get_resource_file(name, filename):
     file_content : string
         content of the file
     '''
-    file_content = pkg_resources.resource_string(__name__, filename)
+    file_content = pkg_resources.resource_string(name, filename)
     return decode(file_content)
+
+
+def copy_resources(name, flist, target_dir, backup=False, force=False,
+                   replace_func=None, verbose=False):
+    """Copy the given list of resource files.
+
+    If one of the files already exists on the destination one of the following
+    cases happens:
+
+    * the user is asked whether she/he wants to replace the file;
+    * if ``force`` is ``True``: the file is replaced without asking;
+    * if ``backup`` is ``True``: the destination file is copied to a new file,
+      to which name ``".bkp"`` is appended, and then replaced; overridden by
+      ``force``
+
+    Parameters
+    ----------
+    name : string
+        name of the package. Typically is the ``__name__`` variable of the
+        module calling the function
+    flist : list of strings
+        list of files to copy relative to ``name``
+    target_dir : string
+        directory where to copy the files
+    backup : bool, optional
+        existing files are backed-up before copying the new ones
+    force : bool, optional
+        force overwriting if the file already exists; override backup
+    replace_func : callable, optional
+        callable that accepts a string (the resource file) and return an other
+        string that will be then written to file; useful e.g. to replace
+        placeholders in the files
+    verbose : bool, optional
+        activate verbose printing
+
+    Returns
+    -------
+    written_files, non_written_files, backed_up_files : list of strings
+        name of the files that has been written, not written or backed-up
+    """
+    written_files = []
+    non_written_files = []
+    backed_up_files = []
+
+    for filename in flist:
+        dir_, file_ = os.path.split(filename)
+        if dir_:  # create the target directory
+            _target_dir = os.path.join(target_dir, dir_)
+        else:
+            _target_dir = target_dir
+
+        try:  # try to make the target directory
+            os.mkdir(_target_dir)
+            if verbose:
+                print("Directory '{}' created".format(dir_))
+        except OSError:
+            pass
+
+        ofile = os.path.join(_target_dir, file_)
+        ofile_exists = os.path.exists(ofile)
+
+        if ofile_exists:
+            overwrite = False
+            if force:
+                overwrite = True
+            elif backup:
+                bkp = ofile + '.bkp'
+                os.rename(ofile, bkp)
+                backed_up_files.append(filename)
+                overwrite = True
+            else:
+                msg = "Do you want to overwrite file '{}'?".format(filename)
+                overwrite = ask_yes_no(msg)
+
+            if not overwrite:
+                non_written_files.append(filename)
+                continue
+
+        ifile = get_resource_file(name, filename)
+        if replace_func:
+            ifile = replace_func(ifile)
+
+        with open(ofile, 'w') as of:
+            of.write(ifile)
+        written_files.append(filename)
+
+    return written_files, non_written_files, backed_up_files
+
+
+def copy_resources_log():
+    if written_files:
+        msg = "Copied files:  "
+        msg = tw.fill(", ".join(written_files),
+                      initial_indent=Fore.GREEN + msg + Fore.RESET,
+                      subsequent_indent=" "*len(msg))
+        print(msg)
+        if non_written_files:
+            msg = "Skipped files: "
+            msg = tw.fill(", ".join(non_written_files),
+                          initial_indent=Fore.YELLOW + msg + Fore.RESET,
+                          subsequent_indent=" "*len(msg))
+            print(msg)
+        if backed_up_files:
+            msg = "Backed-up files: "
+            msg = tw.fill(", ".join(backed_up_files),
+                          initial_indent=Fore.YELLOW + msg + Fore.RESET,
+                          subsequent_indent=" "*len(msg))
+            print(msg)
+    else:
+        msg = "No file copied to directory '{}'"
+        print(msg.format(args.to_dir))
