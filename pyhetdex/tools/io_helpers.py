@@ -3,7 +3,9 @@ from __future__ import (absolute_import, division, print_function,
 
 import os
 import pkg_resources
+import re
 import six
+import textwrap as tw
 
 try:  # python 2 override raw_input
     input = raw_input
@@ -353,25 +355,38 @@ def copy_resources(name, flist, target_dir, backup=False, force=False,
     return written_files, non_written_files, backed_up_files
 
 
-def copy_resources_log():
-    if written_files:
-        msg = "Copied files:  "
-        msg = tw.fill(", ".join(written_files),
-                      initial_indent=Fore.GREEN + msg + Fore.RESET,
-                      subsequent_indent=" "*len(msg))
+def print_list(header, list_):
+    '''If ``list_`` is not empty, print it after header and indented
+    accordingly.
+
+    >>> printed = print_list('test header: ', ['entry1', 'entry2', 'entry3',
+    ...                                        'entry4', 'entry5', 'entry6',
+    ...                                        'entry7', 'entry8'])
+    test header: entry1, entry2, entry3, entry4, entry5, entry6, entry7,
+                 entry8
+    >>> printed
+    True
+
+    Parameters
+    ----------
+    header : string
+        header to put in the first line and to use to indent the subsequent
+        lines. It can contain ANSI escape characters for, e.g. coloring
+    list_ : list of strings
+        the list is joined with commas and printed after header
+
+    Returns
+    -------
+    printed : bool
+        whether something has been printed
+    '''
+    printed = False
+    if list_:
+        escaped_header = re.sub(r'(\x9b|\x1b\[)[0-?]*[ -\/]*[@-~]', '', header,
+                                flags=re.IGNORECASE)
+        msg = tw.fill(", ".join(list_),
+                      initial_indent=header,
+                      subsequent_indent=" "*len(escaped_header))
         print(msg)
-        if non_written_files:
-            msg = "Skipped files: "
-            msg = tw.fill(", ".join(non_written_files),
-                          initial_indent=Fore.YELLOW + msg + Fore.RESET,
-                          subsequent_indent=" "*len(msg))
-            print(msg)
-        if backed_up_files:
-            msg = "Backed-up files: "
-            msg = tw.fill(", ".join(backed_up_files),
-                          initial_indent=Fore.YELLOW + msg + Fore.RESET,
-                          subsequent_indent=" "*len(msg))
-            print(msg)
-    else:
-        msg = "No file copied to directory '{}'"
-        print(msg.format(args.to_dir))
+        printed = True
+    return printed

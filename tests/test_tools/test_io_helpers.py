@@ -219,3 +219,22 @@ def test_copy_resources_replace(tmpdir):
     io_helper = tmpdir.join('tools', 'io_helpers.py').read()
     assert '__42__' in io_helper
     assert 'NameError' not in io_helper
+
+
+@parametrize('header, list_, printed',
+             [('test', [], False), ('test', ['a', ] * 100, True),
+              ('\x1b[31mtest\x1b[39m', ['a', ] * 100, True)])
+def test_print_list(capsys, header, list_, printed):
+    '''Print the list as necessary'''
+    has_printed = ioh.print_list(header, list_)
+
+    assert has_printed == printed
+
+    stdout, _ = capsys.readouterr()
+    assert ('test' in stdout) == printed
+
+    if printed:
+        lines = stdout.splitlines()
+
+        for l in lines[1:]:
+            assert l.startswith('    a')

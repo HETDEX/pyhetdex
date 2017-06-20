@@ -1,5 +1,11 @@
 2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/tools/io_helpers.py: add function to write the content of a list
+	  after a header. Resolves issue #1936
+    * tests/test_tools/test_io_helpers.py: test it
+
+2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* pyhetdex/tools/io_helpers.py: copy from VDAT functionality to copy a list
 	  of resource files. Third part of issue #1963
     * tests/test_tools/test_io_helpers.py: test it
