@@ -2,7 +2,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-# import builtins and input
+import inspect
 import sys
 
 import pytest
@@ -11,8 +11,6 @@ import six
 import pyhetdex.tools.io_helpers as ioh
 
 parametrize = pytest.mark.parametrize
-
-py2_skip = pytest.mark.skipif(six.PY2, reason='Python >= 3 only')
 
 
 @pytest.yield_fixture
@@ -135,3 +133,18 @@ def test_ask_yes_no_eof(monkeypatch):
 
     assert not is_answer_yes
     assert len(calls) == 1
+
+
+@parametrize('in_, out_', [('a', 'a'), (b'a', 'a'), (1, 1)])
+def test_encode(in_, out_):
+    'test encoding'
+    value = ioh.decode(in_)
+    assert value == out_
+
+
+def test_get_resource_file():
+    '''Make sure that it can correctly get a file from the package'''
+    file_content = ioh.get_resource_file('pyhetdex',  'io_helpers.py')
+    io_helpers_source = inspect.getsource(ioh)
+
+    assert file_content == io_helpers_source

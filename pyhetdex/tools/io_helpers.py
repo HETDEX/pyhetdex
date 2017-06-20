@@ -1,6 +1,9 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import pkg_resources
+import six
+
 try:  # python 2 override raw_input
     input = raw_input
 except NameError:  # python 3 is already fine
@@ -219,3 +222,44 @@ def ask_yes_no(message):
             break
 
     return is_yes
+
+
+def decode(bytes_):
+    """In python 3 decodes bytes into string, in python 2 returns the
+    input
+
+    Parameters
+    ----------
+    bytes_ : byte type
+        string to encode
+
+    Returns
+    -------
+    string
+    """
+    if six.PY3 and isinstance(bytes_, six.binary_type):
+        return bytes_.decode()
+    else:
+        return bytes_
+
+
+def get_resource_file(name, filename):
+    '''Get the file from the package using `setuptools resource access
+    <https://setuptools.readthedocs.io/en/latest/pkg_resources.html#basic-resource-access>`_
+    and decode it.
+
+    Parameters
+    ----------
+    name : string
+        name of the package. Typically is the ``__name__`` variable of the
+        module calling the function
+    filename : string
+        name of the file relative to ``name``
+
+    Returns
+    -------
+    file_content : string
+        content of the file
+    '''
+    file_content = pkg_resources.resource_string(__name__, filename)
+    return decode(file_content)

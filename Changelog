@@ -1,3 +1,9 @@
+2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/io_helpers.py: copy from VDAT the functionality to get
+	  files from the distribution. Second part of issue #1963
+    * tests/test_tools/test_io_helpers.py: test it
+
 2017-06-19 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/io_helpers.py: copy here from VDAT function to ask yes/no.
