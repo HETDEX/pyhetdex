@@ -162,8 +162,9 @@ def test_to_unicode(in_, out_):
 def test_read(recwarn, conf_file, conversion):
     '''handle strings in py2 to avoid warnings with strings'''
     c = pyhconf.ConfigParser()
-    c.read(conversion(conf_file.strpath))
+    flist = c.read(conversion(conf_file.strpath))
 
+    assert len(flist) == 1
     assert 'general' in c
     assert c['general']['option'] == 'value'
     assert not recwarn

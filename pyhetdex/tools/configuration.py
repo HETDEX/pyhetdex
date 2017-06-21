@@ -193,9 +193,13 @@ class ConfigParser(confp.ConfigParser):
             self.BOOLEAN_STATES = self.BOOLEAN_STATES
 
     def read(self, filenames, encoding=None):
-        '''Read a list of files. See :meth:`configparser.ConfigParser.read` for
+        '''Read and parse a filename or a list of filenames. Return the list of
+        successfully read files.
+
+        See :meth:`configparser.ConfigParser.read` for
         more information'''
-        super(ConfigParser, self).read(_to_unicode(filenames), encoding=None)
+        return super(ConfigParser, self).read(_to_unicode(filenames),
+                                              encoding=encoding)
 
     def read_string(self, string, source='<string>'):
         '''Read configuration from a given string.  See
