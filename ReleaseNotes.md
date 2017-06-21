@@ -6,6 +6,11 @@
 * pyhetdex.coordinates.astrometry: add option to use the IFUCen file (issue
   #1962) and to pass dither offsets (issue #1968)
 
+## Development version @ branches/configparser_backport
+
+* use ``configparser`` package in python 2 to backport python 3 implementation
+    (issue #1979)
+
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model

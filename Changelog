@@ -1,3 +1,7 @@
+2017-06-21 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * ReleaseNotes.md: update
+
 2017-06-19 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tests/test_tools/test_configuration.py: make sure ConfigFile.read_string is
