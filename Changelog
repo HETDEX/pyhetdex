@@ -1,5 +1,43 @@
 2017-06-21 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* : merge ^/branches/from_vdat_1963 into ^/trunk
+
+2017-06-21 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/trunk into ^/branches/from_vdat_1963
+
+2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tests/test_tools/test_io_helpers.py: use StringIO instead of temporary
+	  files; set coverage to 100%
+
+2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/io_helpers.py: add function to write the content of a list
+	  after a header. Resolves issue #1936
+    * tests/test_tools/test_io_helpers.py: test it
+
+2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* pyhetdex/tools/io_helpers.py: copy from VDAT functionality to copy a list
+	  of resource files. Third part of issue #1963
+    * tests/test_tools/test_io_helpers.py: test it
+    * doc/source/tools/io_helpers.rst: sort by source
+
+2017-06-20 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/io_helpers.py: copy from VDAT the functionality to get
+	  files from the distribution. Second part of issue #1963
+    * tests/test_tools/test_io_helpers.py: test it
+
+2017-06-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/io_helpers.py: copy here from VDAT function to ask yes/no.
+	  First part of issue #1963
+    * tests/test_tools/test_io_helpers.py: test it, also under python 2
+
+2017-06-21 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* : merge ^/branches/configparser_backport into ^/trunk
 
 2017-06-21 Francesco Montesano <montefra@mpe.mpg.de>

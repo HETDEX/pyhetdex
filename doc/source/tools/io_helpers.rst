@@ -4,7 +4,7 @@
 =================================================
 
 .. automodule:: pyhetdex.tools.io_helpers
-   :member-order: groupwise
+   :member-order: bysource
    :members:
    :undoc-members:
    :private-members:

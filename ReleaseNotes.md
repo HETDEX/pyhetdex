@@ -7,6 +7,8 @@
   #1962) and to pass dither offsets (issue #1968)
 * use ``configparser`` package in python 2 to backport python 3 implementation
   (issue #1979)
+* move some functionality to get files from a distribution and copy them from
+  VDAT (issue #1963)
 
 ## Development version @ branches/selection_function_devel
 
