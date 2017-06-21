@@ -5,6 +5,14 @@
 * Remove modules deprecated in v0.10.0 (issues #1641, #1676, #1677, #1349)
 * pyhetdex.coordinates.astrometry: add option to use the IFUCen file (issue
   #1962) and to pass dither offsets (issue #1968)
+* use ``configparser`` package in python 2 to backport python 3 implementation
+  (issue #1979)
+
+## Development version @ branches/from_vdat_1963
+
+* move some functionality to get files from a distribution and copy them from
+  VDAT (issue #1963)
+
 
 ## Development version @ branches/selection_function_devel
 
