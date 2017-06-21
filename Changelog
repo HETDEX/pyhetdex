@@ -1,5 +1,10 @@
 2017-06-21 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* pyhetdex/tools/configuration.py: some more Unicode-ing to fix warnings
+	  (helps issue #1987)
+
+2017-06-21 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/tools/configuration.py: support strings when reading
 	  configurations in python2. Resolves issue #1986.
     * tests/test_tools/test_configuration.py: test the changes

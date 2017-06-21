@@ -131,7 +131,7 @@ def override_conf(conf, args, prefix='setting', sep='__', nones=[None, []]):
 
         try:
             conf.get(section, option)
-            conf.set(section, option, value)
+            conf.set(section, option, _to_unicode(value))
         except (confp.NoSectionError, confp.NoOptionError):
             continue
 
