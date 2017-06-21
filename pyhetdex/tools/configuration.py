@@ -138,6 +138,36 @@ def override_conf(conf, args, prefix='setting', sep='__', nones=[None, []]):
     return conf
 
 
+def _to_unicode(str_):
+    '''Convert the string/list of strings to a unicode/list of unicodes.
+
+    In python 3 the input is returns unprocessed. Non string elements are
+    ignored. The algorithm is recursive.
+
+    Parameters
+    ----------
+    str_ : (list of) string(s)
+        string(s) to convert to unicode
+
+    (list of) unicode string(s)
+        converted strings
+    '''
+    if not six.PY2:  # if it's not python2, do nothing
+        return str_
+    else:
+        if isinstance(str_, six.string_types):
+            # if it's a string, unicode and return
+            return unicode(str_)
+        else:
+            if isinstance(str_, (list, tuple, set)):
+                unicodes = []
+                for s in str_:
+                    unicodes.append(_to_unicode(s))
+                return unicodes
+            else:  # else return the input as it is
+                return str_
+
+
 # =============================================================================
 # Custom configuration parser. Provides extra get methods to parse and store
 # complex options
@@ -161,6 +191,17 @@ class ConfigParser(confp.ConfigParser):
             self.BOOLEAN_STATES = self._boolean_states
         except AttributeError:  # better pythons
             self.BOOLEAN_STATES = self.BOOLEAN_STATES
+
+    def read(self, filenames, encoding=None):
+        '''Read a list of files. See :meth:`configparser.ConfigParser.read` for
+        more information'''
+        super(ConfigParser, self).read(_to_unicode(filenames), encoding=None)
+
+    def read_string(self, string, source='<string>'):
+        '''Read configuration from a given string.  See
+        :meth:`configparser.ConfigParser.read_string` for more information'''
+        super(ConfigParser, self).read_string(_to_unicode(string),
+                                              source=source)
 
     def _to_boolean(self, value):
         '''Convert a string to a boolean compatible to ConfigParser standards

@@ -4,14 +4,17 @@ from __future__ import (absolute_import, division, print_function,
 
 from argparse import Namespace
 
-import pytest
 import configparser
+import pytest
+import six
 
 import pyhetdex.tools.configuration as pyhconf
 
 parametrize = pytest.mark.parametrize
 xfail_value = pytest.mark.xfail(raises=ValueError,
                                 reason='Fail to cast a value')
+
+py2_only = pytest.mark.skipif(not six.PY2, reason='Python == 2 only')
 
 
 @parametrize('attr, val, modified, expected',
@@ -125,24 +128,65 @@ def test_interpolation_warning():
         ExtendedInterpolation()
 
 
-def test_read_file(tmpdir):
-    '''Make sure that ``ConfigParser.read_file`` is available in python 2'''
+@pytest.fixture
+def conf_content():
+    '''string representation of the minimal configuration for the tests'''
+    return '[general]\noption = value\n'
+
+
+@pytest.fixture
+def conf_file(tmpdir, conf_content):
+    '''Create a minimal configuration file and returns its path at a
+    py.path.local object'''
     conf_file = tmpdir.join('tmp.cfg')
-    conf_file.write('[general]\noption = value\n')
+    conf_file.write(conf_content)
+
+    return conf_file
+
+
+@parametrize('in_, out_',
+             [(str('a'), u'a'), (u'a', u'a'), (42, 42),
+              ([str('a'), ], [u'a', ]), ([u'a', ], [u'a', ]), ([42, ], [42, ]),
+              ([str('a'), str('b')], [u'a', u'b']),
+              ([u'a', str('b')], [u'a', u'b']),
+              ([u'a', u'b'], [u'a', u'b']),
+              ([str('a'), u'b', 42], [u'a', u'b', 42]),
+              ])
+def test_to_unicode(in_, out_):
+    '''Test the conversion to unicode'''
+    obtained = pyhconf._to_unicode(in_)
+    assert out_ == obtained
+
+
+@parametrize('conversion', [str, pyhconf._to_unicode])
+def test_read(recwarn, conf_file, conversion):
+    '''handle strings in py2 to avoid warnings with strings'''
+    c = pyhconf.ConfigParser()
+    c.read(conversion(conf_file.strpath))
+
+    assert 'general' in c
+    assert c['general']['option'] == 'value'
+    assert not recwarn
+
+
+def test_read_file(conf_file):
+    '''Make sure that ``ConfigParser.read_file`` is available in python 2'''
 
     c = pyhconf.ConfigParser()
-    c.read_file(conf_file.open())
+    with conf_file.open() as f:
+        c.read_file(f)
 
     assert 'general' in c
     assert c['general']['option'] == 'value'
 
 
-def test_read_string():
-    '''Make sure that ``ConfigParser.read_string`` is available in python 2'''
-    conf_str = '[general]\noption = value\n'
+@parametrize('conversion', [str, pyhconf._to_unicode])
+def test_read_string(conf_content, conversion):
+    '''Make sure that ``ConfigParser.read_string`` is available in python 2 and
+    handles strings'''
 
     c = pyhconf.ConfigParser()
-    c.read_string(conf_str)
+    c.read_string(conversion(conf_content))
 
     assert 'general' in c
     assert c['general']['option'] == 'value'
