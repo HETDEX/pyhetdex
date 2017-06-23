@@ -204,6 +204,18 @@ def test_copy_resources_replace(tmpdir):
     assert 'NameError' not in io_helper
 
 
+def test_copy_resources_replace_reldir(tmpdir):
+    '''Copy the files to destination modifying the file'''
+    files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
+
+    written, non_written, backedup = ioh.copy_resources('pyhetdex', files,
+                                                        tmpdir.strpath,
+                                                        reldir='tools')
+
+    files = [i.basename for i in tmpdir.visit()]
+    assert sorted(files) == ['__init__.py', 'io_helpers.py']
+
+
 @parametrize('header, list_, printed',
              [('test', [], False), ('test', ['a', ] * 100, True),
               ('\x1b[31mtest\x1b[39m', ['a', ] * 100, True)])

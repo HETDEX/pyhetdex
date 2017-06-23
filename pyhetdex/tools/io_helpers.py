@@ -268,8 +268,8 @@ def get_resource_file(name, filename):
     return decode(file_content)
 
 
-def copy_resources(name, flist, target_dir, backup=False, force=False,
-                   replace_func=None, verbose=False):
+def copy_resources(name, flist, target_dir, reldir='.', backup=False,
+                   force=False, replace_func=None, verbose=False):
     """Copy the given list of resource files.
 
     If one of the files already exists on the destination one of the following
@@ -290,6 +290,14 @@ def copy_resources(name, flist, target_dir, backup=False, force=False,
         list of files to copy relative to ``name``
     target_dir : string
         directory where to copy the files
+    reldir : string, optional
+        if the files to copy are into a ``reldir`` directory with respect to
+        ``name``, this will path will be removed form the destination path.
+        E.g. if ``reldir = "static"`` directory and ``flist =
+        ["static/my_file.cfg", ]`` and the file will be copied into
+        ``"target_dir/my_file.cfg"``. If ``reldir`` is not given the file will
+        be copied into ``"target_dir/static/my_file.cfg"``. ``reldir`` must be
+        at the beginning of the file names or will be ignored.
     backup : bool, optional
         existing files are backed-up before copying the new ones
     force : bool, optional
@@ -311,7 +319,13 @@ def copy_resources(name, flist, target_dir, backup=False, force=False,
     backed_up_files = []
 
     for filename in flist:
-        dir_, file_ = os.path.split(filename)
+        # if the file is relative, mark it as such
+        if reldir and filename.startswith(reldir):
+            rel_filename = os.path.relpath(filename, start=reldir)
+        else:
+            rel_filename = filename
+
+        dir_, file_ = os.path.split(rel_filename)
         if dir_:  # create the target directory
             _target_dir = os.path.join(target_dir, dir_)
         else:
@@ -334,14 +348,14 @@ def copy_resources(name, flist, target_dir, backup=False, force=False,
             elif backup:
                 bkp = ofile + '.bkp'
                 os.rename(ofile, bkp)
-                backed_up_files.append(filename)
+                backed_up_files.append(rel_filename)
                 overwrite = True
             else:
-                msg = "Do you want to overwrite file '{}'?".format(filename)
-                overwrite = ask_yes_no(msg)
+                msg = "Do you want to overwrite file '{}'?"
+                overwrite = ask_yes_no(msg.format(rel_filename))
 
             if not overwrite:
-                non_written_files.append(filename)
+                non_written_files.append(rel_filename)
                 continue
 
         ifile = get_resource_file(name, filename)
@@ -350,7 +364,7 @@ def copy_resources(name, flist, target_dir, backup=False, force=False,
 
         with open(ofile, 'w') as of:
             of.write(ifile)
-        written_files.append(filename)
+        written_files.append(rel_filename)
 
     return written_files, non_written_files, backed_up_files
 
