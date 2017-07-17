@@ -98,14 +98,16 @@ def test_add_ifu_xy_cmd(tmpdir, request, fplane_file, cat, outname):
     assert os.path.isfile(out)
 
 
-@pytest.mark.parametrize("flags", [['--rhozp', '1.3'], ['']])
-def test_xy_to_ra_dec_cmd(capsys, fplane_file, flags):
+@pytest.mark.parametrize("rhozp_toggle", [True, False])
+def test_xy_to_ra_dec_cmd(capsys, fplane_file, rhozp_toggle):
     """Test the add_ra_dec command runs for a variety of inputs """
 
     # create the arguments
     argv = ['--fplane', fplane_file.strpath]
     argv += ['--ihmp', '073']
-    argv += flags
+
+    if rhozp_toggle:
+        argv += ['--rhozp', '1.3']
 
     argv += ['--astrometry', '205.547', '28.376', '254.6']
     argv += ['20.969', '-23.712']
