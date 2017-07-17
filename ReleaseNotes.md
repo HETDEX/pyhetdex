@@ -9,6 +9,8 @@
   (issue #1979)
 * move some functionality to get files from a distribution and copy them from
   VDAT (issue #1963)
+* added --rhozp option to astrometry rotuines, to allow user to specify
+  the rotation angle of the rho stage 
 
 ## Development version @ branches/selection_function_devel
 
