@@ -29,6 +29,9 @@ _group_astro.add_argument('--astrometry', nargs=3, type=float64,
                           (degrees)''')
 _group_astro.add_argument('--image', help='''An image, with a header to grab
                           ra, dec and PA from (DONT USE THIS)''')
+astro_parent.add_argument('--rhozp', default=1.3, type=float, help="Set the rho zeropoint in degrees,"
+                                                                    "the rotation of the IHMP wrt HET "
+                                                                    "(default=1.3 deg)")
 
 
 def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
@@ -76,7 +79,7 @@ def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
                           x_scale=xscale, y_scale=yscale)
     else:
         # Carry out required changes to astrometry
-        rot = 360.0 - (opts.astrometry[2] + 90. + 1.3)
+        rot = 360.0 - (opts.astrometry[2] + 90. + opts.rhozp)
 
         # Set up astrometry from user supplied options
         tp = TangentPlane(opts.astrometry[0], opts.astrometry[1], rot)
