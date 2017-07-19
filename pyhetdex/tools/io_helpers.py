@@ -268,64 +268,169 @@ def get_resource_file(name, filename):
     return decode(file_content)
 
 
-def copy_resources(name, flist, target_dir, reldir='.', backup=False,
-                   force=False, replace_func=None, verbose=False):
-    """Copy the given list of resource files.
-
-    If one of the files already exists on the destination one of the following
-    cases happens:
-
-    * the user is asked whether she/he wants to replace the file;
-    * if ``force`` is ``True``: the file is replaced without asking;
-    * if ``backup`` is ``True``: the destination file is copied to a new file,
-      to which name ``".bkp"`` is appended, and then replaced; overridden by
-      ``force``
+class CopyResource(object):
+    '''Copy the given list of resource files.
 
     Parameters
     ----------
     name : string
         name of the package. Typically is the ``__name__`` variable of the
         module calling the function
-    flist : list of strings
-        list of files to copy relative to ``name``
-    target_dir : string
-        directory where to copy the files
-    reldir : string, optional
-        if the files to copy are into a ``reldir`` directory with respect to
-        ``name``, this will path will be removed form the destination path.
-        E.g. if ``reldir = "static"`` directory and ``flist =
-        ["static/my_file.cfg", ]`` and the file will be copied into
-        ``"target_dir/my_file.cfg"``. If ``reldir`` is not given the file will
-        be copied into ``"target_dir/static/my_file.cfg"``. ``reldir`` must be
-        at the beginning of the file names or will be ignored.
     backup : bool, optional
         existing files are backed-up before copying the new ones
     force : bool, optional
         force overwriting if the file already exists; override backup
-    replace_func : callable, optional
-        callable that accepts a string (the resource file) and return an other
-        string that will be then written to file; useful e.g. to replace
-        placeholders in the files
     verbose : bool, optional
         activate verbose printing
 
-    Returns
-    -------
+    Attributes
+    ----------
+    name : string
+        same as input
+    backup, force, verbose : bool
+        same as input
     written_files, non_written_files, backed_up_files : list of strings
         name of the files that has been written, not written or backed-up
-    """
-    written_files = []
-    non_written_files = []
-    backed_up_files = []
+    filename : string
+        name of the file to copy; set in :meth:`__call__` for each element in
+        ``flist``
+    target_dir, reldir : strings
+        same as in :meth:`__call__`
+    '''
+    def __init__(self, name, backup=False, force=False, verbose=False):
+        self.name = name
+        self.backup = backup
+        self.force = force
+        self.verbose = verbose
 
-    for filename in flist:
+        self.written_files = []
+        self.non_written_files = []
+        self.backed_up_files = []
+
+        self.filename = ''
+        self.target_dir = ''
+        self.reldir = ''
+
+    def __call__(self, flist, target_dir, reldir='.'):
+        '''Copy the given list of resource files.
+
+        If one of the files already exists on the destination one of the
+        following cases happens:
+
+        * the user is asked whether she/he wants to replace the file;
+        * if ``force`` is ``True``: the file is replaced without asking;
+        * if ``backup`` is ``True``: the destination file is copied to a new
+          file, to which name ``".bkp"`` is appended, and then replaced;
+          overridden by ``force``
+
+        Parameters
+        ----------
+        flist : list of strings
+            list of files to copy relative to ``name``
+        target_dir : string
+            directory where to copy the files
+        reldir : string, optional
+            if the files to copy are into a ``reldir`` directory with respect
+            to ``name``, this will path will be removed form the destination
+            path.  E.g. if ``reldir = "static"`` directory and ``flist =
+            ["static/my_file.cfg", ]`` and the file will be copied into
+            ``"target_dir/my_file.cfg"``. If ``reldir`` is not given the file
+            will be copied into ``"target_dir/static/my_file.cfg"``. ``reldir``
+            must be at the beginning of the file names or will be ignored.
+        '''
+        self.target_dir = target_dir
+        self.reldir = reldir
+
+        for filename in flist:
+            self.filename = filename
+
+            rel_filename = self._rel_filename(filename, reldir)
+            ofile = self._target_file(rel_filename, target_dir)
+            ofile_exists = os.path.exists(ofile)
+
+            # decide what to do with the file
+            if ofile_exists:
+                overwrite = False
+                if self.force:
+                    overwrite = True
+                elif self.backup:
+                    bkp = ofile + '.bkp'
+                    os.rename(ofile, bkp)
+                    self.backed_up_files.append(rel_filename)
+                    overwrite = True
+                else:
+                    msg = "Do you want to overwrite file '{}'?"
+                    overwrite = ask_yes_no(msg.format(rel_filename))
+
+                if not overwrite:
+                    self.non_written_files.append(rel_filename)
+                    continue
+
+            # get the file, manipulate it and then save it
+            ifile = get_resource_file(self.name, filename)
+            ifile = self.manipulate_resource(ifile)
+
+            with open(ofile, 'w') as of:
+                of.write(ifile)
+            self.written_files.append(rel_filename)
+
+    def report(self, header_written='Copied files',
+               header_non_written='Skipped files',
+               header_backedup='Backed-up files'):
+        '''Print the result of the files copied by :meth:`__call__`.
+
+        Parameters
+        ----------
+        header_written, header_non_written, header_backedup : strings
+            header to use when printing the results stored in
+            :attr:`written_files`, :attr:`non_written_files` and
+            :attr:`backed_up_files`.
+        '''
+        if not print_list(header_written, self.written_files):
+            msg = "No file copied to directory '{}'"
+            print(msg.format(self.target_dir))
+        print_list(header_non_written, self.non_written_files)
+        print_list(header_backedup, self.backed_up_files)
+
+    def _rel_filename(self, filename, reldir):
+        '''Create the relative target file name
+
+        Parameters
+        ----------
+        filename : string
+            file name
+        reldir : string
+            directory name
+
+        Returns
+        -------
+        rel_filename : string
+            relative file name
+        '''
         # if the file is relative, mark it as such
         if reldir and filename.startswith(reldir):
             rel_filename = os.path.relpath(filename, start=reldir)
         else:
             rel_filename = filename
+        return rel_filename
 
-        dir_, file_ = os.path.split(rel_filename)
+    def _target_file(self, filename, target_dir):
+        '''Split the file name, create the target directory and return the name
+        of the target file.
+
+        Parameters
+        ----------
+        filename : string
+            name of the file name
+        target_dir : string
+            directory where to copy the files
+
+        Returns
+        -------
+        string
+            name of the target file
+        '''
+        dir_, file_ = os.path.split(filename)
         if dir_:  # create the target directory
             _target_dir = os.path.join(target_dir, dir_)
         else:
@@ -333,40 +438,54 @@ def copy_resources(name, flist, target_dir, reldir='.', backup=False,
 
         try:  # try to make the target directory
             os.mkdir(_target_dir)
-            if verbose:
+            if self.verbose:
                 print("Directory '{}' created".format(dir_))
         except OSError:
             pass
 
-        ofile = os.path.join(_target_dir, file_)
-        ofile_exists = os.path.exists(ofile)
+        return os.path.join(_target_dir, file_)
 
-        if ofile_exists:
-            overwrite = False
-            if force:
-                overwrite = True
-            elif backup:
-                bkp = ofile + '.bkp'
-                os.rename(ofile, bkp)
-                backed_up_files.append(rel_filename)
-                overwrite = True
-            else:
-                msg = "Do you want to overwrite file '{}'?"
-                overwrite = ask_yes_no(msg.format(rel_filename))
+    def manipulate_resource(self, resource):
+        '''Manipulate the ``resource`` string and return it.
 
-            if not overwrite:
-                non_written_files.append(rel_filename)
-                continue
+        The default implementation does nothing. Override this method in
+        derived classes to operate on ``resource``
 
-        ifile = get_resource_file(name, filename)
-        if replace_func:
-            ifile = replace_func(ifile)
+        Parameters
+        ----------
+        resource : string
+            string to manipulate
 
-        with open(ofile, 'w') as of:
-            of.write(ifile)
-        written_files.append(rel_filename)
+        Returns
+        -------
+        string
+            same as input
+        '''
+        return resource
 
-    return written_files, non_written_files, backed_up_files
+
+def copy_resources(name, flist, target_dir, reldir='.', backup=False,
+                   force=False, replace_func=None, verbose=False):
+    """Copy the given list of resource files.
+
+    This function is a wrapper around :class:`CopyResource` and
+    :meth:`CopyResource.__call__`
+
+    Parameters
+    ----------
+    name, backup, force, verbose
+        see :class:`CopyResource`
+    flist, target_dir, reldir
+        see :meth:`CopyResource.__call__`
+
+    Returns
+    -------
+    written_files, non_written_files, backed_up_files : list of strings
+        name of the files that has been written, not written or backed-up
+    """
+    cr = CopyResource(name, backup=backup, force=force, verbose=verbose)
+    cr(flist, target_dir, reldir=reldir)
+    return cr.written_files, cr.non_written_files, cr.backed_up_files
 
 
 def print_list(header, list_):

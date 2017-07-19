@@ -137,17 +137,16 @@ def test_get_resource_file():
 
 
 @parametrize('verbose', [True, False])
-def test_copy_resources(tmpdir, capsys, verbose):
+def test_copy_resources_class(tmpdir, capsys, verbose):
     '''Copy the files to destination'''
     files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
 
-    written, non_written, backup = ioh.copy_resources('pyhetdex', files,
-                                                      tmpdir.strpath,
-                                                      verbose=verbose)
+    cr = ioh.CopyResource('pyhetdex', verbose=verbose)
+    cr(files, tmpdir.strpath)
 
-    assert written == files
-    assert not non_written
-    assert not backup
+    assert cr.written_files == files
+    assert not cr.non_written_files
+    assert not cr.backed_up_files
 
     out = [i.relto(tmpdir) for i in tmpdir.visit() if i.check(dir=False)]
     assert sorted(out) == sorted(files)
@@ -160,8 +159,8 @@ def test_copy_resources(tmpdir, capsys, verbose):
 @parametrize('backup', [True, False])
 @parametrize('overwrite', [True, False])
 @parametrize('is_yes', [True, False])
-def test_copy_resources_overwrite(tmpdir, monkeypatch, backup, overwrite,
-                                  is_yes):
+def test_copy_resources_class_overwrite(tmpdir, monkeypatch, backup, overwrite,
+                                        is_yes):
     '''Copy the files to destination adding options'''
     files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
     tmpdir.ensure('__init__.py')
@@ -170,50 +169,71 @@ def test_copy_resources_overwrite(tmpdir, monkeypatch, backup, overwrite,
 
     has_backup = backup and (not overwrite)
 
-    written, non_written, backedup = ioh.copy_resources('pyhetdex', files,
-                                                        tmpdir.strpath,
-                                                        backup=backup,
-                                                        force=overwrite)
+    cr = ioh.CopyResource('pyhetdex', backup=backup, force=overwrite)
+    cr(files, tmpdir.strpath)
 
-    assert (written == files) == (backup or overwrite or is_yes)
-    assert (len(non_written) == 0) == (backup or overwrite or is_yes)
-    assert (len(backedup) == 1) == has_backup
+    assert (cr.written_files == files) == (backup or overwrite or is_yes)
+    assert (len(cr.non_written_files) == 0) == (backup or overwrite or is_yes)
+    assert (len(cr.backed_up_files) == 1) == has_backup
 
     out = [i.relto(tmpdir) for i in tmpdir.visit() if i.check(dir=False)]
     expected = 3 if has_backup else 2
     assert len(out) == expected
 
 
-def test_copy_resources_replace(tmpdir):
+def test_copy_resources_class_replace_reldir(tmpdir):
     '''Copy the files to destination modifying the file'''
     files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
 
-    def replace(fcontent):
-        '''replace NameError with __42__'''
-        return fcontent.replace('NameError', '__42__')
-
-    written, non_written, backedup = ioh.copy_resources('pyhetdex', files,
-                                                        tmpdir.strpath,
-                                                        replace_func=replace)
-
-    init = tmpdir.join('__init__.py').read()
-    assert '__42__' not in init
-
-    io_helper = tmpdir.join('tools', 'io_helpers.py').read()
-    assert '__42__' in io_helper
-    assert 'NameError' not in io_helper
-
-
-def test_copy_resources_replace_reldir(tmpdir):
-    '''Copy the files to destination modifying the file'''
-    files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
-
-    written, non_written, backedup = ioh.copy_resources('pyhetdex', files,
-                                                        tmpdir.strpath,
-                                                        reldir='tools')
+    cr = ioh.CopyResource('pyhetdex')
+    cr(files, tmpdir.strpath, reldir='tools')
 
     files = [i.basename for i in tmpdir.visit()]
     assert sorted(files) == ['__init__.py', 'io_helpers.py']
+
+
+def test_copy_resources_class_report(tmpdir, capsys):
+    '''Print the report'''
+    cr = ioh.CopyResource('pyhetdex')
+    cr.report()
+    stdout, stderr = capsys.readouterr()
+    assert len(stdout.splitlines()) == 1
+    assert not stderr
+
+    cr.written_files.append('test')
+
+    cr.report()
+    stdout, stderr = capsys.readouterr()
+    assert len(stdout.splitlines()) == 1
+    assert not stderr
+
+    cr.non_written_files.append('test')
+
+    cr.report()
+    stdout, stderr = capsys.readouterr()
+    assert len(stdout.splitlines()) == 2
+    assert not stderr
+
+
+def test_copy_resources_function(tmpdir, capsys):
+    '''Copy the files to destination'''
+    files = [os.path.join('tools', 'io_helpers.py'), '__init__.py']
+
+    written, non_written, backup = ioh.copy_resources('pyhetdex', files,
+                                                      tmpdir.strpath,
+                                                      reldir='.', backup=True,
+                                                      force=True, verbose=True)
+
+    assert written == files
+    assert not non_written
+    assert not backup
+
+    out = [i.relto(tmpdir) for i in tmpdir.visit() if i.check(dir=False)]
+    assert sorted(out) == sorted(files)
+
+    stdout, stderr = capsys.readouterr()
+    assert len(stdout) > 0
+    assert not stderr
 
 
 @parametrize('header, list_, printed',
