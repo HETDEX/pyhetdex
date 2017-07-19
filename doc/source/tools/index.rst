@@ -32,3 +32,4 @@ Others
     config
     six_ext
     io_helpers
+    db_helpers
