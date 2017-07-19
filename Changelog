@@ -1,3 +1,10 @@
+2017-07-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/io_helpers.py: convert the copy resource into a class for
+	  better customization. Keep the old function as a helper function
+    * tests/test_tools/test_io_helpers.py: test the changes
+    * doc/source/tools/io_helpers.rst: document all
+
 2017-07-17 Daniel Farrow <dfarrow@mpe.mpg.de>
  
   * : merge ^/branches/rhostage into ^/trunk
