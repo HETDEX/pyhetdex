@@ -11,6 +11,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import fnmatch
+import glob
 import os
 import re
 
@@ -229,3 +230,170 @@ def scan_dirs(path, matches='*', exclude=None, recursive=True,
 
         if not recursive:  # don't walk subdirectories
             dirnames[:] = ''
+
+
+class FileNameRotator(object):
+    """Given a group of file name templates, creates new file names using a
+    common counter that avoid file name clashes. The file templates follow the
+    standard python string format syntax and expect **only one empty**. The
+    file name is joined with the path
+
+    Examples
+    --------
+    >>> tmp = getfixture('tmpdir')  # get a temp directory from pytest
+    >>> fnr = FileNameRotator(tmp.strpath, log1='file_{}.log',
+    ...                       log2='other_{}.log')
+    >>> print(os.path.basename(fnr.log1))
+    file_0.log
+    >>> print(os.path.basename(fnr.log2))
+    other_0.log
+
+    Parameters
+    ----------
+    path : string
+        path to search for files
+    keep : int, optional
+        if not negative, files with the counter less than (max_number -
+        keep) are removed
+    kwargs : keyword options
+        template of the files; they are added as attributes to the instance
+
+    Raises
+    ------
+    AttributeError
+        if the name associated to one file is already in use
+    ValueError
+        if it's not possible to format the template
+    """
+    def __init__(self, path, keep=-1, **kwargs):
+        self._path = path
+        self._validate(kwargs)
+        self._re_counter = r'(\d+?)'
+
+        dfiles_templates = {k: os.path.join(path, fn)
+                            for k, fn in kwargs.items()}
+
+        counter = self._n_files(dfiles_templates.values())
+        dfiles, counter = self._create_file_names(dfiles_templates, counter)
+        self._add_file_names(dfiles)
+
+        if keep >= 0:
+            self._remove_older(dfiles_templates.values(), counter, keep)
+
+    def _validate(self, dfiles):
+        """Check that none of the keys is already used and that the file
+        templates contain the '{}' string
+
+        Parameters
+        ----------
+        dfiles : dictionary
+            keys and file name templates
+
+        Raises
+        ------
+        AttributeError
+            if the name associated to one file is already in use
+        ValueError
+            if it's not possible to format the template
+        """
+        for k, v in six.iteritems(dfiles):
+            if hasattr(self, k):
+                raise AttributeError("Can't set attribute {}".format(k))
+            try:
+                v.format('*')
+                v.format(1)
+                if v == v.format(1):
+                    raise KeyError()
+            except KeyError:
+                raise ValueError("The file template must support being"
+                                 " formatted with a number of ``*``")
+
+    def _n_files(self, files):
+        """Find the number that the next files should have.
+
+        Parameters
+        ----------
+        files : list
+            list of file name templates
+
+        Returns
+        -------
+        file_counter : int
+            counter for the new files
+        """
+        file_counter = -1
+
+        for fn_tempate in files:
+            pattern = re.compile(fn_tempate.format(self._re_counter))
+            for fn in glob.glob(fn_tempate.format('*')):
+                counter = int(pattern.findall(fn)[0])
+                file_counter = max(file_counter, counter)
+
+        return file_counter + 1
+
+    def _create_file_names(self, dfiles, n_files):
+        """Create the file names starting the counter from ``n_files``. If any
+        of the created files exist, increase the counter and retry. Once all
+        file names are found, touch them.
+
+        Parameters
+        ----------
+        dfiles : dictionary
+            keys and file name templates
+        n_files : int
+            starting point for the counter; if any of the files exists, the
+            counter is increased
+
+        Returns
+        -------
+        fnames : dictionary
+            file names with the counter replaced
+        counter : int
+            actual counter used
+        """
+        keep_going = True
+        n_files -= 1
+
+        while keep_going:
+            n_files += 1
+            fnames = {k: v.format(n_files) for k, v in six.iteritems(dfiles)}
+            keep_going = any([os.path.exists(v) for v in fnames.values()])
+
+        # touch the files
+        for v in fnames.values():
+            with open(v, mode='w'):
+                pass
+
+        return fnames, n_files
+
+    def _remove_older(self, files, counter, keep):
+        '''All the files with a counter smaller than ``counter - keep`` are
+        removed.
+
+        Parameters
+        ----------
+        files : list
+            file name templates
+        counter : int
+            number used to create the new file
+        keep : int
+            number of files to keep beside the newly created one
+        '''
+        max_counter = counter - keep
+
+        for fn_tempate in files:
+            pattern = re.compile(fn_tempate.format(self._re_counter))
+            for fn in glob.glob(fn_tempate.format('*')):
+                if int(pattern.findall(fn)[0]) < max_counter:
+                    os.remove(fn)
+
+    def _add_file_names(self, dfiles):
+        """Add the created file names as instance attributes
+
+        Parameters
+        ----------
+        dfiles : dictionary
+            keys and file names
+        """
+        for k, v in six.iteritems(dfiles):
+            setattr(self, k, v)

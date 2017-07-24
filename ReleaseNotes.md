@@ -13,6 +13,10 @@
   the rotation angle of the rho stage 
 * Add pyhetdex.tools.db_helpers (from VDAT, issue #2026)
 
+## Development version @ branches/file_rotator
+
+* add FileNameRotator (from VHC, issue #2032)
+
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model

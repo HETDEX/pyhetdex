@@ -13,9 +13,12 @@ except ImportError:  # python 2
     DEVNULL = open(os.devnull, 'wb')
 import sys
 
+import py.path
 import pytest
 
 import pyhetdex.tools.files.file_tools as ft
+
+parametrize = pytest.mark.parametrize
 
 
 skip_greater_py36 = pytest.mark.skipif(sys.version_info >= (3, 6),
@@ -194,3 +197,63 @@ class Test_scan_dir(object):
         find_list = self._find_dirs(options=['!', '-path', '*tool*', '!',
                                              '-path', '*pycache*'])
         assert dlist == find_list
+
+
+@parametrize('n_times', [1, 2, 5])
+@parametrize('keep', [-1, 0, 1, 3])
+def test_file_name_rotator(tmpdir, n_times, keep):
+    """Test that the rotation of the files works properly, calling it
+    n_times"""
+    fn = {'file1': 'test_{}.log', 'file2': 'other_{}.log'}
+    for i in range(n_times):
+        fn_rotator = ft.FileNameRotator(str(tmpdir), keep=keep, **fn)
+        assert fn['file1'].format(i) in fn_rotator.file1
+        assert fn['file2'].format(i) in fn_rotator.file2
+
+    files = list(tmpdir.visit(fil='*.log'))
+
+    if keep < 0:
+        n_left = n_times
+    else:
+        n_left = min(n_times, keep + 1)
+
+    assert len(files) == 2 * n_left
+
+
+@pytest.mark.parametrize('fname',
+                         ['good_{}.log',
+                          pytest.mark.xfail(raises=ValueError, reason='Invalid'
+                                            'format of the file name'
+                                            'template')('bad.log'),
+                          pytest.mark.xfail(raises=ValueError, reason='Invalid'
+                                            'format of the file name'
+                                            'template')('bad_{:.3f}.log'),
+                          ])
+def test_file_name_rotator_template(tmpdir, fname):
+    fn_rotator = ft.FileNameRotator(tmpdir.strpath, fname=fname)
+
+    assert fname.format(0) in fn_rotator.fname
+
+
+@pytest.mark.xfail(raises=AttributeError,
+                   reason='The attribute already exists')
+def test_file_name_rotator_attr_error():
+    # subclass rotator to add attribute
+    class SubClass(ft.FileNameRotator):
+        def extra(self):
+            pass
+
+    SubClass('/a/paht', extra="fname")
+
+
+def test_file_name_rotator_counter(tmpdir):
+    """Test that the counter number is always increased"""
+    fns = {'file1': 'test_{}.log', 'file2': 'other_{}.log'}
+    for fn in fns.values():
+        tmpdir.ensure(fn.format(10))
+        break
+
+    fn_rotator = ft.FileNameRotator(str(tmpdir), **fns)
+
+    for k, v in fns.items():
+        assert v.format(11) in getattr(fn_rotator, k)

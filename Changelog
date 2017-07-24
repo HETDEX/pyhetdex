@@ -1,5 +1,12 @@
 2017-07-24 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/tools/files/file_tools.py: add the file name rotator. Resolves
+	  issue #2032
+    * tests/test_tools/test_file_tools.py: test it
+	* ReleaseNotes.md: update accordingly
+
+2017-07-24 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* : merge ^/branches/db_utils into ^/trunk
 
 2017-07-24 Francesco Montesano <montefra@mpe.mpg.de>
