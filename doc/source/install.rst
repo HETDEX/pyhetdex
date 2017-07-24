@@ -137,6 +137,7 @@ Optional dependences
    pytest-cov
    pytest-xdist
    pytest-catchlog
+   peewee
 
    tox
 

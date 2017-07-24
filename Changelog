@@ -1,3 +1,26 @@
+2017-07-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/branches/db_utils into ^/trunk
+
+2017-07-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * ReleaseNotes.md: update
+
+2017-07-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/trunk into ^/branches/db_utils
+
+2017-07-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/db_helpers.py: added. Resolves issue #2026
+    * tests/test_tools/test_db_helpers.py: test it
+    * setup.py: add peewee as test dependency
+    * tox.ini: same
+    * doc/source/install.rst: same
+    * doc/source/tools/db_helpers.rst: add documentation
+    * doc/source/tools/index.rst: same
+    * doc/Makefile: let sphinx-autobuild to chose the port
+
 2017-07-19 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/tools/io_helpers.py: convert the copy resource into a class for

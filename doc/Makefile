@@ -62,7 +62,7 @@ html:
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
 livehtml:
-	$(SPHINXAUTOBUILD) $(LIVEHTML_EX) $(LIVEHTML_IN) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	$(SPHINXAUTOBUILD) $(LIVEHTML_EX) $(LIVEHTML_IN) -p 0 -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
