@@ -1,6 +1,10 @@
+2017-07-24 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * ReleaseNotes.md: update
+
 2017-07-19 Francesco Montesano <montefra@mpe.mpg.de>
 
-  * : merge ^/trunk into ^/branches/db_utils
+	* : merge ^/trunk into ^/branches/db_utils
 
 2017-07-19 Francesco Montesano <montefra@mpe.mpg.de>
 
