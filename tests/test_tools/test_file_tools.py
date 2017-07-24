@@ -13,7 +13,7 @@ except ImportError:  # python 2
     DEVNULL = open(os.devnull, 'wb')
 import sys
 
-import py.path
+import six
 import pytest
 
 import pyhetdex.tools.files.file_tools as ft
@@ -27,43 +27,51 @@ skip_smaller_py36 = pytest.mark.skipif(sys.version_info < (3, 6),
                                        reason='Valid for python < 3.6')
 
 
-@pytest.mark.parametrize('infname, prefix, outfname',
-                         (["/abs/path/to/file.txt", "test_",
-                          "/abs/path/to/test_file.txt"],
-                          ["../../rel/path/file.dat", "test_",
-                           "../../rel/path/test_file.dat"],
-                          ["nopath.file", "test_", "test_nopath.file"]
-                          ))
+@parametrize('text, next_line',
+             [('no comment', 'no comment'),
+              ('#test\n#cat\nno comment', 'no comment'),
+              ('#test\n#cat\n', ''),
+              ])
+def test_skip_comments(text, next_line):
+    '''Skipping comments'''
+    f = six.StringIO(text)
+
+    f = ft.skip_comments(f)
+
+    line = f.readline()
+    assert line == next_line
+
+
+@parametrize('infname, prefix, outfname',
+             (["/abs/path/to/file.txt", "test_", "/abs/path/to/test_file.txt"],
+              ["../../rel/path/file.dat", "test_",
+               "../../rel/path/test_file.dat"],
+              ["nopath.file", "test_", "test_nopath.file"]
+              ))
 def test_prefix_filename(infname, prefix, outfname):
     "test the insertion of a prefix in front of the file name"
     fout = ft.prefix_filename(infname, prefix)
     assert fout == outfname
 
 
-@pytest.mark.parametrize('re_compile', [False, True])
-@pytest.mark.parametrize('wildcard, regex, is_regex',
-                         (skip_greater_py36(['[0-9]*fits',
-                                             r'[0-9].*fits\Z(?ms)', False]),
-                          skip_smaller_py36(['[0-9]*fits',
-                                             r'(?s:[0-9].*fits)\Z', False]),
-                          [None, r'a^', False],
-                          [None, r'a^', True],
-                          skip_greater_py36([["[0-3]*fits", "[5-9]*fits"],
-                                             r'[0-3].*fits\Z(?ms)|'
-                                             r'[5-9].*fits\Z(?ms)',
-                                             False]),
-                          skip_smaller_py36([["[0-3]*fits", "[5-9]*fits"],
-                                             r'(?s:[0-3].*fits)\Z|'
-                                             r'(?s:[5-9].*fits)\Z',
-                                             False]),
-                          [r'(?:e\.)?jpes[0-9].*fits',
-                           r'(?:e\.)?jpes[0-9].*fits', True],
-                          [[r'.*some\d{2}.?', r'thing\d{2}.?'],
-                           r'.*some\d{2}.?|thing\d{2}.?', True],
-                          pytest.mark.xfail(reason="Wrong regex",
-                                            raises=ft.RegexCompileFail)
-                          (["*wrong", "*wrong", True])
-                          ))
+@parametrize('re_compile', [False, True])
+@parametrize('wildcard, regex, is_regex',
+             (skip_greater_py36(['[0-9]*fits', r'[0-9].*fits\Z(?ms)', False]),
+              skip_smaller_py36(['[0-9]*fits', r'(?s:[0-9].*fits)\Z', False]),
+              [None, r'a^', False], [None, r'a^', True],
+              skip_greater_py36([["[0-3]*fits", "[5-9]*fits"],
+                                 r'[0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)',
+                                 False]),
+              skip_smaller_py36([["[0-3]*fits", "[5-9]*fits"],
+                                 r'(?s:[0-3].*fits)\Z|(?s:[5-9].*fits)\Z',
+                                 False]),
+              [r'(?:e\.)?jpes[0-9].*fits', r'(?:e\.)?jpes[0-9].*fits', True],
+              [[r'.*some\d{2}.?', r'thing\d{2}.?'],
+               r'.*some\d{2}.?|thing\d{2}.?', True],
+              pytest.mark.xfail(reason="Wrong regex",
+                                raises=ft.RegexCompileFail)
+                               (["*wrong", "*wrong", True])
+              ))
 def test_wildcards_to_regex(wildcard, regex, is_regex, re_compile):
     """Convert shell wildcards to regex"""
     if wildcard and "wrong" in wildcard and not re_compile:
@@ -120,9 +128,9 @@ class Test_scan_files(object):
 
     def test_directory_exclusion(self):
         """exclude directories"""
-        flist = self._scan_files(exclude_dirs=['data', '__pycache__'],
-                                 recursive=False)
-        find_list = self._find_files(options=['-maxdepth', '1'])
+        flist = self._scan_files(exclude_dirs=['__pycache__', ])
+        find_list = self._find_files()
+        find_list = [i for i in find_list if '__pycache__' not in i]
         assert flist == find_list
 
     def test_filter_files(self):
