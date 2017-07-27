@@ -13,9 +13,12 @@ except ImportError:  # python 2
     DEVNULL = open(os.devnull, 'wb')
 import sys
 
+import six
 import pytest
 
 import pyhetdex.tools.files.file_tools as ft
+
+parametrize = pytest.mark.parametrize
 
 
 skip_greater_py36 = pytest.mark.skipif(sys.version_info >= (3, 6),
@@ -24,43 +27,51 @@ skip_smaller_py36 = pytest.mark.skipif(sys.version_info < (3, 6),
                                        reason='Valid for python < 3.6')
 
 
-@pytest.mark.parametrize('infname, prefix, outfname',
-                         (["/abs/path/to/file.txt", "test_",
-                          "/abs/path/to/test_file.txt"],
-                          ["../../rel/path/file.dat", "test_",
-                           "../../rel/path/test_file.dat"],
-                          ["nopath.file", "test_", "test_nopath.file"]
-                          ))
+@parametrize('text, next_line',
+             [('no comment', 'no comment'),
+              ('#test\n#cat\nno comment', 'no comment'),
+              ('#test\n#cat\n', ''),
+              ])
+def test_skip_comments(text, next_line):
+    '''Skipping comments'''
+    f = six.StringIO(text)
+
+    f = ft.skip_comments(f)
+
+    line = f.readline()
+    assert line == next_line
+
+
+@parametrize('infname, prefix, outfname',
+             (["/abs/path/to/file.txt", "test_", "/abs/path/to/test_file.txt"],
+              ["../../rel/path/file.dat", "test_",
+               "../../rel/path/test_file.dat"],
+              ["nopath.file", "test_", "test_nopath.file"]
+              ))
 def test_prefix_filename(infname, prefix, outfname):
     "test the insertion of a prefix in front of the file name"
     fout = ft.prefix_filename(infname, prefix)
     assert fout == outfname
 
 
-@pytest.mark.parametrize('re_compile', [False, True])
-@pytest.mark.parametrize('wildcard, regex, is_regex',
-                         (skip_greater_py36(['[0-9]*fits',
-                                             r'[0-9].*fits\Z(?ms)', False]),
-                          skip_smaller_py36(['[0-9]*fits',
-                                             r'(?s:[0-9].*fits)\Z', False]),
-                          [None, r'a^', False],
-                          [None, r'a^', True],
-                          skip_greater_py36([["[0-3]*fits", "[5-9]*fits"],
-                                             r'[0-3].*fits\Z(?ms)|'
-                                             r'[5-9].*fits\Z(?ms)',
-                                             False]),
-                          skip_smaller_py36([["[0-3]*fits", "[5-9]*fits"],
-                                             r'(?s:[0-3].*fits)\Z|'
-                                             r'(?s:[5-9].*fits)\Z',
-                                             False]),
-                          [r'(?:e\.)?jpes[0-9].*fits',
-                           r'(?:e\.)?jpes[0-9].*fits', True],
-                          [[r'.*some\d{2}.?', r'thing\d{2}.?'],
-                           r'.*some\d{2}.?|thing\d{2}.?', True],
-                          pytest.mark.xfail(reason="Wrong regex",
-                                            raises=ft.RegexCompileFail)
-                          (["*wrong", "*wrong", True])
-                          ))
+@parametrize('re_compile', [False, True])
+@parametrize('wildcard, regex, is_regex',
+             (skip_greater_py36(['[0-9]*fits', r'[0-9].*fits\Z(?ms)', False]),
+              skip_smaller_py36(['[0-9]*fits', r'(?s:[0-9].*fits)\Z', False]),
+              [None, r'a^', False], [None, r'a^', True],
+              skip_greater_py36([["[0-3]*fits", "[5-9]*fits"],
+                                 r'[0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)',
+                                 False]),
+              skip_smaller_py36([["[0-3]*fits", "[5-9]*fits"],
+                                 r'(?s:[0-3].*fits)\Z|(?s:[5-9].*fits)\Z',
+                                 False]),
+              [r'(?:e\.)?jpes[0-9].*fits', r'(?:e\.)?jpes[0-9].*fits', True],
+              [[r'.*some\d{2}.?', r'thing\d{2}.?'],
+               r'.*some\d{2}.?|thing\d{2}.?', True],
+              pytest.mark.xfail(reason="Wrong regex",
+                                raises=ft.RegexCompileFail)
+                               (["*wrong", "*wrong", True])
+              ))
 def test_wildcards_to_regex(wildcard, regex, is_regex, re_compile):
     """Convert shell wildcards to regex"""
     if wildcard and "wrong" in wildcard and not re_compile:
@@ -117,9 +128,9 @@ class Test_scan_files(object):
 
     def test_directory_exclusion(self):
         """exclude directories"""
-        flist = self._scan_files(exclude_dirs=['data', '__pycache__'],
-                                 recursive=False)
-        find_list = self._find_files(options=['-maxdepth', '1'])
+        flist = self._scan_files(exclude_dirs=['__pycache__', ])
+        find_list = self._find_files()
+        find_list = [i for i in find_list if '__pycache__' not in i]
         assert flist == find_list
 
     def test_filter_files(self):
@@ -194,3 +205,65 @@ class Test_scan_dir(object):
         find_list = self._find_dirs(options=['!', '-path', '*tool*', '!',
                                              '-path', '*pycache*'])
         assert dlist == find_list
+
+
+@parametrize('n_times', [1, 2, 5])
+@parametrize('keep', [-1, 0, 1, 3])
+def test_file_name_rotator(tmpdir, n_times, keep):
+    """Test that the rotation of the files works properly, calling it
+    n_times"""
+    fn = {'file1': 'test_{}.log', 'file2': 'other_{}.log'}
+    for i in range(n_times):
+        fn_rotator = ft.FileNameRotator(str(tmpdir), keep=keep, **fn)
+        assert fn['file1'].format(i) in fn_rotator.file1
+        assert fn['file2'].format(i) in fn_rotator.file2
+
+    files = list(tmpdir.visit(fil='*.log'))
+
+    if keep < 0:
+        n_left = n_times
+    else:
+        n_left = min(n_times, keep + 1)
+
+    assert len(files) == 2 * n_left
+
+
+@parametrize('fname',
+             ['good_{}.log',
+              pytest.mark.xfail(raises=ValueError, reason='Invalid format of'
+                                ' the file name template')('bad.log'),
+              pytest.mark.xfail(raises=ValueError, reason='Invalid format of'
+                                ' the file name template')('bad_{:.3f}.log'),
+              ])
+@parametrize('touch_files', [True, False])
+def test_file_name_rotator_template(tmpdir, fname, touch_files):
+    fn_rotator = ft.FileNameRotator(tmpdir.strpath, touch_files=touch_files,
+                                    fname=fname)
+
+    assert fname.format(0) in fn_rotator.fname
+
+    assert os.path.exists(fn_rotator.fname) == touch_files
+
+
+@pytest.mark.xfail(raises=AttributeError,
+                   reason='The attribute already exists')
+def test_file_name_rotator_attr_error():
+    # subclass rotator to add attribute
+    class SubClass(ft.FileNameRotator):
+        def extra(self):
+            pass
+
+    SubClass('/a/paht', extra="fname")
+
+
+def test_file_name_rotator_counter(tmpdir):
+    """Test that the counter number is always increased"""
+    fns = {'file1': 'test_{}.log', 'file2': 'other_{}.log'}
+    for fn in fns.values():
+        tmpdir.ensure(fn.format(10))
+        break
+
+    fn_rotator = ft.FileNameRotator(str(tmpdir), **fns)
+
+    for k, v in fns.items():
+        assert v.format(11) in getattr(fn_rotator, k)

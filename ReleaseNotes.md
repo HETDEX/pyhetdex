@@ -12,6 +12,7 @@
 * added --rhozp option to astrometry rotuines, to allow user to specify
   the rotation angle of the rho stage 
 * Add pyhetdex.tools.db_helpers (from VDAT, issue #2026)
+* add FileNameRotator (from VHC, issue #2032)
 
 ## Development version @ branches/selection_function_devel
 
