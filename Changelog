@@ -1,3 +1,9 @@
+2017-07-27 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/files/file_tools.py: add option to skip creating the files
+	  in the rotator
+    * tests/test_tools/test_file_tools.py: test the changes
+
 2017-07-24 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tests/test_tools/test_file_tools.py: 100% coverage for file tools

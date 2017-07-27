@@ -228,19 +228,21 @@ def test_file_name_rotator(tmpdir, n_times, keep):
     assert len(files) == 2 * n_left
 
 
-@pytest.mark.parametrize('fname',
-                         ['good_{}.log',
-                          pytest.mark.xfail(raises=ValueError, reason='Invalid'
-                                            'format of the file name'
-                                            'template')('bad.log'),
-                          pytest.mark.xfail(raises=ValueError, reason='Invalid'
-                                            'format of the file name'
-                                            'template')('bad_{:.3f}.log'),
-                          ])
-def test_file_name_rotator_template(tmpdir, fname):
-    fn_rotator = ft.FileNameRotator(tmpdir.strpath, fname=fname)
+@parametrize('fname',
+             ['good_{}.log',
+              pytest.mark.xfail(raises=ValueError, reason='Invalid format of'
+                                ' the file name template')('bad.log'),
+              pytest.mark.xfail(raises=ValueError, reason='Invalid format of'
+                                ' the file name template')('bad_{:.3f}.log'),
+              ])
+@parametrize('touch_files', [True, False])
+def test_file_name_rotator_template(tmpdir, fname, touch_files):
+    fn_rotator = ft.FileNameRotator(tmpdir.strpath, touch_files=touch_files,
+                                    fname=fname)
 
     assert fname.format(0) in fn_rotator.fname
+
+    assert os.path.exists(fn_rotator.fname) == touch_files
 
 
 @pytest.mark.xfail(raises=AttributeError,

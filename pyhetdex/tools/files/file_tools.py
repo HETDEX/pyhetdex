@@ -240,9 +240,8 @@ class FileNameRotator(object):
 
     Examples
     --------
-    >>> tmp = getfixture('tmpdir')  # get a temp directory from pytest
-    >>> fnr = FileNameRotator(tmp.strpath, log1='file_{}.log',
-    ...                       log2='other_{}.log')
+    >>> fnr = FileNameRotator('/path/to/dir', touch_files=False,
+    ...                       log1='file_{}.log', log2='other_{}.log')
     >>> print(os.path.basename(fnr.log1))
     file_0.log
     >>> print(os.path.basename(fnr.log2))
@@ -255,6 +254,8 @@ class FileNameRotator(object):
     keep : int, optional
         if not negative, files with the counter less than (max_number -
         keep) are removed
+    touch_files : bool, optional
+        touch the files as soon as their name is created
     kwargs : keyword options
         template of the files; they are added as attributes to the instance
 
@@ -265,7 +266,7 @@ class FileNameRotator(object):
     ValueError
         if it's not possible to format the template
     """
-    def __init__(self, path, keep=-1, **kwargs):
+    def __init__(self, path, keep=-1, touch_files=True, **kwargs):
         self._path = path
         self._validate(kwargs)
         self._re_counter = r'(\d+?)'
@@ -274,7 +275,8 @@ class FileNameRotator(object):
                             for k, fn in kwargs.items()}
 
         counter = self._n_files(dfiles_templates.values())
-        dfiles, counter = self._create_file_names(dfiles_templates, counter)
+        dfiles, counter = self._create_file_names(dfiles_templates, counter,
+                                                  touch_files)
         self._add_file_names(dfiles)
 
         if keep >= 0:
@@ -331,7 +333,7 @@ class FileNameRotator(object):
 
         return file_counter + 1
 
-    def _create_file_names(self, dfiles, n_files):
+    def _create_file_names(self, dfiles, n_files, touch_files):
         """Create the file names starting the counter from ``n_files``. If any
         of the created files exist, increase the counter and retry. Once all
         file names are found, touch them.
@@ -343,6 +345,8 @@ class FileNameRotator(object):
         n_files : int
             starting point for the counter; if any of the files exists, the
             counter is increased
+        touch_files : bool
+            touch the files as soon as their name is created
 
         Returns
         -------
@@ -359,10 +363,11 @@ class FileNameRotator(object):
             fnames = {k: v.format(n_files) for k, v in six.iteritems(dfiles)}
             keep_going = any([os.path.exists(v) for v in fnames.values()])
 
-        # touch the files
-        for v in fnames.values():
-            with open(v, mode='w'):
-                pass
+        if touch_files:
+            # touch the files
+            for v in fnames.values():
+                with open(v, mode='w'):
+                    pass
 
         return fnames, n_files
 
