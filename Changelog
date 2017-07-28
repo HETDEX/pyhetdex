@@ -1,3 +1,8 @@
+2017-07-28 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/io_helpers.py: set better defaults for the
+	  CopyResource.report method
+
 2017-07-27 Francesco Montesano <montefra@mpe.mpg.de>
 
     * : merge ^/branches/file_rotator/ into ^/trunk

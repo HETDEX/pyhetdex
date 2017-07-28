@@ -374,9 +374,9 @@ class CopyResource(object):
                 of.write(ifile)
             self.written_files.append(rel_filename)
 
-    def report(self, header_written='Copied files',
-               header_non_written='Skipped files',
-               header_backedup='Backed-up files'):
+    def report(self, header_written='Copied files: ',
+               header_non_written='Skipped files: ',
+               header_backedup='Backed-up files: '):
         '''Print the result of the files copied by :meth:`__call__`.
 
         Parameters
