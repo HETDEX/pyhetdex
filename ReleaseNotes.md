@@ -2,6 +2,14 @@
 
 ## Development version @ trunk
 
+## Development version @ branches/selection_function_devel
+
+* Changes to the selection function model
+* Modified code to read in three fiber-extracted noise files, rather
+  than a datacube
+
+## Version 0.12.0
+
 * Remove modules deprecated in v0.10.0 (issues #1641, #1676, #1677, #1349)
 * pyhetdex.coordinates.astrometry: add option to use the IFUCen file (issue
   #1962) and to pass dither offsets (issue #1968)
@@ -13,12 +21,6 @@
   the rotation angle of the rho stage 
 * Add pyhetdex.tools.db_helpers (from VDAT, issue #2026)
 * add FileNameRotator (from VHC, issue #2032)
-
-## Development version @ branches/selection_function_devel
-
-* Changes to the selection function model
-* Modified code to read in three fiber-extracted noise files, rather
-  than a datacube
 
 ## Version 0.11.0
 
