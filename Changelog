@@ -1,5 +1,9 @@
 2017-08-16 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * setup.py: bump version to 0.12.0-post
+
+2017-08-16 Francesco Montesano <montefra@mpe.mpg.de>
+
     * setup.py: set version to 0.12.0
     * ReleaseNotes.md: update accordingly
 
