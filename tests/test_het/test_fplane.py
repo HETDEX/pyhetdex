@@ -73,6 +73,9 @@ def test_ifuslot_type():
         fp.IFU(2, 1, 1, 1, 1, '111', 0, 0)
 
 
+xfail_noIFUerror = pytest.mark.xfail(raises=fp.NoIFUError, reason='Unknown ID')
+
+
 def test_ifuid(fplane):
     """Test the by_ifuid function"""
     ifu = fplane.by_ifuid('004')
@@ -97,12 +100,20 @@ def test_slotpos(fplane):
         fplane.by_slotpos(11, 12)
 
 
-def test_specid(fplane):
+@parametrize('in_id, out_id',
+             [(2, '004'), ('2', '004'), ('002', '004'),
+              xfail_noIFUerror((200, '')),
+              pytest.mark.xfail(raises=TypeError,
+                                reason='Wrong type for SPECID')
+                               ((4.2, '')),
+              pytest.mark.xfail(raises=TypeError,
+                                reason='Wrong type for SPECID')
+                               (('not an int', '')),
+              ])
+def test_specid(fplane, in_id, out_id):
     """Test the by_specid function"""
-    ifu = fplane.by_specid(2)
-    assert ifu.ifuid == '004'
-    with pytest.raises(fp.NoIFUError):
-        fplane.by_specid(200)
+    ifu = fplane.by_specid(in_id)
+    assert ifu.ifuid == out_id
 
 
 def test_byid(fplane):

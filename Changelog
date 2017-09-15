@@ -1,3 +1,9 @@
+2017-09-15 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: update the documentation to add the ID types,
+	  allow for strings when getting the ifu by specid. Resolves issue #2117
+    * tests/test_het/test_fplane.py: test the changes
+
 2017-08-16 Francesco Montesano <montefra@mpe.mpg.de>
 
     * setup.py: bump version to 0.12.0-post

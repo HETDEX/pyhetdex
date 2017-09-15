@@ -29,6 +29,9 @@ class UnknownIDTypeError(ValueError):
 class IFU(object):
     """Contain the information for the IFU from the focal plane file.
 
+    The input type are cast to the corresponding types when initialising the
+    object.
+
     Parameters
     ----------
     ifuslot : string
@@ -52,6 +55,11 @@ class IFU(object):
     xid, yid : int
         x (column) and y (row) id of the ifu in the ifu head mounting plate
         (IHMP), generated from the ifuslot
+
+    Raises
+    ------
+    TypeError
+        if the ``ifuslot`` is not a string
     """
     def __init__(self, ifuslot, x, y, specid, specslot,
                  ifuid, ifurot, platescl):
@@ -62,7 +70,7 @@ class IFU(object):
         self.y = float(y)
         self.specid = int(specid)
         self.specslot = int(specslot)
-        self.ifuid = ifuid
+        self.ifuid = str(ifuid)
         self.ifurot = float(ifurot)
         self.platescl = float(platescl)
         self.xid = int(self.ifuslot[0:2])
@@ -126,17 +134,17 @@ class FPlane(object):
 
     @property
     def ifuids(self):
-        """list of IFUIDs"""
+        """list of IFUIDs (strings)"""
         return list(self._ifus_by_id.keys())
 
     @property
     def ifuslots(self):
-        """list of IFUSLOTs"""
+        """list of IFUSLOTs (strings)"""
         return list(self._ifus_by_slot.keys())
 
     @property
     def specids(self):
-        """list of SPECIDs"""
+        """list of SPECIDs (integers)"""
         return list(self._ifus_by_spec.keys())
 
     @property
@@ -151,17 +159,20 @@ class FPlane(object):
 
     @property
     def difus_ifuid(self):
-        """dictionary of ifus; key: IFUID; value: :class:`IFU` instance"""
+        """dictionary of ifus; key: IFUID (string); value: :class:`IFU`
+        instance"""
         return self._ifus_by_id
 
     @property
     def difus_ifuslot(self):
-        """dictionary of ifus; key: IFUSLOT; value: :class:`IFU` instance"""
+        """dictionary of ifus; key: IFUSLOT (string); value: :class:`IFU`
+        instance"""
         return self._ifus_by_slot
 
     @property
     def difus_specid(self):
-        """dictionary of ifus; key: SPECID; value: :class:`IFU` instance"""
+        """dictionary of ifus; key: SPECID (int); value: :class:`IFU`
+        instance"""
         return self._ifus_by_spec
 
     def by_ifuid(self, ifuid):
@@ -175,6 +186,11 @@ class FPlane(object):
         Returns
         -------
         :class:`IFU` instance
+
+        Raises
+        ------
+        NoIFUError
+            if there is no IFU identified by the input ID
         """
         try:
             return self._ifus_by_id[ifuid]
@@ -192,6 +208,11 @@ class FPlane(object):
         Returns
         -------
         :class:`IFU` instance
+
+        Raises
+        ------
+        NoIFUError
+            if there is no IFU identified by the input ID
         """
         try:
             return self._ifus_by_slot[ifuslot]
@@ -211,6 +232,11 @@ class FPlane(object):
         Returns
         -------
         :class:`IFU` instance
+
+        Raises
+        ------
+        NoIFUError
+            if there is no IFU for the input positions
         """
         try:
             return self._ifus_by_slot['{:02d}{:d}'.format(x, y)]
@@ -222,13 +248,33 @@ class FPlane(object):
 
         Parameters
         ----------
-        specid : string
-            id of the spectrograph
+        specid : int or string
+            id of the spectrograph; the value is cast to an integer
 
         Returns
         -------
         :class:`IFU` instance
+
+        Raises
+        ------
+        NoIFUError
+            if there is no IFU identified by the input ID
+        TypeError
+            if the input is not an int or a string that can be cast to an int
         """
+        if isinstance(specid, six.string_types):
+            try:
+                specid = int(specid)
+            except ValueError as e:
+                msg = ('If specid is a string it must be a valid literal for'
+                       ' int(), not ')
+                six.raise_from(TypeError(msg, specid), e)
+        elif isinstance(specid, (int, six.string_types)):
+            pass
+        else:
+            raise TypeError('specid must be an integer or a string, not',
+                            type(specid))
+
         try:
             return self._ifus_by_spec[specid]
         except KeyError as e:
@@ -247,6 +293,13 @@ class FPlane(object):
         Returns
         -------
         :class:`IFU` instance
+
+        Raises
+        ------
+        NoIFUError
+            if there is no IFU identified by the input ID
+        UnknownIDTypeError
+            if the ID type is not known
         """
         if idtype == 'ifuid':
             ifu = self.by_ifuid
