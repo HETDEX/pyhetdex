@@ -1,5 +1,9 @@
 2017-09-18 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/doc/sphinxext: removed, resolves issue #1841
+
+2017-09-18 Francesco Montesano <montefra@mpe.mpg.de>
+
     * : merge ^/branches/fplane_id_types into ^/trunk
 
 2017-09-15 Francesco Montesano <montefra@mpe.mpg.de>
