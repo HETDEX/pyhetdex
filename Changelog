@@ -1,3 +1,8 @@
+2017-09-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/ltl/marray.py: removed deprecated functions. Resolves issue #2119
+    * tests/test_ltl/test_marray.py: remove their tests
+
 2017-09-18 Francesco Montesano <montefra@mpe.mpg.de>
 
     * pyhetdex/doc/sphinxext: removed, resolves issue #1841
