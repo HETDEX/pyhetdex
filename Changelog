@@ -1,5 +1,11 @@
 2017-09-19 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/tools/configuration.py: remove deprecated classes. Resolves issue
+	  #1981
+    * tests/test_tools/test_configuration.py: update the tests
+
+2017-09-19 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/het/fplane.py: remove deprecated ``difus`` property. Resolves
 	  issue #2120
     * doc/source/het/fplane.rst: update the docs
