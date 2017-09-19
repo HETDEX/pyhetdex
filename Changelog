@@ -1,5 +1,12 @@
 2017-09-19 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * pyhetdex/het/fplane.py: remove deprecated ``difus`` property. Resolves
+	  issue #2120
+    * doc/source/het/fplane.rst: update the docs
+    * pyhetdex/ltl/marray.py: forgot to remove one import
+
+2017-09-19 Francesco Montesano <montefra@mpe.mpg.de>
+
     * pyhetdex/ltl/marray.py: removed deprecated functions. Resolves issue #2119
     * tests/test_ltl/test_marray.py: remove their tests
 

@@ -148,16 +148,6 @@ class FPlane(object):
         return list(self._ifus_by_spec.keys())
 
     @property
-    def difus(self):  # pragma: no cover
-        """dictionary of ifus; key: ifuid; value: :class:`IFU` instance"""
-        import warnings
-        with warnings.catch_warnings():
-            warnings.simplefilter("default")
-            warnings.warn("``difus`` is deprecated, please use ``difus_ifuid``"
-                          " instead", DeprecationWarning)
-        return self.difus_ifuid
-
-    @property
     def difus_ifuid(self):
         """dictionary of ifus; key: IFUID (string); value: :class:`IFU`
         instance"""
