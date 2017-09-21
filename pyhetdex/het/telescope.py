@@ -190,6 +190,24 @@ class ConstantModel(ModelInterface):
         return self._constant
 
 
+class PerDitherValueModel(ModelInterface):
+    ''' A model that returns a single value per
+        dither, that doesn't depend on x, y
+
+    Parameters
+    ----------
+    vals : array
+        an array of values, one for each dither
+    '''
+    def __init__(self, vals):
+        self._vals = vals
+
+    def __call__(self, x, y, dither):
+        '''Returns the val for this dither. The x,y arguments are
+        ignored'''
+        return self._vals[dither - 1]
+
+
 class HetpupilModel(ModelInterface):
     '''Run the ``$CUREBIN/hetpupil`` code on the input files and save the
     relative illumination into a list. If required normalize the whole list to
