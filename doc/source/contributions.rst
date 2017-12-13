@@ -263,8 +263,10 @@ If you are updating the documentation and want avoid the
 
   make livehtml
 
-then visit http://127.0.0.1:8000. The html documentation is automatically
-rebuilt after every change of the source and the browser reloaded.
+This command compiles the documentation and serves it on
+http://127.0.0.1:{port}, where ``{port}`` is an available port, and open the
+page on your default browser. The html documentation is automatically rebuilt
+after every change of the source and the browser reloaded.
 
 Please make sure that every module in ``pyhetdex`` is present in the
 :ref:`code_documentation`.

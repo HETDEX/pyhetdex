@@ -133,10 +133,9 @@ Optional dependences
 
 * testing::
 
-   pytest
+   pytest >= 3.3
    pytest-cov
    pytest-xdist
-   pytest-catchlog
    peewee
 
    tox

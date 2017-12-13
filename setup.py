@@ -32,8 +32,7 @@ def extras_require(key=None):
 
     req_dic['livedoc'] = req_dic['doc'] + ['sphinx-autobuild>=0.5.2', ]
 
-    req_dic['test'] = ['pytest-cov', 'pytest-xdist', 'pytest-catchlog',
-                       'pytest', 'peewee']
+    req_dic['test'] = ['pytest-cov', 'pytest-xdist', 'pytest>=3.3.0', 'peewee']
     req_dic['tox'] = ['tox', ]
 
     req_dic['all'] = set(sum((v for v in req_dic.values()), []))

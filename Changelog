@@ -1,5 +1,13 @@
 2017-12-13 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * tox.ini: use pytest>3.3 and remove pytest-catchlog. Resolves #2256
+    * setup.py: same
+    * doc/source/install.rst: update accordingly
+    * doc/Makefile: open the browser
+    * doc/source/contributions.rst: update accordingly
+
+2017-12-13 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* : merge ^/branches/remove_deprecated2 into ^/trunk
 
 2017-12-13 Francesco Montesano <montefra@mpe.mpg.de>
