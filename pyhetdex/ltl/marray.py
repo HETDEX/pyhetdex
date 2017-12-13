@@ -1,8 +1,6 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import warnings
-
 import numpy as np
 from pyhetdex.tools import io_helpers
 
@@ -258,21 +256,3 @@ class MArray(object):
                 # if not ((j+1) % 9):
                 #    ios.write('\n'+pad)
             ios.write(' ')
-
-
-def interpCheby2D_7(x, y, p):
-    msg = ('interpCheby2D_7 has been moved to the'
-           ' "pyhetdex.ltl.chebyshev" module. Please'
-           ' update your code')
-    warnings.warn(msg)
-    import pyhetdex.ltl.chebyshev as cheby
-    return cheby.interpCheby2D_7(x, y, p)
-
-
-def matrixCheby2D_7(x, y):
-    msg = ('matrixCheby2D_7 has been moved to the'
-           ' "pyhetdex.ltl.chebyshev" module. Please'
-           ' update your code')
-    warnings.warn(msg)
-    import pyhetdex.ltl.chebyshev as cheby
-    return cheby.matrixCheby2D_7(x, y)

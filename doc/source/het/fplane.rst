@@ -15,10 +15,12 @@ Use
 The simplest use is to create a ``fplane`` instance passing the name of the
 focal plane file:
 
->>> fplane = FPlane("fplane.txt")  # doctest: +SKIP
->>> print(fplane.difus)  # doctest: +SKIP
-{'001': <pyhetdex.het.fplane.IFU object at 0x7ff6a493c1d0>,
- '002': <pyhetdex.het.fplane.IFU object at 0x7ff6a493d1d0>, ...}
+.. doctest::
+
+    >>> fplane = FPlane("fplane.txt")  # doctest: +SKIP
+    >>> print(fplane.difus_ifuid)  # doctest: +SKIP
+    {'001': <pyhetdex.het.fplane.IFU object at 0x7ff6a493c1d0>,
+    '002': <pyhetdex.het.fplane.IFU object at 0x7ff6a493d1d0>, ...}
 
 IFU Customisation
 -----------------

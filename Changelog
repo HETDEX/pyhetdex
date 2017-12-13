@@ -1,3 +1,33 @@
+2017-12-13 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/branches/remove_deprecated2 into ^/trunk
+
+2017-12-13 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/trunk into ^/branches/remove_deprecated2
+
+2017-09-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/configuration.py: remove deprecated classes. Resolves issue
+	  #1981
+    * tests/test_tools/test_configuration.py: update the tests
+
+2017-09-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/het/fplane.py: remove deprecated ``difus`` property. Resolves
+	  issue #2120
+    * doc/source/het/fplane.rst: update the docs
+    * pyhetdex/ltl/marray.py: forgot to remove one import
+
+2017-09-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/ltl/marray.py: removed deprecated functions. Resolves issue #2119
+    * tests/test_ltl/test_marray.py: remove their tests
+
+2017-09-18 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/doc/sphinxext: removed, resolves issue #1841
+
 2017-09-18 Francesco Montesano <montefra@mpe.mpg.de>
 
     * : merge ^/branches/fplane_id_types into ^/trunk

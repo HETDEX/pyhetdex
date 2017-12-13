@@ -117,17 +117,6 @@ def test_get_list_of_list_nooption(use_default):
     assert output == [[None, None]]
 
 
-def test_interpolation_warning():
-    '''Make sure that the six.moves addition are deprecated'''
-    from six.moves import BasicInterpolation, ExtendedInterpolation
-
-    with pytest.warns(DeprecationWarning):
-        BasicInterpolation()
-
-    with pytest.warns(DeprecationWarning):
-        ExtendedInterpolation()
-
-
 @pytest.fixture
 def conf_content():
     '''string representation of the minimal configuration for the tests'''

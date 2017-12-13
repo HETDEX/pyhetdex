@@ -57,8 +57,6 @@ valueA
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import warnings
-
 import configparser as confp
 import six
 
@@ -368,44 +366,3 @@ class ConfigParser(confp.ConfigParser):
             value = [cast_to(v.strip()) for v in value.split(',')]
 
         return value
-
-
-# =============================================================================
-# Interpolation classes are just a thin wrapper around the ones from the
-# configparser package (backported one in python 2.7) with a warning to use
-# the original ones instead of the ones added here in six.moves
-# =============================================================================
-class BasicInterpolation(confp.BasicInterpolation):
-    def __init__(self, *args, **kwargs):
-        with warnings.catch_warnings():
-            warnings.simplefilter("always")
-            msg = ('Do not import the {name} class from ``six.moves``.'
-                   ' Use ``import configparser`` or'
-                   ' ``from configparser import {name}`` instead')
-            warnings.warn(msg.format(name=self.__class__.__name__),
-                          DeprecationWarning)
-        super(BasicInterpolation, self).__init__(*args, **kwargs)
-
-
-class ExtendedInterpolation(confp.ExtendedInterpolation):
-    def __init__(self, *args, **kwargs):
-        with warnings.catch_warnings():
-            warnings.simplefilter("always")
-            msg = ('Do not import the {name} class from ``six.moves``.'
-                   ' Use ``import configparser`` or'
-                   ' ``from configparser import {name}`` instead')
-            warnings.warn(msg.format(name=self.__class__.__name__),
-                          DeprecationWarning)
-        super(ExtendedInterpolation, self).__init__(*args, **kwargs)
-
-
-# Register interpolators in six.moves
-# === attributes
-
-# add them to six.moves
-six.add_move(six.MovedAttribute("BasicInterpolation",
-                                "pyhetdex.tools.configuration",
-                                "pyhetdex.tools.configuration"))
-six.add_move(six.MovedAttribute("ExtendedInterpolation",
-                                "pyhetdex.tools.configuration",
-                                "pyhetdex.tools.configuration"))
