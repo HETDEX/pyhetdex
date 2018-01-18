@@ -25,7 +25,7 @@ class RegexCompileFail(re.error):
 
 def skip_comments(f):
     """Skip commented lines and returns the file at the start of the first line
-    without any
+    without comment.
 
     Parameters
     ----------
@@ -36,13 +36,19 @@ def skip_comments(f):
     f : file object
         moved to the next non comment line
     """
-    pos = f.tell()
-    for l in f:
-        if l.startswith('#'):
-            pos += len(l)
+    comment = '#'  # if a line starts with this character is a comment
+    while True:
+        # save the position
+        pos = f.tell()
+        # read one character
+        c = f.read(1)
+        if c == comment:
+            # if it's a comment, proceeds to the end of the line
+            f.readline()
         else:
+            # otherwise go back to the saved position and break
+            f.seek(pos)
             break
-    f.seek(pos)
     return f
 
 

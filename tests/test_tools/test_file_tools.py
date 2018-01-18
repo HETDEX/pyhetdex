@@ -42,6 +42,18 @@ def test_skip_comments(text, next_line):
     assert line == next_line
 
 
+@parametrize('fname, next_line',
+             [('IFUcen_HETDEX.txt', '1.55      2.20'),
+              ('IFUcen_HETDEX_dos.txt', '1.50      2.20')])
+def test_skip_comments_files(datadir, fname, next_line):
+    '''make sure that line endings are handled properly'''
+    with datadir.join(fname).open('r') as f:
+        f = ft.skip_comments(f)
+        line = f.readline()
+    assert next_line in line
+    assert line.endswith('\n')
+
+
 @parametrize('infname, prefix, outfname',
              (["/abs/path/to/file.txt", "test_", "/abs/path/to/test_file.txt"],
               ["../../rel/path/file.dat", "test_",

@@ -65,3 +65,17 @@ def test_ifu_centers_missingid(tmpdir):
     ifucenter.write(header)
 
     ifucen.IFUCenter(ifucenter.strpath)
+
+
+@parametrize('fname', ['IFUcen_HETDEX.txt', 'IFUcen_HETDEX_dos.txt'])
+def test_ifu_centers_load(datadir, fname):
+    '''Make sure that line endings are handled properly when loading the IFU
+    cen files'''
+
+    ifucenter = datadir.join(fname)
+
+    ifu_cen = ifucen.IFUCenter(ifucenter.strpath)
+
+    assert len(ifu_cen.n_fibers) == 2
+    assert ifu_cen.n_fibers['L'] == 224
+    assert ifu_cen.n_fibers['R'] == 224
