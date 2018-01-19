@@ -31,6 +31,7 @@ skip_smaller_py36 = pytest.mark.skipif(sys.version_info < (3, 6),
              [('no comment', 'no comment'),
               ('#test\n#cat\nno comment', 'no comment'),
               ('#test\n#cat\n', ''),
+              ('#test\n#cat', ''),
               ])
 def test_skip_comments(text, next_line):
     '''Skipping comments'''
@@ -40,6 +41,30 @@ def test_skip_comments(text, next_line):
 
     line = f.readline()
     assert line == next_line
+
+
+@parametrize('fname, next_line',
+             [('IFUcen_HETDEX.txt', '1.55      2.20'),
+              ('IFUcen_HETDEX_dos.txt', '1.50      2.20')])
+def test_skip_comments_files(datadir, fname, next_line):
+    '''make sure that line endings are handled properly'''
+    with datadir.join(fname).open('r') as f:
+        f = ft.skip_comments(f)
+        line = f.readline()
+    assert next_line in line
+    assert line.endswith('\n')
+
+
+def test_skip_all_comments_files(tmpdir):
+    '''make sure that a file with all commented lines is properly handled'''
+    cfile = tmpdir.join('all_comments.txt')
+    cfile.write('# a comment\n# an other one')
+
+    with cfile.open('r') as f:
+        f = ft.skip_comments(f)
+        line = f.read(10)
+
+    assert not line
 
 
 @parametrize('infname, prefix, outfname',

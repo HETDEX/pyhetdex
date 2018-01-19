@@ -1,3 +1,22 @@
+2018-01-19 Francesco Montesano <montefra@mpe.mpg.de>
+
+	* : merge ^/branches/skip_comments into ^/trunk
+	* ReleaseNotes.md: update
+
+2018-01-18 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * tests/test_tools/test_file_tools.py: make sure that files will all
+      comments are properly handled. Resolves #2305
+
+2018-01-18 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/files/file_tools.py: rewrite skip_comments: implements issue
+	  #2305
+    * tests/data/IFUcen_HETDEX_dos.txt: add file with dos line ends for testing
+    * tests/test_tools/test_file_tools.py: test the changes
+    * tests/test_het/test_ifu_centers.py: test if the IFUcen file parser is
+	  more robust
+
 2017-12-13 Francesco Montesano <montefra@mpe.mpg.de>
 
     * tox.ini: use pytest>3.3 and remove pytest-catchlog. Resolves #2256

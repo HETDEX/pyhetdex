@@ -2,6 +2,8 @@
 
 ## Development version @ trunk
 
+* Make skip_comments more robust in regards of special characters (Bug #2305)
+
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model
