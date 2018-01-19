@@ -1,5 +1,9 @@
 2018-01-19 Francesco Montesano <montefra@mpe.mpg.de>
 
+	* ReleaseNotes.md: update with forgotten changes
+
+2018-01-19 Francesco Montesano <montefra@mpe.mpg.de>
+
 	* : merge ^/branches/skip_comments into ^/trunk
 	* ReleaseNotes.md: update
 
