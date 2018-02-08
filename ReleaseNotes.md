@@ -8,6 +8,10 @@
 * telescope.py: new model type to the FWHM and normalisation servers.
 * Make skip_comments more robust in regards of special characters (Bug #2305)
 
+## Development version @ branches/peewee3
+
+* db_helper: add support for peewee 3 (issue #2344)
+
 ## Development version @ branches/selection_function_devel
 
 * Changes to the selection function model
