@@ -5,7 +5,7 @@ class SQLiteConnector(object):
     '''Context manager to open and close the database connection.
 
     Returns the current connection when using the instance in a :keyword:`with`
-    statement
+    statement.
 
     Examples
     --------
@@ -27,10 +27,10 @@ class SQLiteConnector(object):
     Parameters
     ----------
     database : object
-        object that represent a database connection and that has the
-        :meth:`database.connect` and :meth:`database.close` methods to open and
-        close a connection and the :attr:`database.database` with the name of
-        the database
+        object that represent a database connection and that has the following
+        attributes and methods: :attr:`database.database`,
+        :meth:`database.connect`, :meth:`database.close` and either
+        :meth:`database.connection` or :meth:`database.get_conn`
     keep_open : string, optional
         if :attr:`database.database` is equal to ``keep_open``, the database is
         not opened nor closed. In SQLite3 is useful for in memory databases,
@@ -48,7 +48,13 @@ class SQLiteConnector(object):
     def __enter__(self):
         if self._database.database != self._keep_open:
             self._database.connect()
-        return self._database.get_conn()
+
+        try:
+            connection = self._database.connection()
+        except AttributeError:
+            # peewee < 3 the attribute is called get_conn
+            connection = self._database.get_conn()
+        return connection
 
     def __exit__(self, exc_type, exc_value, traceback):
         if self._database.database != self._keep_open:

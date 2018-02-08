@@ -7,6 +7,7 @@
 * Remove some deprecated module: issues #1841, #2119, #2120
 * telescope.py: new model type to the FWHM and normalisation servers.
 * Make skip_comments more robust in regards of special characters (Bug #2305)
+* db_helper: add support for peewee 3 (issue #2344)
 
 ## Development version @ branches/selection_function_devel
 

@@ -1,3 +1,14 @@
+2018-02-08 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * : merge ^/branches/peewee3/ into ^/trunk
+
+2018-02-08 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/tools/db_helpers.py: peewee 3 changed the method to get the
+	  connection (resolves issue #2344)
+    * tox.ini: test with peewee 2
+    * ReleaseNotes.md: udpate
+
 2018-01-19 Francesco Montesano <montefra@mpe.mpg.de>
 
 	* ReleaseNotes.md: update with forgotten changes
