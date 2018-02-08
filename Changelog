@@ -1,5 +1,10 @@
 2018-02-08 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * setup.py: prepare of v0.13.0 release
+    * ReleaseNotes.md: same
+
+2018-02-08 Francesco Montesano <montefra@mpe.mpg.de>
+
     * : merge ^/branches/peewee3/ into ^/trunk
 
 2018-02-08 Francesco Montesano <montefra@mpe.mpg.de>
