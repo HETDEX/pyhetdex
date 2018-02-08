@@ -1,5 +1,9 @@
 2018-02-08 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * setup.py: bump version to 0.13.0-post
+
+2018-02-08 Francesco Montesano <montefra@mpe.mpg.de>
+
     * setup.py: prepare of v0.13.0 release
     * ReleaseNotes.md: same
 
