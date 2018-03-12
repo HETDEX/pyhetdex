@@ -1,7 +1,13 @@
 2018-03-12  Jan Snigula  <snigula@mpe.mpg.de>
 
+	* pyhetdex/het/check_repeat.py: Change function parameters, to
+	make it easier to call it from hetwise ingestion.
+
+2018-03-12  Jan Snigula  <snigula@mpe.mpg.de>
+
 	* pyhetdex/het/check_repeat.py: Added tool to check data for
 	repeat data. This checks the md5 sum of the fits data section.
+
 	* setup.py: Added check_repeat entry point
 
 2018-02-08 Francesco Montesano <montefra@mpe.mpg.de>

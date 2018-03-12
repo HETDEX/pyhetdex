@@ -3,16 +3,16 @@ from astropy.io import fits
 import hashlib
 
 
-def check_repeat(args):
+def check_repeat(dirs, write_key=False, verbose=False):
 
     try:
         from awise.common.log.Message import Message
     except ImportError:
         def Message(s):
-            if args.verbose:
+            if verbose:
                 print(s)
 
-    for dirname in args.dirs:
+    for dirname in dirs:
         files = list(ft.scan_files(dirname, matches='*virus*.fits',
                                    recursive=True))
 
@@ -42,7 +42,7 @@ def check_repeat(args):
                                     Message('%s is repeating, but REPEAT'
                                             ' keyword is false'
                                             % hdulist[i].filename())
-                            if args.write_key:
+                            if write_key:
                                 hdulist[i][0].header['REPEAT'] = True
                                 hdulist[j][0].header['REPEAT'] = True
 
@@ -76,7 +76,7 @@ def main(argv=None):
 
     args = argument_parser(argv=argv)
 
-    check_repeat(args)
+    check_repeat(args.dirs, write_key=args.write_key, verbose=args.verbose)
 
 
 if __name__ == '__main__':
