@@ -7,6 +7,8 @@ from pyhetdex.tools import io_helpers
 from pyhetdex.cure.gaussian import gauss1D_H
 from pyhetdex.cure.bspline import BSpline
 
+import numpy as np
+
 __version__ = '$Id'
 
 
@@ -344,6 +346,104 @@ class FiberModel_22(object):
             return 0.0
         else:
             return self.profile.eval(y, amp, y0, sigma, H2, H3, exp)
+
+    def get_single_fiberflux_fiber(self, x, y, fiber, D):
+        f = D.get_reference_f(fiber)
+        _y0 = D.map_xf_y(x, f)
+        _, H2, H3, amp, y0, sigma, exp = self.get_params(x, _y0, D)
+        if abs(y-y0) > self._max_fiber_dist:
+            return 0.0
+        else:
+            return self.profile.eval(y, amp, y0, sigma, H2, H3, exp)
+
+    def get_single_fiberprofile(self, x, y, D):
+        _, H2, H3, amp, y0, sigma, exp = self.get_params(x, y, D)
+        if abs(y-y0) > self._max_fiber_dist:
+            return 0.0
+        else:
+            return self.profile.eval(y, amp, y0, sigma, H2, H3, exp) / \
+                self.profile.eval(y0, amp, y0, sigma, H2, H3, exp)
+
+    def get_single_fiberprofile_fiber(self, x, y, fiber, D):
+        f = D.get_reference_f(fiber)
+        _y0 = D.map_xf_y(x, f)
+        _, H2, H3, amp, y0, sigma, exp = self.get_params(x, _y0, D)
+        if abs(y-y0) > self._max_fiber_dist:
+            return 0.0
+        else:
+            return self.profile.eval(y, amp, y0, sigma, H2, H3, exp) / \
+                self.profile.eval(y0, amp, y0, sigma, H2, H3, exp)
+
+    def get_cumulative_fiberflux(self, x, y, D):
+        fiber = D.map_xy_fibernum(x, y)
+        f = self.get_single_fiberflux(x, y, D)
+
+        if fiber > 1:
+            f += self.get_single_fiberflux_fiber(x, y, fiber-1, D)
+
+        if fiber < D.get_numfibers():
+            f += self.get_single_fiberflux_fiber(x, y, fiber+1, D)
+
+        return f
+
+    def get_xy_amplitude(self, x, y, D):
+        return self.get_wf_amplitude(D.map_xy_wavelength(x, y),
+                                     D.map_xy_fibernum(x, y))
+
+    def get_wf_amplitude(self, w, f):
+        return self.amplitudes[int(f)-1].evaluate(self._scal_w(w))
+
+    def get_xy_sigma(self, x, y):
+        return self.interp(self._scal_x(x), self._scal_y(y),
+                           self.sigma_par_.data)
+
+    def get_xy_h2(self, x, y):
+        return self.interp(self._scal_x(x), self._scal_y(y), self.h2_par_.data)
+
+    def get_xy_h3(self, x, y):
+        return self.interp(self._scal_x(x), self._scal_y(y), self.h3_par_.data)
+
+    def get_xy_exp(self, x, y):
+        return self.interp(self._scal_x(x), self._scal_y(y),
+                           self.exp_par_.data)
+
+    def _scal_x(self, x):
+        return (x - self.minx) / (self.maxx - self.minx)
+
+    def _scal_y(self, y):
+        return (y - self.miny) / (self.maxy - self.miny)
+
+    def _scal_w(self, w):
+        return (w - self.minw) / (self.maxw - self.minw)
+
+    def interp(self, x, y, par):
+        return cheby.interpCheby2D_7(x, y, par)
+
+
+class InterpolatedFiberModel(object):
+
+    def __init__(self, filename):
+
+        self.filename = filename
+        self.version = 0
+        self._profile = None
+        self._map = None
+
+    def read(self):
+
+        from astropy.io import fits
+        hdu = fits.open(self.filename)
+        self._profile = hdu['MODEL']
+        self._map = hdu['MAP']
+
+    def get_single_fiberflux(self, x, y, D):
+        x0 = int(floor(x))
+        fib = D.map_xy_fibernum(x, y)
+        ref_f = D.get_reference_f(fib)
+        ref_y = D.map_xf_y(x, ref_f)
+        prof_y = y - ref_y
+
+        return np.interp(prof_y, self._map, self._profile[fib, :, x])
 
     def get_single_fiberflux_fiber(self, x, y, fiber, D):
         f = D.get_reference_f(fiber)

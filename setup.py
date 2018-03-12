@@ -47,6 +47,7 @@ entry_points = {'console_scripts':
                 ['dither_file = pyhetdex.het.dither:create_dither_file',
                  'reconstructIFU ='
                  ' pyhetdex.het.reconstruct_ifu:create_quick_reconstruction',
+                 'check_repeat = pyhetdex.het.check_repeat:main',
                  'datacube2rgb = pyhetdex.tools.datacube2rgb:main',
                  'add_fluxes_to_randoms ='
                  'pyhetdex.randoms.generate_randoms:add_fluxes_and_snr_to_randoms_cmd',
