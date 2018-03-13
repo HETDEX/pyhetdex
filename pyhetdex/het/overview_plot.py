@@ -121,6 +121,7 @@ class OverviewPlot(object):
         '''
         self._add_cmap()
         plt.suptitle(title, fontsize=18)
+        plt.draw()
         plt.savefig(fname)
 
     def _slot_to_plot(self, ifuslot):

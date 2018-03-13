@@ -13,6 +13,8 @@ def check_repeat(dirs, write_key=False, verbose=False):
                 print(s)
 
     for dirname in dirs:
+
+        Message('Checking repeat data on %s' % dirname)
         files = list(ft.scan_files(dirname, matches='*virus*.fits',
                                    recursive=True))
 
