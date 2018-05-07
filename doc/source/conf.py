@@ -70,7 +70,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pyhetdex'
-copyright = u'2015, the HETDEX collaboration'
+copyright = u'2018, the HETDEX collaboration'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -282,8 +282,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'pyhetdex', u'pyhetdex Documentation',
-   u'Francesco Montesano, Jan Snigula, Daniel Farrow', 'pyhetdex', 'One line description of project.',
-   'Miscellaneous'),
+   u'Francesco Montesano, Jan Snigula, Daniel Farrow', 'pyhetdex',
+   'Python misc library for HETDEX', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

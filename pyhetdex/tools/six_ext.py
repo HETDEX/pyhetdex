@@ -1,3 +1,11 @@
+# Misc python library to support HETDEX software and data analysis
+# Copyright (C) 2015, 2017  "The HETDEX collaboration"
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
 """Extensions to ``six`` python 2 and 3 compatibility layer.
 
 The following exceptions are more descriptive aliases to python 3 or python 2

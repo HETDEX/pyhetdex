@@ -1,3 +1,11 @@
+2018-05-07 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * LICENSE: rename and add GPL3
+    * doc/source/licence.rst: update
+    * AUTHORS: fix typo
+    * doc/source/conf.py: update copyright
+    * pyhetdex/**.py: add copyright notice
+
 2018-03-13  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* pyhetdex/het/check_repeat.py: Added more output

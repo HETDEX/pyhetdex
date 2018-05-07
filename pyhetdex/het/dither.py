@@ -1,3 +1,10 @@
+# Misc python library to support HETDEX software and data analysis
+# Copyright (C) 2015, 2016  "The HETDEX collaboration"
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 """Parse or create a dither file.
 
 Create a dither file with :class:`DitherCreator` or :func:`create_dither_file`.
@@ -332,8 +339,8 @@ class DitherCreator(object):
         s = "# basename          modelbase           ditherx dithery\
                 seeing norm airmass\n"
         line = "{:s} {:s} {:f} {:f} {:4.3f} {:5.4f} {:5.4f}\n"
-        for dither, bn, mb, dx, dy in zip(it.count(start=1), basenames, modelbases,
-                                          dxs, dys):
+        for dither, bn, mb, dx, dy in zip(it.count(start=1), basenames,
+                                          modelbases, dxs, dys):
             seeing = self.shot.fwhm(ifu.x, ifu.y, dither)
             norm = self.shot.normalisation(ifu.x, ifu.y, dither)
             # TODO replace with something
@@ -383,7 +390,7 @@ def argument_parser(argv=None):
                         not provided use some sensible default value for image
                         quality and normalisation. WARNING: at the moment not
                         used""")
-    parser.add_argument('--fwhm', type=float, help="""The FWHM of the shot in 
+    parser.add_argument('--fwhm', type=float, help="""The FWHM of the shot in
                         arcseconds (only for the constant FWHM model)""",
                         default=1.6)
     parser.add_argument('-O', '--order-by', help="""If given, order the

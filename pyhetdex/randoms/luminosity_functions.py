@@ -1,3 +1,10 @@
+# Misc python library to support HETDEX software and data analysis
+# Copyright (C) 2016  "The HETDEX collaboration"
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 """
 Module to store luminosity functions. Useful for assigning
 fluxes to random points.
@@ -11,7 +18,8 @@ from __future__ import (absolute_import, division, print_function,
 from abc import ABCMeta, abstractmethod
 from numpy import cumsum, interp, arange, ones
 
-class LuminosityFunction( object ):
+
+class LuminosityFunction(object):
     """
     Abstract class to define an interface to
     luminosity function objects
@@ -19,7 +27,7 @@ class LuminosityFunction( object ):
     Parameters
     ----------
     lmin, lmax : float
-        the minimum and maximum range of 
+        the minimum and maximum range of
         luminosity (for the cumulative LF)
     nbins : optional
         the number of bins for calculating
@@ -29,14 +37,14 @@ class LuminosityFunction( object ):
 
     __metaclass__ = ABCMeta
 
-    @abstractmethod 
+    @abstractmethod
     def __init__(self, lmin, lmax, nbins, *args, **kwargs):
 
-        self.nbins = nbins # Number of bins for cached CLF
-        self.lmin = lmin # Minimum luminosity
-        self.lmax = lmax # Maximum luminosity
-        self.cuma = None # Array to store cached CLF
-        self.stepsize = (self.lmax - self.lmin)/self.nbins  
+        self.nbins = nbins  # Number of bins for cached CLF
+        self.lmin = lmin  # Minimum luminosity
+        self.lmax = lmax  # Maximum luminosity
+        self.cuma = None  # Array to store cached CLF
+        self.stepsize = (self.lmax - self.lmin)/self.nbins
         self.l_c = arange(self.lmin, self.lmax, self.stepsize)
 
     @abstractmethod
@@ -44,8 +52,8 @@ class LuminosityFunction( object ):
         pass
 
     def _cache_normed_cumulative(self):
-        """ 
-        Calculate and store the 
+        """
+        Calculate and store the
         cumulative luminosity function,
         normalized (i.e. goes from 0 to 1
         as L increases)
@@ -68,8 +76,8 @@ class LuminosityFunction( object ):
         if self.cuma is not None:
             return interp(l, self.l_c, self.cuma)
         else:
-           self._cache_normed_cumulative() 
-           return interp(l, self.l_c, self.cuma)
+            self._cache_normed_cumulative()
+            return interp(l, self.l_c, self.cuma)
 
     def inverse_normed_cumulative(self, n):
         """
@@ -87,42 +95,27 @@ class LuminosityFunction( object ):
         if self.cuma is not None:
             return interp(n, self.cuma, self.l_c)
         else:
-           self._cache_normed_cumulative() 
-           return interp(n, self.cuma, self.l_c)
-
- 
+            self._cache_normed_cumulative()
+            return interp(n, self.cuma, self.l_c)
 
 
-class FlatLuminosityFunction( LuminosityFunction ):
-      """
-      A flat luminosity function between two 
-      L limits. 
+class FlatLuminosityFunction(LuminosityFunction):
+    """
+    A flat luminosity function between two
+    L limits.
 
-      Parameter
-      ---------
-      lmin, lmax : float
-          the minimum and maximum luminosities for
-          the LF
+    Parameter
+    ---------
+    lmin, lmax : float
+        the minimum and maximum luminosities for
+        the LF
 
-      """
+    """
 
-      def __init__(self, lmin, lmax, nbins=200, **kwargs):
+    def __init__(self, lmin, lmax, nbins=200, **kwargs):
 
-          LuminosityFunction.__init__(self, lmin, lmax, nbins, **kwargs)
+        LuminosityFunction.__init__(self, lmin, lmax, nbins, **kwargs)
 
-      def __call__(self, l):
+    def __call__(self, l):
 
-          return ones(len(l))
-
-
-
-
-
-
-
-     
-
-
- 
-
-
+        return ones(len(l))

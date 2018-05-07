@@ -1,1 +1,4 @@
-.. include:: ../../LICENCE
+LICENSE
+-------
+
+.. literalinclude:: ../../LICENSE

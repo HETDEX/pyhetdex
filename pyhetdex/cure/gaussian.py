@@ -1,3 +1,10 @@
+# Misc python library to support HETDEX software and data analysis
+# Copyright (C) 2016  "The HETDEX collaboration"
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 from __future__ import print_function
 
 import numpy as np
@@ -21,5 +28,5 @@ class gauss1D_H(object):
                                    * z1*z1*z1 - 3. * np.sqrt(2.) * z1)
         h4_1 = 1. / np.sqrt(24.) * (4. * z1*z1*z1*z1 - 12. * z1*z1 + 3.)
 
-        return amp/n1*e1*(1.0+H2*h4_1+H3*h3_1) + self.powerlaw_wings[0]/n1 * amp \
-            * self._powerlaw_wings(x-x0)
+        return amp/n1*e1*(1.0+H2*h4_1+H3*h3_1) +\
+            self.powerlaw_wings[0]/n1 * amp * self._powerlaw_wings(x-x0)

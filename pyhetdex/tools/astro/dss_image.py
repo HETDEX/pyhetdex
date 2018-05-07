@@ -1,3 +1,10 @@
+# Misc python library to support HETDEX software and data analysis
+# Copyright (C) 2015, 2017  "The HETDEX collaboration"
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 """Download an image from SDSS or DSS and make the plot
 
 Largely copied from ``hetdexshuffle/visualize.py`` with some minor

@@ -1,30 +1,37 @@
+# Misc python library to support HETDEX software and data analysis
+# Copyright (C) 2016, 2017  "The HETDEX collaboration"
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
 from __future__ import absolute_import
 
-from numpy import concatenate, array, chararray
+from numpy import concatenate, chararray
 from astropy.table import Table
 from pyhetdex.het.ifu_centers import IFUCenter
 
 
 def read_ifu_cen_wrapper(fn):
-    """ 
+    """
     A wrapper for het.IFUCenter that produces an
     output compatible with the astrometry routines
- 
+
     Parameters
     ----------
     fn : str
         the IFU cen file to read
- 
+
     Returns
     -------
     x, y : array
         the x, y coordinates of the fibers
     table : astropy.table.Table
         the IFU cen file info in the form of a table
-    """ 
+    """
 
     ifu_cen = IFUCenter(fn)
-
 
     if ("L" in ifu_cen.xifu.keys()) and ("R" in ifu_cen.yifu.keys()):
         x = concatenate((ifu_cen.xifu["L"], ifu_cen.xifu["R"]))
@@ -34,27 +41,26 @@ def read_ifu_cen_wrapper(fn):
         channel[:len(ifu_cen.xifu["L"])] = "L"
         channel[len(ifu_cen.xifu["L"]):] = "R"
 
-        fib_number = concatenate((ifu_cen.fib_number["L"], ifu_cen.fib_number["R"]))
+        fib_number = concatenate((ifu_cen.fib_number["L"],
+                                  ifu_cen.fib_number["R"]))
 
     elif "R" in ifu_cen.xifu.keys():
         x = ifu_cen.xifu["R"]
         y = ifu_cen.xifu["R"]
-        fib_number = ifu_cen.fib_number["R"]    
+        fib_number = ifu_cen.fib_number["R"]
         channel = chararray((len(ifu_cen.xifu["R"])))
         channel[:] = "R"
 
     elif "L" in ifu_cen.xifu.keys():
         x = ifu_cen.xifu["L"]
         y = ifu_cen.xifu["L"]
-        fib_number = ifu_cen.fib_number["L"]    
+        fib_number = ifu_cen.fib_number["L"]
         channel = chararray((len(ifu_cen.xifu["L"])))
         channel[:] = "L"
     else:
         raise Exception("No channels found in IFUcen file!")
 
     return x, y, Table([channel, fib_number], names=["channel", "fib_number"])
-
-
 
 
 def read_matched_line_detect(fn):

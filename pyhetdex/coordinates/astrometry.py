@@ -1,3 +1,10 @@
+# Misc python library to support HETDEX software and data analysis
+# Copyright (C) 2016, 2017  "The HETDEX collaboration"
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 """ Astrometry module
 
 Module to add astrometry to HETDEX catalgoues and images
@@ -29,9 +36,9 @@ _group_astro.add_argument('--astrometry', nargs=3, type=float64,
                           (degrees)''')
 _group_astro.add_argument('--image', help='''An image, with a header to grab
                           ra, dec and PA from (DONT USE THIS)''')
-astro_parent.add_argument('--rhozp', default=1.3, type=float, help="Set the rho zeropoint in degrees,"
-                                                                    "the rotation of the IHMP wrt HET "
-                                                                    "(default=1.3 deg)")
+astro_parent.add_argument('--rhozp', default=1.3, type=float,
+                          help='''Set the rho zeropoint in degrees, the
+                          rotation of the IHMP wrt HET (default=1.3 deg)''')
 
 
 def ihmp_astrometry(opts, xscale=1.0, yscale=1.0):
@@ -247,9 +254,9 @@ def add_ra_dec(args=None):
     args : list of strings, optional
         command line
     """
-    parser = argparse.ArgumentParser(description="Add ra and dec to a detect"
-                                     " or daophot ALLSTAR catalogues or an ifucen file.",
-                                     parents=[astro_parent, ])
+    parser = argparse.ArgumentParser(description="""Add ra and dec to a detect
+                                     or daophot ALLSTAR catalogues or an ifucen
+                                     file.""", parents=[astro_parent, ])
     parser.add_argument('files', nargs='+',
                         help="List of files to add ra, dec to")
     parser.add_argument('--fplane', default='fplane.txt',
@@ -257,16 +264,17 @@ def add_ra_dec(args=None):
     parser.add_argument('--fout', help='Filename to write to',
                         default='catalogue_out.fits')
 
-    parser.add_argument('--dx', type=float, default=0.0, help="Offset in arcseconds to apply "
+    parser.add_argument('--dx', type=float, default=0.0,
+                        help="Offset in arcseconds to apply "
                         " to x axis of IFU coordinates (additive)")
 
-    parser.add_argument('--dy', type=float, default=0.0, help="Offset in arcseconds to apply "
+    parser.add_argument('--dy', type=float, default=0.0,
+                        help="Offset in arcseconds to apply "
                         " to y axis of IFU coordinates (additive)")
 
     parser.add_argument('--ftype', default='line_detect', nargs=1, help='''Type
                         of input catalogue, to add ra and dec to. Options:
                         line_detect, cont_detect, daophot_allstar, ifucen''')
-
 
     # IHMP identification
     group_ihmp = parser.add_mutually_exclusive_group()
