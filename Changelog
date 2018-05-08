@@ -1,3 +1,7 @@
+2018-05-08 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * pyhetdex/**.py: add the full copyright notice
+
 2018-05-07 Francesco Montesano <montefra@mpe.mpg.de>
 
     * LICENSE: rename and add GPL3
