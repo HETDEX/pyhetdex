@@ -1,5 +1,9 @@
 2018-05-14 Francesco Montesano <montefra@mpe.mpg.de>
 
+    * requirements.txt: renamed and add all dependences
+
+2018-05-14 Francesco Montesano <montefra@mpe.mpg.de>
+
     * requirements_docs.txt: added
 
 2018-05-08 Francesco Montesano <montefra@mpe.mpg.de>
