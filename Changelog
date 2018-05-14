@@ -1,3 +1,7 @@
+2018-05-14 Jan Snigula <snigula@mpe.mpg.de>
+
+    * Changelog: Dummy change to test documentation hook
+
 2018-05-14 Francesco Montesano <montefra@mpe.mpg.de>
 
     * requirements.txt: renamed and add all dependences
