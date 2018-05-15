@@ -14,6 +14,13 @@ python codes created for the analysis of `HET Dark Energy Experiment (HETDEX)
 
 ``pyhetdex`` supports at least python 2.7 and 3.4.
 
+This documentation is also available on `pyhetdex.readthedocs.io
+<https://pyhetdex.readthedocs.io>`_.
+
+.. image:: https://readthedocs.org/projects/pyhetdex/badge/?version=latest
+    :target: https://pyhetdex.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 Instructions
 ------------
 
@@ -64,7 +71,6 @@ About
     release_notes
     changelog
     todos
-    Coverage <http://www.mpe.mpg.de/~montefra/documentation/pyhetdex_cover/>
 
 Indices and tables
 ==================
