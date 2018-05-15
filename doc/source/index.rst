@@ -59,8 +59,9 @@ About
 .. toctree::
     :maxdepth: 1
 
-    authors
     licence
+    authors
+    release_notes
     changelog
     todos
     Coverage <http://www.mpe.mpg.de/~montefra/documentation/pyhetdex_cover/>
