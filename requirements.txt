@@ -1,9 +1,0 @@
-six
-numpy
-matplotlib
-scipy
-astropy>=1.2,!=1.3.3
-Pillow
-sphinx>=1.4
-numpydoc
-

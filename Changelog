@@ -1,3 +1,8 @@
+2018-05-16 Francesco Montesano <montefra@mpe.mpg.de>
+
+    * readthedocs.yml: added
+    * requirements.txt: removed
+
 2018-05-15 Francesco Montesano <montefra@mpe.mpg.de>
 
     * doc/source/index.rst: add the readthedocs badge and remove coverage link
