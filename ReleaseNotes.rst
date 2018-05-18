@@ -4,6 +4,8 @@
 Development version @ trunk
 ---------------------------
 
+- Added check_repeat tool to check for REPEAT VIRUS data.
+
 Development version @ branches/selection\_function\_devel
 ---------------------------------------------------------
 
