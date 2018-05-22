@@ -13,6 +13,12 @@ Development version @ branches/selection\_function\_devel
 -  Modified code to read in three fiber-extracted noise files, rather
    than a datacube
 
+Version 0.14.0
+--------------
+
+- Added check_repeat tool to check for REPEAT VIRUS data.
+
+
 Version 0.13.0
 --------------
 
