@@ -1,3 +1,7 @@
+2018-05-22  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/het/check_repeat.py: Added documentation
+
 2018-05-18  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* ReleaseNotes.rst: Updated release notes

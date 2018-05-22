@@ -13,12 +13,29 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""Check all fits images in the given directories for repeat data, i.e
+   images with the same data. This can be caused by a failure of camera
+   control software.
+"""
 from pyhetdex.tools.files import file_tools as ft
 from astropy.io import fits
 import hashlib
 
 
 def check_repeat(dirs, write_key=False, verbose=False):
+    """Check the images for repeated fits file data
+
+    Parameters
+    ----------
+    dirs: list
+        list of directories to be checked.
+    write_key: bool (Optional)
+        If true write the REPEAT key to the header. This key can be
+        checked by VHC
+    verbose: bool (Optional)
+        Produce more output
+
+    """
 
     try:
         from awise.common.log.Message import Message
