@@ -106,14 +106,21 @@ class OverviewPlot(object):
                 pltarray[xoff:xoff+imdata.shape[0],
                          yoff:yoff+imdata.shape[1]] = imdata
 
-            if self.zmin is None:
-                zscale = ZScaleInterval()
-                self.zmin, self.zmax = zscale.get_limits(pltarray)
+            del hdu[0].data
+            del data
+            del ovsc
+            del imdata
 
-            sp.set_title('%s' % hdu[0].header['IFUSLOT'])
-            self.lastplot = sp.imshow(pltarray, cmap='Greys',
-                                      clim=(self.zmin, self.zmax),
-                                      origin='lower')
+        if self.zmin is None:
+            zscale = ZScaleInterval()
+            self.zmin, self.zmax = zscale.get_limits(pltarray)
+
+        sp.set_title('%s' % hdu[0].header['IFUSLOT'])
+        self.lastplot = sp.imshow(pltarray, cmap='Greys',
+                                  clim=(self.zmin, self.zmax),
+                                  origin='lower')
+
+        del pltarray
 
     def _add_cmap(self):
         '''Add the colormap
@@ -138,6 +145,7 @@ class OverviewPlot(object):
         plt.suptitle(title, fontsize=18)
         plt.draw()
         plt.savefig(fname)
+        plt.clf()
 
     def _slot_to_plot(self, ifuslot):
         '''Convert the ifuslot string into

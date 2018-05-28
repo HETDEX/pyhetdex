@@ -1,3 +1,10 @@
+2018-05-28  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* pyhetdex/het/overview_plot.py: Do explicit dels and a clf to
+	clear up used memory by the plotting, and fix a bug that caused
+	only one quadrant per IFU to be plotted
+	* setup.py: Bumped version to 0.14.1
+
 2018-05-22  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* setup.py: Bumped version to 0.14.0-post
