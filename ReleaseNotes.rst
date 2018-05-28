@@ -4,14 +4,18 @@
 Development version @ trunk
 ---------------------------
 
-- Added check_repeat tool to check for REPEAT VIRUS data.
-
 Development version @ branches/selection\_function\_devel
 ---------------------------------------------------------
 
 -  Changes to the selection function model
 -  Modified code to read in three fiber-extracted noise files, rather
    than a datacube
+
+Version 0.14.1
+--------------
+
+- Fixed bug in overview_plot
+
 
 Version 0.14.0
 --------------
