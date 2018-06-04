@@ -1,5 +1,9 @@
 2018-06-04  Jan Snigula  <snigula@mpe.mpg.de>
 
+	* setup.py: Bumped version to 0.14.2-post
+
+2018-06-04  Jan Snigula  <snigula@mpe.mpg.de>
+
 	* pyhetdex/het/overview_plot.py: Added close() function to clean
 	up the figure object and clear the figure.
 	* setup.py: Bumped version to 0.14.2
