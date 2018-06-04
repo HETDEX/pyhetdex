@@ -55,10 +55,16 @@ class OverviewPlot(object):
     '''
 
     def __init__(self):
+        self._ready = True
+        self._saved = False
         self.fig = plt.figure(figsize=(20, 20))
         self.zmin = None
         self.zmax = None
         self.lastplot = None
+
+    def _check_ready(self):
+        if not self._ready:
+            raise Exception('The plot was already closed!')
 
     def add_plot(self, files, ifuslot):
         '''
@@ -71,6 +77,8 @@ class OverviewPlot(object):
         ifuslot : str
             IFUSlot name, used to find the correct subplot position
         '''
+        self._check_ready()
+
         sp = self.fig.add_subplot(10, 12, self._slot_to_plot(ifuslot))
         sp.set_xticks([])
         sp.set_yticks([])
@@ -125,6 +133,8 @@ class OverviewPlot(object):
     def _add_cmap(self):
         '''Add the colormap
         '''
+        self._check_ready()
+
         if self.lastplot is None:
             return
         self.fig.subplots_adjust(right=0.8)
@@ -140,12 +150,25 @@ class OverviewPlot(object):
             The filename used for saving
         title : str, optional
             An optional plot title
+
+        If this function is called a second time, the plot title won't be
+        changed, and the file only saved again
         '''
-        self._add_cmap()
-        plt.suptitle(title, fontsize=18)
-        plt.draw()
+        self._check_ready()
+
+        if not self._saved:
+            self._add_cmap()
+            plt.suptitle(title, fontsize=18)
+            plt.draw()
         plt.savefig(fname)
-        plt.clf()
+        self._saved = True
+
+    def close(self):
+        if self._ready:
+            plt.clf()
+            plt.close(self.fig)
+            self.fig = None
+            self._ready = False
 
     def _slot_to_plot(self, ifuslot):
         '''Convert the ifuslot string into
