@@ -1,3 +1,8 @@
+2018-06-04 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+        * pyhetdex/coordinates/astrometry.py: Changed default rho stage rotation to zero
+        * tests/test_coordinates/test_astrometry.py: Updated the tests for the above change                        
+
 2018-06-04  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* setup.py: Bumped version to 0.14.2-post

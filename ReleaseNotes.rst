@@ -4,6 +4,9 @@
 Development version @ trunk
 ---------------------------
 
+- Removed default 1.3 degree rho stage rotation. Default
+  is now to apply no rotation in coordinates/astrometry.py
+
 Development version @ branches/selection\_function\_devel
 ---------------------------------------------------------
 

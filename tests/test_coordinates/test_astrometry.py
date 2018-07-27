@@ -117,8 +117,12 @@ def test_xy_to_ra_dec_cmd(capsys, fplane_file, rhozp_toggle):
     out, err = capsys.readouterr()
 
     # Check output file written (values for old fplane)
-    assert out.strip().split()[0] == '205.484923'
-    assert out.strip().split()[1] == '28.398439'
+    if rhozp_toggle:
+        assert out.strip().split()[0] == '205.484923'
+        assert out.strip().split()[1] == '28.398439'
+    else:
+        assert out.strip().split()[0] == '205.484361'
+        assert out.strip().split()[1] == '28.397195'
 
 
 def test_add_wcs(tmpdir, clear_tmpdir, fplane_file, fits_image):
