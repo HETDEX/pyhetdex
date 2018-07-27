@@ -1,7 +1,14 @@
+2018-07-27  Jan Snigula  <snigula@mpe.mpg.de>
+
+	* tests/data/20180522T023753.4_053*_zro.fits: Added files needed
+	for pytest
+
 2018-06-04 Daniel Farrow <dfarrow@mpe.mpg.de>
 
-        * pyhetdex/coordinates/astrometry.py: Changed default rho stage rotation to zero
-        * tests/test_coordinates/test_astrometry.py: Updated the tests for the above change                        
+        * pyhetdex/coordinates/astrometry.py: Changed default rho stage
+	rotation to zero
+        * tests/test_coordinates/test_astrometry.py: Updated the tests for
+	the above change
 
 2018-06-04  Jan Snigula  <snigula@mpe.mpg.de>
 
