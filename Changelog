@@ -1,3 +1,11 @@
+2018-07-30 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+       * pyhetdex/coordinates/astrometry.py: Completely removed rho
+         stage rotation option
+       * tests/test_coordinates/test_astrometry.py: Removed tests
+         of rho stage rotation
+
+
 2018-07-27  Jan Snigula  <snigula@mpe.mpg.de>
 
 	* tests/data/20180522T023753.4_053*_zro.fits: Added files needed

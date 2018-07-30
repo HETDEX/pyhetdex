@@ -98,16 +98,12 @@ def test_add_ifu_xy_cmd(tmpdir, request, fplane_file, cat, outname):
     assert os.path.isfile(out)
 
 
-@pytest.mark.parametrize("rhozp_toggle", [True, False])
-def test_xy_to_ra_dec_cmd(capsys, fplane_file, rhozp_toggle):
+def test_xy_to_ra_dec_cmd(capsys, fplane_file):
     """Test the add_ra_dec command runs for a variety of inputs """
 
     # create the arguments
     argv = ['--fplane', fplane_file.strpath]
     argv += ['--ihmp', '073']
-
-    if rhozp_toggle:
-        argv += ['--rhozp', '1.3']
 
     argv += ['--astrometry', '205.547', '28.376', '254.6']
     argv += ['20.969', '-23.712']
@@ -117,12 +113,8 @@ def test_xy_to_ra_dec_cmd(capsys, fplane_file, rhozp_toggle):
     out, err = capsys.readouterr()
 
     # Check output file written (values for old fplane)
-    if rhozp_toggle:
-        assert out.strip().split()[0] == '205.484923'
-        assert out.strip().split()[1] == '28.398439'
-    else:
-        assert out.strip().split()[0] == '205.484361'
-        assert out.strip().split()[1] == '28.397195'
+    assert out.strip().split()[0] == '205.484361'
+    assert out.strip().split()[1] == '28.397195'
 
 
 def test_add_wcs(tmpdir, clear_tmpdir, fplane_file, fits_image):
