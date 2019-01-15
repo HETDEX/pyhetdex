@@ -1,3 +1,7 @@
+2019-01-15 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/tools/read_catalogues.py: Change xoof, yoff defaults
+
 2018-07-30 Daniel Farrow <dfarrow@mpe.mpg.de>
 
        * pyhetdex/coordinates/astrometry.py: Completely removed rho

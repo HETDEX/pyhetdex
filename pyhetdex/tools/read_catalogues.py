@@ -162,7 +162,7 @@ def read_cont_detect(fn):
     return table['icx'], table['icy'], table
 
 
-def read_daophot(fn, xoff=-26.2, yoff=-26.7):
+def read_daophot(fn, xoff=-26.15, yoff=-26.24):
     """Read in a DAOPHOT ALLSTAR file from a run on a collapsed cube/apimage
     file
 
