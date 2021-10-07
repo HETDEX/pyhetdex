@@ -1,3 +1,7 @@
+2021-10-07 Daniel Farrow <dfarrow@mpe.mpg.de>
+
+    * pyhetdex/tools/read_catalogues.py: Change xoff, yoff defaults again
+
 2019-01-15 Daniel Farrow <dfarrow@mpe.mpg.de>
 
     * pyhetdex/tools/read_catalogues.py: Change xoof, yoff defaults
