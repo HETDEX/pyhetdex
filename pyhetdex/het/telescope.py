@@ -23,7 +23,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import abc
-from distutils.spawn import find_executable
+from shutil import which
 import os
 import subprocess as sp
 
@@ -249,10 +249,9 @@ class HetpupilModel(ModelInterface):
     '''
     def __init__(self, files, normalize=True):
         # try to get distutils from the path
-        hetpupil = find_executable('hetpupil',
-                                   path=os.environ.get('CUREBIN', None))
+        hetpupil = which('hetpupil', path=os.environ.get('CUREBIN', None))
         if not hetpupil:  # otherwise in CUREBIN
-            hetpupil = find_executable('hetpupil')
+            hetpupil = which('hetpupil')
 
         if not hetpupil:
             raise SubprocessExeError('The executable ``hetpupil`` cannot be'

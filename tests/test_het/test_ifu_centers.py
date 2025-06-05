@@ -26,7 +26,8 @@ xfail_ifucen = pytest.mark.xfail(raises=ifucen.IFUCenterError,
               (['0001 -19.8000 -19.6876 L -001 1.000',
                 '0001 -19.8000 -19.6876 L 0002 1.000',
                 '0001 -19.8000 -19.6876 R 0001 1.000', ], ['R', 'L'], [1, 1]),
-              xfail_ifucen((['0001 -19.8000 -19.6876 L 0001 -1.000'], [], [])),
+              pytest.param(['0001 -19.8000 -19.6876 L 0001 -1.000'], [], [],
+                           marks=xfail_ifucen),
               ])
 def test_ifu_centers(tmpdir, lines, channels, n_fibers):
     '''Create a temporary IFU cen files and try to parse it'''

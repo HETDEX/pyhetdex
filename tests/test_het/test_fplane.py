@@ -102,13 +102,13 @@ def test_slotpos(fplane):
 
 @parametrize('in_id, out_id',
              [(2, '004'), ('2', '004'), ('002', '004'),
-              xfail_noIFUerror((200, '')),
-              pytest.mark.xfail(raises=TypeError,
-                                reason='Wrong type for SPECID')
-                               ((4.2, '')),
-              pytest.mark.xfail(raises=TypeError,
-                                reason='Wrong type for SPECID')
-                               (('not an int', '')),
+              pytest.param(200, '', marks=xfail_noIFUerror),
+              pytest.param(4.2, '',
+                           marks=pytest.mark.xfail(raises=TypeError,
+                                                   reason='Wrong type for SPECID')),
+              pytest.param('not an int', '',
+                           marks=pytest.mark.xfail(raises=TypeError,
+                                                   reason='Wrong type for SPECID'))
               ])
 def test_specid(fplane, in_id, out_id):
     """Test the by_specid function"""

@@ -8,8 +8,8 @@ except ImportError:
 from setuptools import setup, find_packages
 
 
-install_requires = ['six', 'numpy', 'matplotlib', 'scipy',
-                    'astropy>=1.2, !=1.3.3', 'Pillow', ]
+install_requires = ['six', 'numpy', 'matplotlib', 'scipy', 'importlib_resources',
+                    'astropy>1.3, !=1.3.3', 'Pillow', ]
 if sys.version_info < (3, 2):  # add backported configparser module if py < 3.2
     install_requires.append('configparser')
 
@@ -68,7 +68,7 @@ entry_points = {'console_scripts':
 setup(
     # package description and version
     name="pyhetdex",
-    version="0.14.2-post",
+    version="0.14.3",
     author="HETDEX collaboration",
     author_email="montefra@mpe.mpg.de",
     description="Heterogeneous collection of HETDEX-related functionalities",

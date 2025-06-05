@@ -23,9 +23,9 @@ index_map = [56, 48, 40, 32, 24, 16, 8,
 
 x_y = parametrize('x, y',
                   [(3, 4), ([1, 2], 4), ([1, 2], [3, 4]),
-                   pytest.mark.xfail(raises=ValueError,
-                                     reason='Fail broadcasting')
-                                    (([1, 2], [3, 4, 5]))])
+                   pytest.param([1, 2], [3, 4, 5],
+                                marks=pytest.mark.xfail(raises=ValueError,
+                                                        reason='Fail broadcasting'))])
 
 
 @x_y

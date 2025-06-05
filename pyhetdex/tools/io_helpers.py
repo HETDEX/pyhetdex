@@ -17,7 +17,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
-import pkg_resources
+import importlib_resources
 import re
 import six
 import textwrap as tw
@@ -279,8 +279,8 @@ def get_resource_file(name, filename):
     file_content : string
         content of the file
     '''
-    file_content = pkg_resources.resource_string(name, filename)
-    return decode(file_content)
+    ref = importlib_resources.files(name).joinpath(filename)
+    return decode(ref.read_bytes())
 
 
 class CopyResource(object):

@@ -49,12 +49,14 @@ def test_override_conf(attr, val, modified, expected):
 @parametrize('value, cast_to, recovered',
              [('', str, []), ('', int, []),
               ('a, b , c  ', str, ['a', 'b', 'c']),
-              xfail_value(('a, b , c  ', int, ['a', 'b', 'c'])),
+              pytest.param('a, b , c  ', int, ['a', 'b', 'c'],
+                           marks=xfail_value),
               ('1, 2 , 3  ', int, [1, 2, 3]),
               ('1, 2 , 3  ', float, [1., 2., 3.]),
               ('1, yes, true, on', bool, [True, ] * 4),
               ('0, no, false, off', bool, [False, ] * 4),
-              xfail_value(('nobool, no, ', bool, [False, ] * 2)),
+              pytest.param('nobool, no, ', bool, [False, ] * 2,
+                           marks=xfail_value)
               ])
 def test_get_list(value, cast_to, recovered):
     '''Test getting lists from the configuration'''
@@ -68,8 +70,9 @@ def test_get_list(value, cast_to, recovered):
 
 
 @parametrize('use_default',
-             [True, pytest.mark.xfail(raises=configparser.NoOptionError,
-                                      reason='Missing option')(False)])
+             [True, pytest.param(False,
+                                 marks=pytest.mark.xfail(raises=configparser.NoOptionError,
+                                                         reason='Missing option'))])
 def test_get_list_nooption(use_default):
     '''Test that the default is correctly returned'''
     section, option = 'section', 'option'
@@ -84,12 +87,12 @@ def test_get_list_nooption(use_default):
 @parametrize('value, cast_to, recovered',
              [('', str, [[None, None]]), ('', int, [[None, None]]),
               ('a-b , c-d  ', str, [['a', 'b'], ['c', 'd']]),
-              xfail_value(('a-b , c-d  ', int, [])),
+              pytest.param('a-b , c-d  ', int, [], marks=xfail_value),
               ('1 - 2 , 3 -4 ', int, [[1, 2], [3, 4]]),
               ('1 - 2 , 3 -4 ', float, [[1., 2.], [3., 4.]]),
               ('1- yes, true- on', bool, [[True, True], ] * 2),
               ('0- no, false- off', bool, [[False, False], ] * 2),
-              xfail_value(('nobool, no, ', bool, [])),
+              pytest.param('nobool, no, ', bool, [], marks=xfail_value),
               ])
 def test_get_list_of_list(value, cast_to, recovered):
     '''Test getting lists from the configuration'''
@@ -103,8 +106,9 @@ def test_get_list_of_list(value, cast_to, recovered):
 
 
 @parametrize('use_default',
-             [True, pytest.mark.xfail(raises=configparser.NoOptionError,
-                                      reason='Missing option')(False)])
+             [True, pytest.param(False,
+                                 marks=pytest.mark.xfail(raises=configparser.NoOptionError,
+                                                         reason='Missing option'))])
 def test_get_list_of_list_nooption(use_default):
     '''Test that the default is correctly returned'''
     section, option = 'section', 'option'

@@ -95,7 +95,7 @@ def prefix_filename(path, prefix):
 
 
 def wildcards_to_regex(wildcards, re_compile=True, is_regex=False):
-    """Convert shell wildcard to regex, if ``is_regex`` is ``False``
+    r"""Convert shell wildcard to regex, if ``is_regex`` is ``False``
 
     If ``wildcards`` is None, a match-nothing regex is used
     If ``wildcards`` is a list, the resulting regex are concatenated with ``|``

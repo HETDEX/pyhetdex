@@ -32,7 +32,6 @@ import astropy
 from astropy.io import fits
 from astropy.stats import sigma_clip
 import numpy as np
-from pkg_resources import parse_version
 
 from pyhetdex.tools.files.fits_tools import wavelength_to_index
 from pyhetdex.tools.files.file_tools import prefix_filename
@@ -82,7 +81,7 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
         median_data = np.median(data[:, imin:imax], axis=1)
         # and get the inverse of the mask from the sigma clipping
         clip_mask = np.logical_not(sigma_clip(median_data, sigma=sig,
-                                              iters=iters,
+                                              maxiters=iters,
                                               cenfunc=np.ma.median).mask)
 
         # construct the sky frame
@@ -91,10 +90,7 @@ def fe_sky_subtraction(fname, sig=2.5, iters=None, wmin=None, wmax=None,
             win_mask = moving_window(clip_mask, i, width=width)
             sky[i, :] = np.median(data[win_mask, :], axis=0)
 
-        if parse_version(astropy.__version__) < parse_version('1.3'):
-            writeto_kwars = {'clobber': True}
-        else:
-            writeto_kwars = {'overwrite': True}
+        writeto_kwars = {'overwrite': True}
 
         # save the sky subtracted file
         hdulist[0].data = data - sky
@@ -189,7 +185,7 @@ def hdu_fe_sky_background(data, header, sig=2.5, iters=None, wmin=None,
     if sig is not None:
         median_data = np.median(data, axis=1)
         clip_mask = np.logical_not(sigma_clip(median_data, sigma=sig,
-                                              iters=iters,
+                                              maxiters=iters,
                                               cenfunc=np.ma.median).mask)
         data = data[clip_mask, :]
 

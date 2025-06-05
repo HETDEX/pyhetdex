@@ -2,7 +2,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from distutils.spawn import find_executable
+from shutil import which
 
 import matplotlib
 matplotlib.use('Agg')
@@ -130,10 +130,10 @@ def skip_if_no_executable():
     or CUREBIN'''
 
     def _skip_executable(exename):
-        fullexe = find_executable(exename)
+        fullexe = which(exename)
         if fullexe is None:
-            fullexe = find_executable(exename,
-                                      path=os.environ.get('CUREBIN', ''))
+            fullexe = which(exename,
+                                 path=os.environ.get('CUREBIN', ''))
         if fullexe is None:
             pytest.skip('Executable "{}" not found'.format(exename))
 

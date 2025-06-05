@@ -1,7 +1,4 @@
 """Test pyhetdetyx.het.dither"""
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import os
 import filecmp
 
@@ -92,8 +89,8 @@ def test_wrong_dither(dither_wrong):
                ['fast_SIMDEX-4000-obs-1_D1_046',
                 'fast_SIMDEX-4000-obs-1_D2_046',
                 'fast_SIMDEX-4000-obs-1_D3_046']),
-              xfail_dither_create((['1', '2'], [])),
-              xfail_dither_create((['1', '2', '3'], ['1'])),
+             pytest.param(['1', '2'], [], marks=xfail_dither_create),
+             pytest.param(['1', '2', '3'], ['1'],marks=xfail_dither_create)
               ])
 def test_dither_creator(dither_creator, tmp_dither_file, example_fdither,
                         basenames, modelbases):
@@ -133,8 +130,8 @@ def test_dither_creator_wrong_number_dithers(fplane_file, shot):
                 'fast_SIMDEX-4000-obs-1_D2_046',
                 'fast_SIMDEX-4000-obs-1_D3_046'],
                ['fast_SIMDEX-4000-obs-1_D{dither}_{id}', ]),
-              xfail_system_exit((['1', '2'], [])),
-              xfail_system_exit((['1', ], ['1', '2'])),
+             pytest.param(['1', '2'], [], marks=xfail_system_exit),
+             pytest.param(['1', ], ['1', '2'], marks=xfail_system_exit)
               ])
 def test_command_line_dithertool(request, tmp_dither_file, fplane_file,
                                  example_fdither, basenames, modelbases,

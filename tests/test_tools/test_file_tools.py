@@ -81,21 +81,21 @@ def test_prefix_filename(infname, prefix, outfname):
 
 @parametrize('re_compile', [False, True])
 @parametrize('wildcard, regex, is_regex',
-             (skip_greater_py36(['[0-9]*fits', r'[0-9].*fits\Z(?ms)', False]),
-              skip_smaller_py36(['[0-9]*fits', r'(?s:[0-9].*fits)\Z', False]),
+             (pytest.param('[0-9]*fits', r'[0-9].*fits\Z(?ms)', False, marks=skip_greater_py36),
+              pytest.param('[0-9]*fits', r'(?s:[0-9].*fits)\Z', False, marks=skip_smaller_py36),
               [None, r'a^', False], [None, r'a^', True],
-              skip_greater_py36([["[0-3]*fits", "[5-9]*fits"],
-                                 r'[0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)',
-                                 False]),
-              skip_smaller_py36([["[0-3]*fits", "[5-9]*fits"],
-                                 r'(?s:[0-3].*fits)\Z|(?s:[5-9].*fits)\Z',
-                                 False]),
+              pytest.param(["[0-3]*fits", "[5-9]*fits"],
+                           r'[0-3].*fits\Z(?ms)|[5-9].*fits\Z(?ms)',
+                           False, marks=skip_greater_py36),
+              pytest.param(["[0-3]*fits", "[5-9]*fits"],
+                           r'(?s:[0-3].*fits)\Z|(?s:[5-9].*fits)\Z',
+                           False, marks=skip_smaller_py36),
               [r'(?:e\.)?jpes[0-9].*fits', r'(?:e\.)?jpes[0-9].*fits', True],
               [[r'.*some\d{2}.?', r'thing\d{2}.?'],
                r'.*some\d{2}.?|thing\d{2}.?', True],
-              pytest.mark.xfail(reason="Wrong regex",
-                                raises=ft.RegexCompileFail)
-                               (["*wrong", "*wrong", True])
+              pytest.param("*wrong", "*wrong", True,
+                           marks=pytest.mark.xfail(reason="Wrong regex",
+                                                   raises=ft.RegexCompileFail))
               ))
 def test_wildcards_to_regex(wildcard, regex, is_regex, re_compile):
     """Convert shell wildcards to regex"""
@@ -255,10 +255,14 @@ def test_file_name_rotator(tmpdir, n_times, keep):
 
 @parametrize('fname',
              ['good_{}.log',
-              pytest.mark.xfail(raises=ValueError, reason='Invalid format of'
-                                ' the file name template')('bad.log'),
-              pytest.mark.xfail(raises=ValueError, reason='Invalid format of'
-                                ' the file name template')('bad_{:.3f}.log'),
+              pytest.param('bad.log',
+                           marks=pytest.mark.xfail(raises=ValueError,
+                                                   reason='Invalid format of'
+                                                   ' the file name template')),
+              pytest.param('bad_{:.3f}.log',
+                           marks=pytest.mark.xfail(raises=ValueError,
+                                                   reason='Invalid format of'
+                                                   ' the file name template')),
               ])
 @parametrize('touch_files', [True, False])
 def test_file_name_rotator_template(tmpdir, fname, touch_files):
