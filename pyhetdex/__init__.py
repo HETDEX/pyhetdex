@@ -17,5 +17,5 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import importlib
-__version__ = importlib.metadata.version('pyhetdex')
+import importlib_metadata
+__version__ = importlib_metadata.version('pyhetdex')
