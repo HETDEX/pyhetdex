@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 
 install_requires = ['six', 'numpy', 'matplotlib', 'scipy', 'importlib_resources',
-                    'importlib_metadata'
+                    'importlib_metadata',
                     'astropy>1.3, !=1.3.3', 'Pillow', ]
 if sys.version_info < (3, 2):  # add backported configparser module if py < 3.2
     install_requires.append('configparser')
